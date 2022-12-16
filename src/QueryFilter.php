@@ -49,17 +49,23 @@ final class QueryFilter
         return $this;
     }
 
-    public function getCriterias(string $queryString): CriteriaCollection
+    /** @param QueryBag|array<mixed>|null $queryParameters */
+    public function getCriterias(QueryBag|array|null $queryParameters = null): CriteriaCollection
     {
+        if (! $queryParameters instanceof QueryBag) {
+            $queryParameters = new QueryBag($queryParameters ?? $_GET);
+        }
+
         return $this->settings
             ->getQueryParser()
-            ->setQueryString($queryString)
+            ->setQuery($queryParameters)
             ->parse($this->allowedFilters, $this->allowedSorts);
     }
 
-    public function parse(string $queryString, object $builder): object
+    /** @param QueryBag|array<mixed>|null $queryParameters */
+    public function applyOn(object $builder, QueryBag|array|null $queryParameters = null): object
     {
-        $this->getCriterias($queryString)->applyOn(
+        $this->getCriterias($queryParameters)->applyOn(
             $this->settings->adaptQueryBuilder($builder)
         );
 

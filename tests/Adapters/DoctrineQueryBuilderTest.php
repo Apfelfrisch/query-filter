@@ -136,7 +136,7 @@ final class DoctrineQueryBuilderTest extends TestCase
         $builder = $this->getBuilder();
         $builderAdapter = new DoctrineQueryBuilder($builder);
 
-        $builderAdapter->sort('test-field', SortDirection::Descinding);
+        $builderAdapter->sort('test-field', SortDirection::Descending);
 
         $this->assertSame('SELECT * FROM users ORDER BY test-field desc', (string)$builder);
         $this->assertEquals([], $builder->getParameters());
@@ -148,8 +148,8 @@ final class DoctrineQueryBuilderTest extends TestCase
         $builder = $this->getBuilder();
         $builderAdapter = new DoctrineQueryBuilder($builder);
 
-        $builderAdapter->sort('test-field', SortDirection::Descinding);
-        $builderAdapter->sort('test-field-two', SortDirection::Descinding);
+        $builderAdapter->sort('test-field', SortDirection::Descending);
+        $builderAdapter->sort('test-field-two', SortDirection::Descending);
 
         $this->assertSame('SELECT * FROM users ORDER BY test-field desc, test-field-two desc', (string)$builder);
         $this->assertEquals([], $builder->getParameters());
@@ -161,7 +161,7 @@ final class DoctrineQueryBuilderTest extends TestCase
         $builder = $this->getBuilder();
         $builderAdapter = new DoctrineQueryBuilder($builder);
 
-        $builderAdapter->sort('test-field', SortDirection::Descinding);
+        $builderAdapter->sort('test-field', SortDirection::Descending);
         $builderAdapter->sort('test-field-two', SortDirection::Ascending);
 
         $this->assertSame('SELECT * FROM users ORDER BY test-field desc, test-field-two asc', (string)$builder);

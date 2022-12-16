@@ -131,7 +131,7 @@ final class EloquentQueryBuilderTest extends TestCase
         $builder = $this->getBuilder();
         $builderAdapter = new EloquentQueryBuilder($builder);
 
-        $builderAdapter->sort('test-field', SortDirection::Descinding);
+        $builderAdapter->sort('test-field', SortDirection::Descending);
 
         $this->assertSame('select * order by "test-field" desc', $builder->toSql());
         $this->assertEquals([], $builder->getBindings());
@@ -143,8 +143,8 @@ final class EloquentQueryBuilderTest extends TestCase
         $builder = $this->getBuilder();
         $builderAdapter = new EloquentQueryBuilder($builder);
 
-        $builderAdapter->sort('test-field', SortDirection::Descinding);
-        $builderAdapter->sort('test-field-two', SortDirection::Descinding);
+        $builderAdapter->sort('test-field', SortDirection::Descending);
+        $builderAdapter->sort('test-field-two', SortDirection::Descending);
 
         $this->assertSame('select * order by "test-field" desc, "test-field-two" desc', $builder->toSql());
         $this->assertEquals([], $builder->getBindings());
@@ -156,7 +156,7 @@ final class EloquentQueryBuilderTest extends TestCase
         $builder = $this->getBuilder();
         $builderAdapter = new EloquentQueryBuilder($builder);
 
-        $builderAdapter->sort('test-field', SortDirection::Descinding);
+        $builderAdapter->sort('test-field', SortDirection::Descending);
         $builderAdapter->sort('test-field-two', SortDirection::Ascending);
 
         $this->assertSame('select * order by "test-field" desc, "test-field-two" asc', $builder->toSql());

@@ -47,9 +47,4 @@ final class EloquentQueryBuilder implements QueryBuilder
 
         return $this;
     }
-
-    public function get(): mixed
-    {
-        return $this->builder->get();
-    }
 }

@@ -1,0 +1,32 @@
+name: "Mutation tests with Infection"
+
+on:
+  pull_request:
+  push:
+
+jobs:
+  infection:
+    runs-on: ${{ matrix.operating-system }}
+
+    strategy:
+      matrix:
+        php-versions: ['8.1']
+        operating-system:
+          - "ubuntu-latest"
+
+    steps:
+      - name: "Checkout"
+        uses: "actions/checkout@v2"
+
+      - name: "Install PHP"
+        uses: "shivammathur/setup-php@v2"
+        with:
+          coverage: "pcov"
+          php-version: "${{ matrix.php-versions }}"
+          tools: composer, cs2pr
+
+      - name: "Install dependencies"
+        run: "composer update --no-interaction --no-progress"
+
+      - name: "Tests"
+        run: "vendor/bin/infection --logger-github"

@@ -6,13 +6,13 @@ namespace Apfelfrisch\QueryFilter\Adapters;
 
 use Apfelfrisch\QueryFilter\Conditions\SortDirection;
 use Apfelfrisch\QueryFilter\Criterias\CriteriaCollection;
+use Apfelfrisch\QueryFilter\QueryBag;
 use Apfelfrisch\QueryFilter\QueryParser;
 use Exception;
 
 final class SimpleQueryParser implements QueryParser
 {
-    /** @var array<mixed> */
-    private array $queryArray = [];
+    private QueryBag $query;
 
     /** @param non-empty-string $delimter */
     public function __construct(
@@ -20,11 +20,12 @@ final class SimpleQueryParser implements QueryParser
         private string $keywordSort = 'sort',
         private string $delimter = ',',
     ) {
+        $this->query = new QueryBag();
     }
 
-    public function setQueryString(string $query): self
+    public function setQuery(QueryBag $query): self
     {
-        parse_str($query, $this->queryArray);
+        $this->query = $query;
 
         return $this;
     }
@@ -44,11 +45,7 @@ final class SimpleQueryParser implements QueryParser
 
     private function parseFilters(CriteriaCollection $allowedFilters, CriteriaCollection $appliedCriterias): void
     {
-        $queryStringFilters = $this->queryArray[$this->keywordFilter] ?? [];
-
-        if (! is_iterable($queryStringFilters)) {
-            throw new Exception("Query String not well formed.");
-        }
+        $queryStringFilters = $this->query->getArray($this->keywordFilter);
 
         foreach ($queryStringFilters as $filtername => $filterString) {
             if (! is_string($filtername)) {
@@ -74,7 +71,7 @@ final class SimpleQueryParser implements QueryParser
 
     private function parseSorts(CriteriaCollection $allowedSorts, CriteriaCollection $appliedCriterias): void
     {
-        $values = $this->getValues($this->queryArray[$this->keywordSort] ?? '');
+        $values = $this->getValues($this->query->getString($this->keywordSort));
 
         if (is_string($values)) {
             $values = [$values];
@@ -87,7 +84,7 @@ final class SimpleQueryParser implements QueryParser
 
             if ($value[0] === '-') {
                 $value = substr($value, 1);
-                $sortDirection = SortDirection::Descinding;
+                $sortDirection = SortDirection::Descending;
             } else {
                 $sortDirection = SortDirection::Ascending;
             }

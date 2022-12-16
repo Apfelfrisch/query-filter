@@ -54,11 +54,6 @@ final class DoctrineQueryBuilder implements QueryBuilder
         return $this;
     }
 
-    public function get(): mixed
-    {
-        return '';
-    }
-
     private function buildWhereExpression(WhereCondition|OrWhereCondition $where, CompositeExpression|null $expression = null): CompositeExpression
     {
         if ($expression === null) {

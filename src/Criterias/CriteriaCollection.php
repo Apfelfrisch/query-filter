@@ -12,10 +12,11 @@ final class CriteriaCollection
     /** @var array<string, Criteria> */
     private array $criterias = [];
 
-    /** @param array<string, Criteria> $criterias */
-    public function __construct(array $criterias = [])
+    public function __construct(Criteria ...$criterias)
     {
-        $this->criterias = $criterias;
+        foreach ($criterias as $criteria) {
+            $this->add($criteria);
+        }
     }
 
     public function add(Criteria $criteria): void

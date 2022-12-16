@@ -37,11 +37,11 @@ final class SortTest extends TestCase
     {
         $queryBuilder = new DummyQueryBuilderAdapter;
 
-        $filter = new Sort('test-sort', SortDirection::Descinding);
+        $filter = new Sort('test-sort', SortDirection::Descending);
 
         $this->assertSame($queryBuilder, $filter->apply($queryBuilder));
         $this->assertCount(1, $queryBuilder->getCondition('sortConditions'));
         $this->assertEquals('test-sort', current(array_keys($queryBuilder->getCondition('sortConditions'))));
-        $this->assertEquals(SortDirection::Descinding, current($queryBuilder->getCondition('sortConditions')));
+        $this->assertEquals(SortDirection::Descending, current($queryBuilder->getCondition('sortConditions')));
     }
 }

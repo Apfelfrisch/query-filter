@@ -7,5 +7,5 @@ namespace Apfelfrisch\QueryFilter\Conditions;
 enum SortDirection: string
 {
     case Ascending = 'asc';
-    case Descinding = 'desc';
+    case Descending = 'desc';
 }

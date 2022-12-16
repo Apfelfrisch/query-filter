@@ -8,7 +8,7 @@ use Apfelfrisch\QueryFilter\Criterias\CriteriaCollection;
 
 interface QueryParser
 {
-    public function setQueryString(string $query): self;
+    public function setQuery(QueryBag $query): self;
 
     public function parse(CriteriaCollection $allowedFilters, CriteriaCollection $allowedSorts): CriteriaCollection;
 }

@@ -5,17 +5,18 @@ declare(strict_types=1);
 namespace Apfelfrisch\QueryFilter\Tests\TestsDoubles;
 
 use Apfelfrisch\QueryFilter\Criterias\CriteriaCollection;
+use Apfelfrisch\QueryFilter\QueryBag;
 use Apfelfrisch\QueryFilter\QueryParser;
 
 final class DummyQueryParser implements QueryParser
 {
-    public string|null $queryStrig = null;
+    public QueryBag|null $query = null;
     public CriteriaCollection|null $allowedFilters = null;
     public CriteriaCollection|null $allowedSorts = null;
 
-    public function setQueryString(string $query): self
+    public function setQuery(QueryBag $query): self
     {
-        $this->queryStrig = $query;
+        $this->query = $query;
 
         return $this;
     }
