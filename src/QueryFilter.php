@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Apfelfrisch\QueryFilter;
 
 use Apfelfrisch\QueryFilter\Criterias\CriteriaCollection;
-use Apfelfrisch\QueryFilter\Criterias\Filter;
+use Apfelfrisch\QueryFilter\Criterias\MutableCriteria;
 use Apfelfrisch\QueryFilter\Criterias\PartialFilter;
 use Apfelfrisch\QueryFilter\Criterias\Sort;
 
@@ -27,11 +27,11 @@ final class QueryFilter
         return new self($settings);
     }
 
-    public function allowFilters(string|Filter ...$filters): self
+    public function allowFilters(string|MutableCriteria ...$filters): self
     {
         foreach ($filters as $filter) {
             $this->allowedFilters->add(
-                $filter instanceof Filter ? $filter : new PartialFilter($filter)
+                $filter instanceof MutableCriteria ? $filter : new PartialFilter($filter)
             );
         }
 

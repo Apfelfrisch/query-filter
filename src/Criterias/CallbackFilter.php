@@ -7,7 +7,7 @@ namespace Apfelfrisch\QueryFilter\Criterias;
 use Apfelfrisch\QueryFilter\QueryBuilder;
 use Closure;
 
-final class CallbackFilter implements Filter
+final class CallbackFilter implements MutableCriteria
 {
     /**
      * @param string|array<int, string>|null $value

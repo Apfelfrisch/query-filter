@@ -19,9 +19,11 @@ final class CriteriaCollection
         }
     }
 
-    public function add(Criteria $criteria): void
+    public function add(Criteria $criteria): self
     {
         $this->criterias[$criteria->getName()] = $criteria;
+
+        return $this;
     }
 
     public function has(string $name, Type|null $type = null): bool
@@ -62,7 +64,7 @@ final class CriteriaCollection
         throw new Exception("Criteria with name [$name] not found.");
     }
 
-    public function getFilter(string $name): Filter
+    public function getFilter(string $name): MutableCriteria
     {
         /** @var Filter */
         return $this->get($name, Type::Filter);

@@ -9,7 +9,7 @@ use Apfelfrisch\QueryFilter\Conditions\OrWhereCondition;
 use Apfelfrisch\QueryFilter\Conditions\WhereCondition;
 use Apfelfrisch\QueryFilter\QueryBuilder;
 
-abstract class AbstractPartialFilter implements Filter
+abstract class AbstractPartialFilter implements MutableCriteria
 {
     /** @param string|array<int, string>|null $value */
     public function __construct(
