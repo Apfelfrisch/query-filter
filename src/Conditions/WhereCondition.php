@@ -9,7 +9,7 @@ final class WhereCondition
     public function __construct(
         public readonly string $field,
         public readonly Operator $operator,
-        public readonly string $value,
+        public readonly string|null $value,
     ) {
     }
 }
