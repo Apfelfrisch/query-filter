@@ -31,7 +31,7 @@ final class ExactFilterTest extends TestCase
         $this->assertSame($queryBuilder, $filter->apply($queryBuilder));
         $this->assertCount(0, $queryBuilder->getCondition('whereInConditions'));
         $this->assertEquals(
-            new WhereCondition('test-field', Operator::Equals, 'test-value'),
+            new WhereCondition('test-field', Operator::Equal, 'test-value'),
             current($queryBuilder->getCondition('whereConditions'))
         );
     }

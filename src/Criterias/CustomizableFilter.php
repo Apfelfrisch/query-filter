@@ -11,13 +11,14 @@ use Apfelfrisch\QueryFilter\QueryBuilder;
 
 final class CustomizableFilter implements Criteria
 {
+    /** @var array<int, WhereCondition|OrWhereCondition|SortCondition> */
     private array $conditions;
 
     public function __construct(
         private string $name,
         WhereCondition|OrWhereCondition|SortCondition ...$conditions
     ) {
-        $this->conditions = $conditions;
+        $this->conditions = array_values($conditions);
     }
 
     public function getName(): string
@@ -33,12 +34,12 @@ final class CustomizableFilter implements Criteria
     public function apply(QueryBuilder $builder): QueryBuilder
     {
         $builder->where(
-            ...array_filter($this->conditions, function(WhereCondition|OrWhereCondition|SortCondition $condition) {
+            ...array_filter($this->conditions, function (WhereCondition|OrWhereCondition|SortCondition $condition) {
                 return ! $condition instanceof SortCondition;
             })
         );
 
-        $sorts = array_filter($this->conditions, function(WhereCondition|OrWhereCondition|SortCondition $condition) {
+        $sorts = array_filter($this->conditions, function (WhereCondition|OrWhereCondition|SortCondition $condition) {
             return $condition instanceof SortCondition;
         });
 

@@ -24,7 +24,7 @@ final class EloquentQueryBuilderTest extends TestCase
         $builder = $this->getBuilder();
         $builderAdapter = new EloquentQueryBuilder($builder);
 
-        $builderAdapter->where(new WhereCondition('test-field', Operator::Equals, 'test-value'));
+        $builderAdapter->where(new WhereCondition('test-field', Operator::Equal, 'test-value'));
 
         $this->assertSame('select * where ("test-field" = ?)', $builder->toSql());
         $this->assertEquals([0 => 'test-value'], $builder->getBindings());
@@ -37,8 +37,8 @@ final class EloquentQueryBuilderTest extends TestCase
         $builderAdapter = new EloquentQueryBuilder($builder);
 
         $builderAdapter->where(
-            new WhereCondition('test-field', Operator::Equals, 'test-value'),
-            new WhereCondition('test-field-two', Operator::Equals, 'test-value-two')
+            new WhereCondition('test-field', Operator::Equal, 'test-value'),
+            new WhereCondition('test-field-two', Operator::Equal, 'test-value-two')
         );
 
         $this->assertSame('select * where ("test-field" = ? and "test-field-two" = ?)', $builder->toSql());
@@ -52,8 +52,8 @@ final class EloquentQueryBuilderTest extends TestCase
         $builderAdapter = new EloquentQueryBuilder($builder);
 
         $builderAdapter->where(
-            new WhereCondition('test-field', Operator::Equals, 'test-value'),
-            new OrWhereCondition('test-field-two', Operator::Equals, 'test-value-two'),
+            new WhereCondition('test-field', Operator::Equal, 'test-value'),
+            new OrWhereCondition('test-field-two', Operator::Equal, 'test-value-two'),
         );
 
         $this->assertSame('select * where ("test-field" = ? or "test-field-two" = ?)', $builder->toSql());
@@ -67,13 +67,13 @@ final class EloquentQueryBuilderTest extends TestCase
         $builderAdapter = new EloquentQueryBuilder($builder);
 
         $builderAdapter->where(
-            new WhereCondition('test-field-1', Operator::Equals, 'test-value-1'),
-            new WhereCondition('test-field-2', Operator::Equals, 'test-value-2'),
+            new WhereCondition('test-field-1', Operator::Equal, 'test-value-1'),
+            new WhereCondition('test-field-2', Operator::Equal, 'test-value-2'),
         );
 
         $builderAdapter->where(
-            new WhereCondition('test-field-3', Operator::Equals, 'test-value-3'),
-            new OrWhereCondition('test-field-4', Operator::Equals, 'test-value-4'),
+            new WhereCondition('test-field-3', Operator::Equal, 'test-value-3'),
+            new OrWhereCondition('test-field-4', Operator::Equal, 'test-value-4'),
         );
 
         $this->assertSame(

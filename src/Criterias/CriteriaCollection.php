@@ -66,7 +66,7 @@ final class CriteriaCollection
 
     public function getFilter(string $name): MutableCriteria
     {
-        /** @var Filter */
+        /** @var MutableCriteria */
         return $this->get($name, Type::Filter);
     }
 

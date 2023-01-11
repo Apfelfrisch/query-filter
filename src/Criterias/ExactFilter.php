@@ -51,7 +51,7 @@ final class ExactFilter implements MutableCriteria
         }
 
         if (count($filteredValues) === 1) {
-            return $builder->where(new WhereCondition($this->name, Operator::Equals, current($filteredValues)));
+            return $builder->where(new WhereCondition($this->name, Operator::Equal, current($filteredValues)));
         }
 
         return $builder->whereIn(new WhereInCondition($this->name, $filteredValues));

@@ -42,8 +42,8 @@ final class BetweenFilter implements MutableCriteria
     public function apply(QueryBuilder $builder): QueryBuilder
     {
         return $builder->where(
-            new WhereCondition($this->name, Operator::GreaterThenEquals, $this->beginn),
-            new WhereCondition($this->name, Operator::LessThanEquals, $this->end),
+            new WhereCondition($this->name, Operator::GreaterThenEqual, $this->beginn),
+            new WhereCondition($this->name, Operator::LessThanEqual, $this->end),
         );
     }
 }

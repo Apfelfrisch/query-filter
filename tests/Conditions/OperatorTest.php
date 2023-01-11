@@ -12,11 +12,11 @@ final class OperatorTest extends TestCase
     /** @test */
     public function testOperatorEnumValues()
     {
-        $this->assertSame(Operator::Equals->value, '=');
+        $this->assertSame(Operator::Equal->value, '=');
         $this->assertSame(Operator::GreaterThen->value, '>');
-        $this->assertSame(Operator::GreaterThenEquals->value, '>=');
+        $this->assertSame(Operator::GreaterThenEqual->value, '>=');
         $this->assertSame(Operator::LessThan->value, '<');
-        $this->assertSame(Operator::LessThanEquals->value, '<=');
+        $this->assertSame(Operator::LessThanEqual->value, '<=');
         $this->assertSame(Operator::Like->value, 'like');
     }
 }

@@ -6,10 +6,10 @@ namespace Apfelfrisch\QueryFilter\Conditions;
 
 enum Operator: string
 {
-    case Equals = '=';
+    case Equal = '=';
     case GreaterThen = '>';
-    case GreaterThenEquals = '>=';
+    case GreaterThenEqual = '>=';
     case LessThan = '<';
-    case LessThanEquals = '<=';
+    case LessThanEqual = '<=';
     case Like = 'like';
 }

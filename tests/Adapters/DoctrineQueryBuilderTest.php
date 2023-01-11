@@ -42,8 +42,8 @@ final class DoctrineQueryBuilderTest extends TestCase
         $builderAdapter = new DoctrineQueryBuilder($builder);
 
         $builderAdapter->where(
-            new WhereCondition('test-field', Operator::Equals, 'test-value'),
-            new WhereCondition('test-field-two', Operator::LessThanEquals, 'test-value-two')
+            new WhereCondition('test-field', Operator::Equal, 'test-value'),
+            new WhereCondition('test-field-two', Operator::LessThanEqual, 'test-value-two')
         );
 
         $this->assertSame('SELECT * FROM users WHERE (test-field = :test-field) AND (test-field-two <= :test-field-two)', (string)$builder);
@@ -57,8 +57,8 @@ final class DoctrineQueryBuilderTest extends TestCase
         $builderAdapter = new DoctrineQueryBuilder($builder);
 
         $builderAdapter->where(
-            new WhereCondition('test-field', Operator::Equals, 'test-value'),
-            new OrWhereCondition('test-field-two', Operator::Equals, 'test-value-two'),
+            new WhereCondition('test-field', Operator::Equal, 'test-value'),
+            new OrWhereCondition('test-field-two', Operator::Equal, 'test-value-two'),
         );
 
         $this->assertSame('SELECT * FROM users WHERE (test-field = :test-field) OR (test-field-two = :test-field-two)', (string)$builder);
@@ -72,13 +72,13 @@ final class DoctrineQueryBuilderTest extends TestCase
         $builderAdapter = new DoctrineQueryBuilder($builder);
 
         $builderAdapter->where(
-            new WhereCondition('test-field-1', Operator::Equals, 'test-value-1'),
-            new WhereCondition('test-field-2', Operator::Equals, 'test-value-2'),
+            new WhereCondition('test-field-1', Operator::Equal, 'test-value-1'),
+            new WhereCondition('test-field-2', Operator::Equal, 'test-value-2'),
         );
 
         $builderAdapter->where(
-            new WhereCondition('test-field-3', Operator::Equals, 'test-value-3'),
-            new OrWhereCondition('test-field-4', Operator::Equals, 'test-value-4'),
+            new WhereCondition('test-field-3', Operator::Equal, 'test-value-3'),
+            new OrWhereCondition('test-field-4', Operator::Equal, 'test-value-4'),
         );
 
         $this->assertSame(
@@ -187,10 +187,10 @@ final class DoctrineQueryBuilderTest extends TestCase
 
     public function provideWhereOperatorCases(): iterable
     {
-        yield 'operator-eq' => [Operator::Equals];
+        yield 'operator-eq' => [Operator::Equal];
         yield 'operator-gt' => [Operator::GreaterThen];
-        yield 'operator-gte' => [Operator::GreaterThenEquals];
+        yield 'operator-gte' => [Operator::GreaterThenEqual];
         yield 'operator-lt' => [Operator::LessThan];
-        yield 'operator-lte' => [Operator::LessThanEquals];
+        yield 'operator-lte' => [Operator::LessThanEqual];
     }
 }

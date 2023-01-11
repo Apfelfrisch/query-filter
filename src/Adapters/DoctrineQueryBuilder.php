@@ -71,11 +71,11 @@ final class DoctrineQueryBuilder implements QueryBuilder
     private function buildOperatorExpression(WhereCondition|OrWhereCondition $where): string
     {
         return match ($where->operator) {
-            Operator::Equals => $this->builder->expr()->eq($where->field, ":$where->field"),
+            Operator::Equal => $this->builder->expr()->eq($where->field, ":$where->field"),
             Operator::GreaterThen => $this->builder->expr()->gt($where->field, ":$where->field"),
-            Operator::GreaterThenEquals => $this->builder->expr()->gte($where->field, ":$where->field"),
+            Operator::GreaterThenEqual => $this->builder->expr()->gte($where->field, ":$where->field"),
             Operator::LessThan => $this->builder->expr()->lt($where->field, ":$where->field"),
-            Operator::LessThanEquals => $this->builder->expr()->lte($where->field, ":$where->field"),
+            Operator::LessThanEqual => $this->builder->expr()->lte($where->field, ":$where->field"),
             Operator::Like => $this->builder->expr()->like($where->field, ":$where->field"),
             default => throw new Exception("Unkown Operator [{$where->operator->value}]"),
         };
