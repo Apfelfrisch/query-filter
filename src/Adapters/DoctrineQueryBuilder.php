@@ -54,6 +54,11 @@ final class DoctrineQueryBuilder implements QueryBuilder
         return $this;
     }
 
+    public function builder(): BaseQueryBuilder
+    {
+        return $this->builder;
+    }
+
     private function buildWhereExpression(WhereCondition|OrWhereCondition $where, CompositeExpression|null $expression = null): CompositeExpression
     {
         if ($expression === null) {

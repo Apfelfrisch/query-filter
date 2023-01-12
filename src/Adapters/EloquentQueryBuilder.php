@@ -47,4 +47,9 @@ final class EloquentQueryBuilder implements QueryBuilder
 
         return $this;
     }
+
+    public function builder(): Builder|EloquentBuilder
+    {
+        return $this->builder;
+    }
 }

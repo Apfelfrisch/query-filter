@@ -16,4 +16,6 @@ interface QueryBuilder
     public function whereIn(WhereInCondition $where): self;
 
     public function sort(string $field, SortDirection $sortDirection): self;
+
+    public function builder(): mixed;
 }

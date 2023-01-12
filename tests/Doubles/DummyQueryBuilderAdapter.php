@@ -39,8 +39,9 @@ final class DummyQueryBuilderAdapter implements QueryBuilder
         return $this;
     }
 
-    public function get(): mixed
+    public function builder(): mixed
     {
+        return null;
     }
 
     public function getAllConditions(): array

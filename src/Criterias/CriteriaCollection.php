@@ -5,9 +5,14 @@ declare(strict_types=1);
 namespace Apfelfrisch\QueryFilter\Criterias;
 
 use Apfelfrisch\QueryFilter\QueryBuilder;
+use ArrayIterator;
 use Exception;
+use IteratorAggregate;
 
-final class CriteriaCollection
+/**
+ * @implements IteratorAggregate<string, Criteria>
+ */
+final class CriteriaCollection implements IteratorAggregate
 {
     /** @var array<string, Criteria> */
     private array $criterias = [];
@@ -70,10 +75,30 @@ final class CriteriaCollection
         return $this->get($name, Type::Filter);
     }
 
+    public function onlyFilters(): self
+    {
+        return new self(
+            ...array_filter($this->criterias, fn (Criteria $criteria): bool => $criteria->getType() === Type::Filter)
+        );
+    }
+
+    public function onlySorts(): self
+    {
+        return new self(
+            ...array_filter($this->criterias, fn (Criteria $criteria): bool => $criteria->getType() === Type::Sort)
+        );
+    }
+
     public function getSort(string $name): Sort
     {
         /** @var Sort */
         return $this->get($name, Type::Sort);
+    }
+
+    /** @return ArrayIterator<string, Criteria> */
+    public function getIterator(): ArrayIterator
+    {
+        return new ArrayIterator($this->criterias);
     }
 
     public function applyOn(QueryBuilder $builder): QueryBuilder
