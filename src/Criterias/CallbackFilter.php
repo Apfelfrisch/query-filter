@@ -24,6 +24,16 @@ final class CallbackFilter implements Filter
         $this->field = $this->name;
     }
 
+    /**
+     * @template T of QueryBuilder
+     * @param string|array<int, string>|null $value
+     * @param Closure(T $builder, string $name, string|array<int, string>|null $value):mixed $callback
+     **/
+    public static function new(string $name, Closure $callback, string|array|null $value = null): self
+    {
+        return new self($name, $callback, $value);
+    }
+
     public function forField(string $field): self
     {
         $this->field = $field;

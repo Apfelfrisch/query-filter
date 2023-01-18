@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Apfelfrisch\QueryFilter;
 
-use Apfelfrisch\QueryFilter\CriteriaCollection;
 use Apfelfrisch\QueryFilter\Criterias\Filter;
 use Apfelfrisch\QueryFilter\Criterias\PartialFilter;
 use Apfelfrisch\QueryFilter\Criterias\Sorting;
@@ -62,7 +61,13 @@ final class QueryFilter
             ->parse($this->allowedFilters, $this->allowedSorts);
     }
 
-    /** @param QueryBag|array<mixed>|null $queryParameters */
+    /**
+     * @template T of object
+     *
+     * @param T $builder
+     * @param QueryBag|array<mixed>|null $queryParameters
+     * @return T
+     */
     public function applyOn(object $builder, QueryBag|array|null $queryParameters = null): object
     {
         $this->getCriterias($queryParameters)->applyOn(

@@ -18,6 +18,11 @@ final class Sorting implements Criteria
         $this->field = $this->name;
     }
 
+    public static function new(string $name, SortDirection $sortDirection = SortDirection::Ascending): self
+    {
+        return new self($name, $sortDirection);
+    }
+
     public function forField(string $field): self
     {
         $this->field = $field;

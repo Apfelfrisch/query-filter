@@ -18,6 +18,14 @@ use PHPUnit\Framework\MockObject\MockObject;
 
 final class DoctrineQueryBuilderTest extends TestCase
 {
+    public function test_providing_the_giving_builder(): void
+    {
+        $builder = $this->getBuilder();
+        $builderAdapter = new DoctrineQueryBuilder($builder);
+
+        $this->assertSame($builder, $builderAdapter->builder());
+    }
+
     /**
      * @test
      * @dataProvider provideWhereOperatorCases

@@ -20,6 +20,17 @@ final class ExactFilterTest extends TestCase
         $this->assertSame('test-filter', $filter->getName());
     }
 
+    public function test_setting_field_name(): void
+    {
+        $queryBuilder = new DummyQueryBuilderAdapter;
+
+        $filter = ExactFilter::new('test-filter', 'test-value')->forField('field');
+        $filter->apply($queryBuilder);
+
+        $this->assertCount(1, $queryBuilder->getCondition('whereConditions'));
+        $this->assertEquals('field', $queryBuilder->getCondition('whereConditions')[0]->field);
+    }
+
     public function test_apply_value_string_to_query_builder(): void
     {
         $queryBuilder = new DummyQueryBuilderAdapter;

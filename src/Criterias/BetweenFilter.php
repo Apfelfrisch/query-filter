@@ -21,6 +21,11 @@ final class BetweenFilter implements Filter
         $this->field = $this->name;
     }
 
+    public static function new(string $name, string|null $beginn = null, string|null $end = null): self
+    {
+        return new self($name, $beginn, $end);
+    }
+
     public function forField(string $field): self
     {
         $this->field = $field;
@@ -31,12 +36,12 @@ final class BetweenFilter implements Filter
     /** @param string|array<int, string> $value */
     public function setValue(string|array $value): void
     {
-        if (is_array($value) && count($value) === 2) {
-            $this->beginn = $value[0];
-            $this->end = $value[1];
+        if (! is_array($value) || count($value) !== 2) {
+            throw new InvalidArgumentException("Value for " . BetweenFilter::class . " has to be an array with two strings.");
         }
 
-        throw new InvalidArgumentException("Value for " . BetweenFilter::class . " has to be an array with two strings.");
+        $this->beginn = $value[0];
+        $this->end = $value[1];
     }
 
     public function getName(): string
@@ -46,6 +51,10 @@ final class BetweenFilter implements Filter
 
     public function apply(QueryBuilder $builder): QueryBuilder
     {
+        if ($this->beginn === null || $this->end === null) {
+            return $builder;
+        }
+
         return $builder->where(
             new WhereCondition($this->field, Operator::GreaterThenEqual, $this->beginn),
             new WhereCondition($this->field, Operator::LessThanEqual, $this->end),

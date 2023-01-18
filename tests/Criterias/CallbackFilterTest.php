@@ -22,6 +22,22 @@ final class CallbackFilterTest extends TestCase
         $this->assertSame('test-filter', $filter->getName());
     }
 
+    public function test_setting_field_name(): void
+    {
+        $queryBuilder = new DummyQueryBuilderAdapter;
+
+        $closure = function (QueryBuilder $builder, string $name, string $value): void {
+            $builder->where(new WhereCondition($name, Operator::LessThan, $value));
+        };
+
+        $filter = CallbackFilter::new('test-filter', $closure, 'value');
+        $filter->forField('field');
+        $filter->apply($queryBuilder);
+
+        $this->assertCount(1, $queryBuilder->getCondition('whereConditions'));
+        $this->assertEquals('field', $queryBuilder->getCondition('whereConditions')[0]->field);
+    }
+
     public function test_excecuting_a_callback_filter_on_the_query_builder(): void
     {
         $queryBuilder = new DummyQueryBuilderAdapter;

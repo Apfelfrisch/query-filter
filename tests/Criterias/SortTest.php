@@ -19,6 +19,16 @@ final class SortTest extends TestCase
         $this->assertSame(SortDirection::Ascending, $filter->getSortDirection());
     }
 
+    public function test_setting_field_name(): void
+    {
+        $queryBuilder = new DummyQueryBuilderAdapter;
+
+        $filter = Sorting::new('test-filter')->forField('field');
+        $filter->apply($queryBuilder);
+
+        $this->assertArrayHasKey('field', $queryBuilder->getCondition('sortConditions'));
+    }
+
     public function test_apply_ascing_sort_on_query_filter(): void
     {
         $queryBuilder = new DummyQueryBuilderAdapter;

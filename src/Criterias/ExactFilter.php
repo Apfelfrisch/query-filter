@@ -21,6 +21,12 @@ final class ExactFilter implements Filter
         $this->field = $this->name;
     }
 
+    /** @param string|array<int, string>|null $value */
+    public static function new(string $name, string|array|null $value = null): self
+    {
+        return new self($name, $value);
+    }
+
     public function forField(string $field): self
     {
         $this->field = $field;

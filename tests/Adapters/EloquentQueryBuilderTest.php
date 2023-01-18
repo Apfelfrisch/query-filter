@@ -18,6 +18,14 @@ use Illuminate\Database\Query\Processors\Processor;
 
 final class EloquentQueryBuilderTest extends TestCase
 {
+    public function test_providing_the_giving_builder(): void
+    {
+        $builder = $this->getBuilder();
+        $builderAdapter = new EloquentQueryBuilder($builder);
+
+        $this->assertSame($builder, $builderAdapter->builder());
+    }
+
     /** @test */
     public function test_single_where(): void
     {
