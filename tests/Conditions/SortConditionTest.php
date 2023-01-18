@@ -14,7 +14,7 @@ final class SortConditionTest extends TestCase
     public function testSortCondition()
     {
         $condition = new SortCondition('name', SortDirection::Ascending);
-        $this->assertSame($condition->name, 'name');
+        $this->assertSame($condition->field, 'name');
         $this->assertSame($condition->sortDirection, SortDirection::Ascending);
     }
 }

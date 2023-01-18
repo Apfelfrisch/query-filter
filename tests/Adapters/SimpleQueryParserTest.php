@@ -6,7 +6,7 @@ namespace Apfelfrisch\QueryFilter\Tests\Adapters;
 
 use Apfelfrisch\QueryFilter\Adapters\SimpleQueryParser;
 use Apfelfrisch\QueryFilter\Conditions\SortDirection;
-use Apfelfrisch\QueryFilter\Criterias\CriteriaCollection;
+use Apfelfrisch\QueryFilter\CriteriaCollection;
 use Apfelfrisch\QueryFilter\Criterias\ExactFilter;
 use Apfelfrisch\QueryFilter\Criterias\Sorting;
 use Apfelfrisch\QueryFilter\QueryBag;

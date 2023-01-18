@@ -9,10 +9,20 @@ use Apfelfrisch\QueryFilter\QueryBuilder;
 
 final class Sorting implements Criteria
 {
+    private string $field;
+
     public function __construct(
         private string $name,
         private SortDirection $sortDirection = SortDirection::Ascending,
     ) {
+        $this->field = $this->name;
+    }
+
+    public function forField(string $field): self
+    {
+        $this->field = $field;
+
+        return $this;
     }
 
     public function setSortDirection(SortDirection $sortDirection): void
@@ -32,10 +42,10 @@ final class Sorting implements Criteria
 
     public function apply(QueryBuilder $builder): QueryBuilder
     {
-        if (strlen($this->name) === 0) {
+        if (strlen($this->field) === 0) {
             return $builder;
         }
 
-        return $builder->sort($this->name, $this->sortDirection);
+        return $builder->sort($this->field, $this->sortDirection);
     }
 }

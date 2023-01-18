@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Apfelfrisch\QueryFilter\Tests\Criterias;
 
 use Apfelfrisch\QueryFilter\Criterias;
-use Apfelfrisch\QueryFilter\Criterias\CriteriaCollection;
+use Apfelfrisch\QueryFilter\CriteriaCollection;
 use Apfelfrisch\QueryFilter\Tests\TestCase;
 use Exception;
 

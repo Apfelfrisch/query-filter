@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Apfelfrisch\QueryFilter\Adapters;
 
 use Apfelfrisch\QueryFilter\Conditions\SortDirection;
-use Apfelfrisch\QueryFilter\Criterias\CriteriaCollection;
+use Apfelfrisch\QueryFilter\CriteriaCollection;
 use Apfelfrisch\QueryFilter\QueryBag;
 use Apfelfrisch\QueryFilter\QueryParser;
 use Exception;

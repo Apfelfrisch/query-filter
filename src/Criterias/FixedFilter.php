@@ -44,7 +44,7 @@ final class FixedFilter implements Filter
         });
 
         foreach ($sorts as $sort) {
-            $builder->sort($sort->name, $sort->sortDirection);
+            $builder->sort($sort->field, $sort->sortDirection);
         }
 
         return $builder;

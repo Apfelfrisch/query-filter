@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Apfelfrisch\QueryFilter\Tests\TestsDoubles;
 
-use Apfelfrisch\QueryFilter\Criterias\CriteriaCollection;
+use Apfelfrisch\QueryFilter\CriteriaCollection;
 use Apfelfrisch\QueryFilter\QueryBag;
 use Apfelfrisch\QueryFilter\QueryParser;
 

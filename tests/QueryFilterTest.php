@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Apfelfrisch\QueryFilter\Tests;
 
-use Apfelfrisch\QueryFilter\Criterias\CriteriaCollection;
+use Apfelfrisch\QueryFilter\CriteriaCollection;
 use Apfelfrisch\QueryFilter\Criterias\ExactFilter;
 use Apfelfrisch\QueryFilter\Criterias\PartialFilter;
 use Apfelfrisch\QueryFilter\Criterias\Sorting;

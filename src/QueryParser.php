@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Apfelfrisch\QueryFilter;
 
-use Apfelfrisch\QueryFilter\Criterias\CriteriaCollection;
+use Apfelfrisch\QueryFilter\CriteriaCollection;
 
 interface QueryParser
 {

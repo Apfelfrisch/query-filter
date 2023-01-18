@@ -9,6 +9,8 @@ use Closure;
 
 final class CallbackFilter implements Filter
 {
+    private string $field;
+
     /**
      * @template T of QueryBuilder
      * @param string|array<int, string>|null $value
@@ -19,6 +21,14 @@ final class CallbackFilter implements Filter
         private Closure $callback,
         private string|array|null $value = null
     ) {
+        $this->field = $this->name;
+    }
+
+    public function forField(string $field): self
+    {
+        $this->field = $field;
+
+        return $this;
     }
 
     /** @param string|array<int, string> $value */
@@ -34,7 +44,7 @@ final class CallbackFilter implements Filter
 
     public function apply(QueryBuilder $builder): QueryBuilder
     {
-        ($this->callback)($builder, $this->name, $this->value);
+        ($this->callback)($builder, $this->field, $this->value);
 
         return $builder;
     }

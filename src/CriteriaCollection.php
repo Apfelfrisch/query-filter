@@ -2,8 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Apfelfrisch\QueryFilter\Criterias;
+namespace Apfelfrisch\QueryFilter;
 
+use Apfelfrisch\QueryFilter\Criterias\Criteria;
+use Apfelfrisch\QueryFilter\Criterias\Filter;
+use Apfelfrisch\QueryFilter\Criterias\Sorting;
 use Apfelfrisch\QueryFilter\QueryBuilder;
 use ArrayIterator;
 use Exception;
