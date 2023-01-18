@@ -9,7 +9,7 @@ use Apfelfrisch\QueryFilter\Conditions\WhereCondition;
 use Apfelfrisch\QueryFilter\QueryBuilder;
 use InvalidArgumentException;
 
-final class BetweenFilter implements MutableCriteria
+final class BetweenFilter implements Filter
 {
     public function __construct(
         private string $name,
@@ -32,11 +32,6 @@ final class BetweenFilter implements MutableCriteria
     public function getName(): string
     {
         return $this->name;
-    }
-
-    public function getType(): Type
-    {
-        return Type::Filter;
     }
 
     public function apply(QueryBuilder $builder): QueryBuilder

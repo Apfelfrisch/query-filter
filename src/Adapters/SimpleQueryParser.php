@@ -89,11 +89,11 @@ final class SimpleQueryParser implements QueryParser
                 $sortDirection = SortDirection::Ascending;
             }
 
-            if (! $allowedSorts->hasSort($value)) {
+            if (! $allowedSorts->hasSorting($value)) {
                 throw new Exception("Sort over [$value] is not allowd.");
             }
 
-            $sortCriteria = $allowedSorts->getSort($value);
+            $sortCriteria = $allowedSorts->getSorting($value);
             $sortCriteria->setSortDirection($sortDirection);
 
             $appliedCriterias->add($sortCriteria);

@@ -5,8 +5,7 @@ declare(strict_types=1);
 namespace Apfelfrisch\QueryFilter\Tests\Criterias;
 
 use Apfelfrisch\QueryFilter\Conditions\SortDirection;
-use Apfelfrisch\QueryFilter\Criterias\Sort;
-use Apfelfrisch\QueryFilter\Criterias\Type;
+use Apfelfrisch\QueryFilter\Criterias\Sorting;
 use Apfelfrisch\QueryFilter\Tests\TestCase;
 use Apfelfrisch\QueryFilter\Tests\TestsDoubles\DummyQueryBuilderAdapter;
 
@@ -15,9 +14,8 @@ final class SortTest extends TestCase
     /** @test */
     public function test_constructor_types(): void
     {
-        $filter = new Sort('test-filter');
+        $filter = new Sorting('test-filter');
         $this->assertSame('test-filter', $filter->getName());
-        $this->assertSame(Type::Sort, $filter->getType());
         $this->assertSame(SortDirection::Ascending, $filter->getSortDirection());
     }
 
@@ -25,7 +23,7 @@ final class SortTest extends TestCase
     {
         $queryBuilder = new DummyQueryBuilderAdapter;
 
-        $filter = new Sort('test-sort', SortDirection::Ascending);
+        $filter = new Sorting('test-sort', SortDirection::Ascending);
 
         $this->assertSame($queryBuilder, $filter->apply($queryBuilder));
         $this->assertCount(1, $queryBuilder->getCondition('sortConditions'));
@@ -37,7 +35,7 @@ final class SortTest extends TestCase
     {
         $queryBuilder = new DummyQueryBuilderAdapter;
 
-        $filter = new Sort('test-sort', SortDirection::Descending);
+        $filter = new Sorting('test-sort', SortDirection::Descending);
 
         $this->assertSame($queryBuilder, $filter->apply($queryBuilder));
         $this->assertCount(1, $queryBuilder->getCondition('sortConditions'));

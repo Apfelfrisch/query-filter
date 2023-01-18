@@ -7,7 +7,7 @@ namespace Apfelfrisch\QueryFilter\Tests;
 use Apfelfrisch\QueryFilter\Criterias\CriteriaCollection;
 use Apfelfrisch\QueryFilter\Criterias\ExactFilter;
 use Apfelfrisch\QueryFilter\Criterias\PartialFilter;
-use Apfelfrisch\QueryFilter\Criterias\Sort;
+use Apfelfrisch\QueryFilter\Criterias\Sorting;
 use Apfelfrisch\QueryFilter\QueryBag;
 use Apfelfrisch\QueryFilter\QueryFilter;
 use Apfelfrisch\QueryFilter\Settings;
@@ -34,8 +34,8 @@ final class QueryFilterTest extends TestCase
     /** @test */
     public function test_adding_allow_sort(): void
     {
-        $allowSortOne = new Sort('test-sort-one');
-        $allowSortTwo = new Sort('test-sort-two');
+        $allowSortOne = new Sorting('test-sort-one');
+        $allowSortTwo = new Sorting('test-sort-two');
         $uriParser = new DummyQueryParser;
         $settings = (new Settings)->setQueryParser($uriParser);
 

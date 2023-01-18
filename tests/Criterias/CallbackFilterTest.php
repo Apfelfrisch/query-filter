@@ -9,7 +9,6 @@ use Apfelfrisch\QueryFilter\Conditions\OrWhereCondition;
 use Apfelfrisch\QueryFilter\Conditions\WhereCondition;
 use Apfelfrisch\QueryFilter\Conditions\WhereInCondition;
 use Apfelfrisch\QueryFilter\Criterias\CallbackFilter;
-use Apfelfrisch\QueryFilter\Criterias\Type;
 use Apfelfrisch\QueryFilter\QueryBuilder;
 use Apfelfrisch\QueryFilter\Tests\TestCase;
 use Apfelfrisch\QueryFilter\Tests\TestsDoubles\DummyQueryBuilderAdapter;
@@ -21,7 +20,6 @@ final class CallbackFilterTest extends TestCase
     {
         $filter = new CallbackFilter('test-filter', fn (QueryBuilder $builder, string $name, string|array|null $value): mixed => '');
         $this->assertSame('test-filter', $filter->getName());
-        $this->assertSame(Type::Filter, $filter->getType());
     }
 
     public function test_excecuting_a_callback_filter_on_the_query_builder(): void

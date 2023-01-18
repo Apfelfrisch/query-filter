@@ -7,7 +7,7 @@ namespace Apfelfrisch\QueryFilter\Criterias;
 use Apfelfrisch\QueryFilter\Conditions\SortDirection;
 use Apfelfrisch\QueryFilter\QueryBuilder;
 
-final class Sort implements Criteria
+final class Sorting implements Criteria
 {
     public function __construct(
         private string $name,
@@ -28,11 +28,6 @@ final class Sort implements Criteria
     public function getName(): string
     {
         return $this->name;
-    }
-
-    public function getType(): Type
-    {
-        return Type::Sort;
     }
 
     public function apply(QueryBuilder $builder): QueryBuilder

@@ -9,7 +9,7 @@ use Apfelfrisch\QueryFilter\Conditions\OrWhereCondition;
 use Apfelfrisch\QueryFilter\Conditions\WhereCondition;
 use Apfelfrisch\QueryFilter\QueryBuilder;
 
-abstract class AbstractPartialFilter implements MutableCriteria
+abstract class AbstractPartialFilter implements Filter
 {
     /** @param string|array<int, string>|null $value */
     public function __construct(
@@ -27,11 +27,6 @@ abstract class AbstractPartialFilter implements MutableCriteria
     public function getName(): string
     {
         return $this->name;
-    }
-
-    public function getType(): Type
-    {
-        return Type::Filter;
     }
 
     public function apply(QueryBuilder $builder): QueryBuilder

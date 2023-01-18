@@ -31,68 +31,72 @@ final class CriteriaCollection implements IteratorAggregate
         return $this;
     }
 
-    public function has(string $name, Type|null $type = null): bool
+    public function has(string $name): bool
     {
-        $criteria = $this->criterias[$name] ?? null;
-
-        if ($criteria === null) {
-            return false;
-        }
-
-        if ($type !== null && $criteria->getType() !== $type) {
-            return false;
-        }
-
-        return true;
+        return array_key_exists($name, $this->criterias);
     }
 
     public function hasFilter(string $name): bool
     {
-        return $this->has($name, Type::Filter);
+        if (! $this->has($name)) {
+            return false;
+        }
+
+        return $this->get($name) instanceof Filter;
     }
 
-    public function hasSort(string $name): bool
+    public function hasSorting(string $name): bool
     {
-        return $this->has($name, Type::Sort);
+        if (! $this->has($name)) {
+            return false;
+        }
+
+        return $this->get($name) instanceof Sorting;
     }
 
-    public function get(string $name, Type|null $type = null): Criteria
+    public function get(string $name): Criteria
     {
         $criteria = $this->criterias[$name] ?? null;
 
-        if ($criteria !== null) {
-            if ($type === null || $criteria->getType() === $type) {
-                return $criteria;
-            }
+        if ($criteria === null) {
+            throw new Exception("Criteria with name [$name] not found.");
         }
 
-        throw new Exception("Criteria with name [$name] not found.");
+        return $criteria;
     }
 
-    public function getFilter(string $name): MutableCriteria
+    public function getFilter(string $name): Filter
     {
-        /** @var MutableCriteria */
-        return $this->get($name, Type::Filter);
+        if (! $this->hasFilter($name)) {
+            throw new Exception("Filter with name [$name] not found.");
+        }
+
+        /** @var Filter */
+        return $this->get($name);
+    }
+
+    public function getSorting(string $name): Sorting
+    {
+        if (! $this->hasSorting($name)) {
+            throw new Exception("Sorting with name [$name] not found.");
+        }
+
+        /** @var Sorting */
+        return $this->get($name);
     }
 
     public function onlyFilters(): self
     {
         return new self(
-            ...array_filter($this->criterias, fn (Criteria $criteria): bool => $criteria->getType() === Type::Filter)
+            ...array_filter($this->criterias, fn (Criteria $criteria): bool => $criteria instanceof Filter)
         );
     }
 
     public function onlySorts(): self
     {
         return new self(
-            ...array_filter($this->criterias, fn (Criteria $criteria): bool => $criteria->getType() === Type::Sort)
+            ...array_filter($this->criterias, fn (Criteria $criteria): bool => $criteria instanceof Sorting)
         );
-    }
-
-    public function getSort(string $name): Sort
-    {
-        /** @var Sort */
-        return $this->get($name, Type::Sort);
     }
 
     /** @return ArrayIterator<string, Criteria> */

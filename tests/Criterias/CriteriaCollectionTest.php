@@ -46,7 +46,7 @@ final class CriteriaCollectionTest extends TestCase
         $creteriaCollection->add($criteria);
 
         $this->assertSame($hasFilter, $creteriaCollection->hasFilter('test-name'));
-        $this->assertSame($hasSorting, $creteriaCollection->hasSort('test-name'));
+        $this->assertSame($hasSorting, $creteriaCollection->hasSorting('test-name'));
     }
 
     /**
@@ -67,7 +67,7 @@ final class CriteriaCollectionTest extends TestCase
         if ($isFilter) {
             $this->expectException(Exception::class);
         }
-        $this->assertInstanceOf(Criterias\Criteria::class, $creteriaCollection->getSort('test-name'));
+        $this->assertInstanceOf(Criterias\Criteria::class, $creteriaCollection->getSorting('test-name'));
     }
 
     public function provideCriteriaTypes()
@@ -81,7 +81,7 @@ final class CriteriaCollectionTest extends TestCase
         ];
 
         yield 'sorting' => [
-            new Criterias\Sort('test-name'), false, true,
+            new Criterias\Sorting('test-name'), false, true,
         ];
     }
 }

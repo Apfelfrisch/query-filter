@@ -9,7 +9,7 @@ use Apfelfrisch\QueryFilter\Conditions\SortCondition;
 use Apfelfrisch\QueryFilter\Conditions\WhereCondition;
 use Apfelfrisch\QueryFilter\QueryBuilder;
 
-final class CustomizableFilter implements Criteria
+final class FixedFilter implements Filter
 {
     /** @var array<int, WhereCondition|OrWhereCondition|SortCondition> */
     private array $conditions;
@@ -21,14 +21,14 @@ final class CustomizableFilter implements Criteria
         $this->conditions = array_values($conditions);
     }
 
+    public function setValue(string|array $value): void
+    {
+        // Filter ist Fixed, so setValue has no effect
+    }
+
     public function getName(): string
     {
         return $this->name;
-    }
-
-    public function getType(): Type
-    {
-        return Type::Filter;
     }
 
     public function apply(QueryBuilder $builder): QueryBuilder

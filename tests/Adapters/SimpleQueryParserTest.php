@@ -8,7 +8,7 @@ use Apfelfrisch\QueryFilter\Adapters\SimpleQueryParser;
 use Apfelfrisch\QueryFilter\Conditions\SortDirection;
 use Apfelfrisch\QueryFilter\Criterias\CriteriaCollection;
 use Apfelfrisch\QueryFilter\Criterias\ExactFilter;
-use Apfelfrisch\QueryFilter\Criterias\Sort;
+use Apfelfrisch\QueryFilter\Criterias\Sorting;
 use Apfelfrisch\QueryFilter\QueryBag;
 use Apfelfrisch\QueryFilter\Tests\TestCase;
 use Exception;
@@ -95,10 +95,10 @@ final class SimpleQueryParserTest extends TestCase
         $parser = new SimpleQueryParser(keywordFilter: 'filter', keywordSort: 'sort');
         $parser->setQuery(QueryBag::fromUrl("sort=nils"));
 
-        $crierias = $parser->parse(new CriteriaCollection, new CriteriaCollection(new Sort('nils')));
+        $crierias = $parser->parse(new CriteriaCollection, new CriteriaCollection(new Sorting('nils')));
 
         $this->assertEquals(
-            new CriteriaCollection(new Sort('nils', SortDirection::Ascending)),
+            new CriteriaCollection(new Sorting('nils', SortDirection::Ascending)),
             $crierias
         );
     }
@@ -109,10 +109,10 @@ final class SimpleQueryParserTest extends TestCase
         $parser = new SimpleQueryParser(keywordFilter: 'filter', keywordSort: 'sort');
         $parser->setQuery(QueryBag::fromUrl("sort=-nils"));
 
-        $crierias = $parser->parse(new CriteriaCollection, new CriteriaCollection(new Sort('nils')));
+        $crierias = $parser->parse(new CriteriaCollection, new CriteriaCollection(new Sorting('nils')));
 
         $this->assertEquals(
-            new CriteriaCollection(new Sort('nils', SortDirection::Descending)),
+            new CriteriaCollection(new Sorting('nils', SortDirection::Descending)),
             $crierias
         );
     }
@@ -124,14 +124,14 @@ final class SimpleQueryParserTest extends TestCase
         $parser->setQuery(QueryBag::fromUrl("sort=-nils,refle"));
 
         $crierias = $parser->parse(new CriteriaCollection, new CriteriaCollection(
-            new Sort('nils'),
-            new Sort('refle'),
+            new Sorting('nils'),
+            new Sorting('refle'),
         ));
 
         $this->assertEquals(
             new CriteriaCollection(
-                new Sort('nils', SortDirection::Descending),
-                new Sort('refle', SortDirection::Ascending),
+                new Sorting('nils', SortDirection::Descending),
+                new Sorting('refle', SortDirection::Ascending),
             ),
             $crierias
         );
@@ -143,10 +143,10 @@ final class SimpleQueryParserTest extends TestCase
         $parser = new SimpleQueryParser(keywordFilter: 'filter', keywordSort: 'sort');
         $parser->setQuery(QueryBag::fromUrl("sort= -nils"));
 
-        $crierias = $parser->parse(new CriteriaCollection, new CriteriaCollection(new Sort('nils')));
+        $crierias = $parser->parse(new CriteriaCollection, new CriteriaCollection(new Sorting('nils')));
 
         $this->assertEquals(
-            new CriteriaCollection(new Sort('nils', SortDirection::Descending)),
+            new CriteriaCollection(new Sorting('nils', SortDirection::Descending)),
             $crierias
         );
     }
@@ -157,10 +157,10 @@ final class SimpleQueryParserTest extends TestCase
         $parser = new SimpleQueryParser(keywordFilter: 'filter', keywordSort: 'sort');
         $parser->setQuery(QueryBag::fromUrl("sort= ,nils"));
 
-        $crierias = $parser->parse(new CriteriaCollection, new CriteriaCollection(new Sort('nils')));
+        $crierias = $parser->parse(new CriteriaCollection, new CriteriaCollection(new Sorting('nils')));
 
         $this->assertEquals(
-            new CriteriaCollection(new Sort('nils', SortDirection::Ascending)),
+            new CriteriaCollection(new Sorting('nils', SortDirection::Ascending)),
             $crierias
         );
     }
@@ -189,14 +189,14 @@ final class SimpleQueryParserTest extends TestCase
         $parser->setQuery(QueryBag::fromUrl("sort=-nils, refle"));
 
         $crierias = $parser->parse(new CriteriaCollection, new CriteriaCollection(
-            new Sort('nils'),
-            new Sort('refle'),
+            new Sorting('nils'),
+            new Sorting('refle'),
         ));
 
         $this->assertEquals(
             new CriteriaCollection(
-                new Sort('nils', SortDirection::Descending),
-                new Sort('refle', SortDirection::Ascending),
+                new Sorting('nils', SortDirection::Descending),
+                new Sorting('refle', SortDirection::Ascending),
             ),
             $crierias
         );
