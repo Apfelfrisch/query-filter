@@ -105,6 +105,11 @@ final class CriteriaCollection implements IteratorAggregate
         return new ArrayIterator($this->criterias);
     }
 
+    /**
+     * @template T
+     * @param QueryBuilder<T> $builder
+     * @return QueryBuilder<T>
+     */
     public function applyOn(QueryBuilder $builder): QueryBuilder
     {
         array_walk(

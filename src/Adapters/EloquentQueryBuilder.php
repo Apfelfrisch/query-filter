@@ -12,6 +12,9 @@ use Apfelfrisch\QueryFilter\QueryBuilder;
 use Illuminate\Contracts\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Contracts\Database\Query\Builder;
 
+/**
+ * @implements QueryBuilder<Builder|EloquentBuilder>
+ */
 final class EloquentQueryBuilder implements QueryBuilder
 {
     public function __construct(

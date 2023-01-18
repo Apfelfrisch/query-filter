@@ -15,7 +15,7 @@ final class Settings
 {
     private QueryParser $queryParser;
 
-    /** @var array<class-string, class-string<QueryBuilder>> */
+    /** @var array<class-string, class-string<QueryBuilder<mixed>>> */
     private array $adapterMappings = [];
 
     public function __construct()
@@ -36,8 +36,9 @@ final class Settings
     }
 
     /**
+     * @template T of QueryBuilder
      * @phpstan-param class-string $adaptable
-     * @phpstan-param class-string<QueryBuilder> $adapter
+     * @phpstan-param class-string<T> $adapter
      */
     public function addQueryBuilderMapping(string $adaptable, string $adapter): self
     {
@@ -56,11 +57,16 @@ final class Settings
         return $this;
     }
 
+    /**
+     * @template T of object
+     * @param T $adaptableInstance
+     * @return QueryBuilder<T>
+     */
     public function adaptQueryBuilder(object $adaptableInstance): QueryBuilder
     {
         foreach ($this->adapterMappings as $adaptableClass => $adapter) {
             if ($adaptableInstance instanceof $adaptableClass) {
-                /** @var QueryBuilder */
+                /** @var QueryBuilder<T> */
                 return new $adapter($adaptableInstance);
             }
         }

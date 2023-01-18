@@ -14,6 +14,9 @@ use Doctrine\DBAL\Query\Expression\CompositeExpression;
 use Doctrine\DBAL\Query\QueryBuilder as BaseQueryBuilder;
 use Exception;
 
+/**
+ * @implements QueryBuilder<BaseQueryBuilder>
+ */
 final class DoctrineQueryBuilder implements QueryBuilder
 {
     public function __construct(

@@ -10,8 +10,9 @@ use Closure;
 final class CallbackFilter implements Filter
 {
     /**
+     * @template T of QueryBuilder
      * @param string|array<int, string>|null $value
-     * @param Closure(QueryBuilder $builder, string $name, string|array<int, string>|null $value):mixed $callback
+     * @param Closure(T $builder, string $name, string|array<int, string>|null $value):mixed $callback
      **/
     public function __construct(
         private string $name,
