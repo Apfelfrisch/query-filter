@@ -6,8 +6,8 @@ namespace Apfelfrisch\QueryFilter\Criterias;
 
 use Apfelfrisch\QueryFilter\Conditions\Operator;
 use Apfelfrisch\QueryFilter\Conditions\WhereCondition;
+use Apfelfrisch\QueryFilter\Exceptions\CriteriaException;
 use Apfelfrisch\QueryFilter\QueryBuilder;
-use InvalidArgumentException;
 
 final class BetweenFilter implements Filter
 {
@@ -37,7 +37,7 @@ final class BetweenFilter implements Filter
     public function setValue(string|array $value): void
     {
         if (! is_array($value) || count($value) !== 2) {
-            throw new InvalidArgumentException("Value for " . BetweenFilter::class . " has to be an array with two strings.");
+            throw new CriteriaException("Value for " . BetweenFilter::class . " has to be an array with two strings.");
         }
 
         $this->beginn = $value[0];

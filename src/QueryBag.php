@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Apfelfrisch\QueryFilter;
 
-use Exception;
+use Apfelfrisch\QueryFilter\Exceptions\QueryFilterException;
 
 use function Safe\parse_url;
 
@@ -40,7 +40,7 @@ final class QueryBag
         }
 
         if (! is_scalar($value)) {
-            throw new Exception("Query Parameter value [$key] contains a non-scalar value.");
+            throw new QueryFilterException("Query Parameter value [$key] contains a non-scalar value.");
         }
 
         return $value;
@@ -51,7 +51,7 @@ final class QueryBag
         $value = $this->get($key);
 
         if (is_array($value)) {
-            throw new Exception("Query Parameter value [$key] contains an array and cannot cast to string.");
+            throw new QueryFilterException("Query Parameter value [$key] contains an array and cannot cast to string.");
         }
 
         return (string)$value;

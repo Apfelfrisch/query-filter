@@ -7,6 +7,7 @@ namespace Apfelfrisch\QueryFilter\Tests;
 use Apfelfrisch\QueryFilter\CriteriaCollection;
 use Apfelfrisch\QueryFilter\Criterias;
 use Apfelfrisch\QueryFilter\Criterias\Sorting;
+use Apfelfrisch\QueryFilter\Exceptions\CriteriaException;
 use Exception;
 
 final class CriteriaCollectionTest extends TestCase
@@ -41,7 +42,8 @@ final class CriteriaCollectionTest extends TestCase
         $criteriaCollection = new CriteriaCollection;
         $criteriaCollection->add(new Criterias\ExactFilter('test-name', 'test-value'));
 
-        $this->expectExceptionMessage('Criteria with name [test-name-two] not found');
+        $this->expectException(CriteriaException::class);
+        $this->expectExceptionMessage('Criteria [test-name-two] is not found');
 
         $criteriaCollection->get('test-name-two');
     }
@@ -52,7 +54,8 @@ final class CriteriaCollectionTest extends TestCase
         $criteriaCollection = new CriteriaCollection;
         $criteriaCollection->add(new Sorting('test-name'));
 
-        $this->expectExceptionMessage('Filter with name [test-name] not found');
+        $this->expectException(CriteriaException::class);
+        $this->expectExceptionMessage('Filter [test-name] is not found');
 
         $criteriaCollection->getFilter('test-name');
     }
@@ -63,7 +66,7 @@ final class CriteriaCollectionTest extends TestCase
         $criteriaCollection = new CriteriaCollection;
         $criteriaCollection->add(new Criterias\ExactFilter('test-name', 'test-value'));
 
-        $this->expectExceptionMessage('Sorting with name [test-name] not found');
+        $this->expectExceptionMessage('Sorting [test-name] is not found');
 
         $criteriaCollection->getSorting('test-name');
     }

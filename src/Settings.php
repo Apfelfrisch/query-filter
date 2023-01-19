@@ -7,8 +7,8 @@ namespace Apfelfrisch\QueryFilter;
 use Apfelfrisch\QueryFilter\Adapters\DoctrineQueryBuilder;
 use Apfelfrisch\QueryFilter\Adapters\EloquentQueryBuilder;
 use Apfelfrisch\QueryFilter\Adapters\SimpleQueryParser;
+use Apfelfrisch\QueryFilter\Exceptions\QueryFilterException;
 use Doctrine\DBAL\Query\QueryBuilder as DoctrineBuilder;
-use Exception;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 
 final class Settings
@@ -43,13 +43,13 @@ final class Settings
     public function addQueryBuilderMapping(string $adaptable, string $adapter): self
     {
         if (! class_exists($adaptable)) {
-            throw new Exception("Unkown adaptable QueryBuilder class [$adaptable]");
+            throw new QueryFilterException("Unkown adaptable QueryBuilder class [$adaptable]");
         }
 
         $interfaces = class_implements($adapter) ?: [];
 
         if (! array_key_exists(QueryBuilder::class, $interfaces)) {
-            throw new Exception("Adapter [$adapter] must implement [" . QueryBuilder::class . "].");
+            throw new QueryFilterException("Adapter [$adapter] must implement [" . QueryBuilder::class . "].");
         }
 
         $this->adapterMappings[$adaptable] = $adapter;
@@ -71,7 +71,7 @@ final class Settings
             }
         }
 
-        throw new Exception("Could not find Adapter for [" . $adaptableInstance::class . "]");
+        throw new QueryFilterException("Could not find Adapter for [" . $adaptableInstance::class . "]");
     }
 
     private function loadDefaults(): void
@@ -86,7 +86,7 @@ final class Settings
             if (class_exists(DoctrineBuilder::class)) {
                 $this->addQueryBuilderMapping(DoctrineBuilder::class, DoctrineQueryBuilder::class);
             }
-        } catch (Exception) {
+        } catch (QueryFilterException) {
         }
     }
 }

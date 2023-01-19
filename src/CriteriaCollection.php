@@ -7,8 +7,8 @@ namespace Apfelfrisch\QueryFilter;
 use Apfelfrisch\QueryFilter\Criterias\Criteria;
 use Apfelfrisch\QueryFilter\Criterias\Filter;
 use Apfelfrisch\QueryFilter\Criterias\Sorting;
+use Apfelfrisch\QueryFilter\Exceptions\CriteriaException;
 use ArrayIterator;
-use Exception;
 use IteratorAggregate;
 
 /**
@@ -61,7 +61,7 @@ final class CriteriaCollection implements IteratorAggregate
         $criteria = $this->criterias[$name] ?? null;
 
         if ($criteria === null) {
-            throw new Exception("Criteria with name [$name] not found.");
+            throw CriteriaException::missingCriteria($name);
         }
 
         return $criteria;
@@ -70,7 +70,7 @@ final class CriteriaCollection implements IteratorAggregate
     public function getFilter(string $name): Filter
     {
         if (! $this->hasFilter($name)) {
-            throw new Exception("Filter with name [$name] not found.");
+            throw CriteriaException::missingFilter($name);
         }
 
         /** @var Filter */
@@ -80,7 +80,7 @@ final class CriteriaCollection implements IteratorAggregate
     public function getSorting(string $name): Sorting
     {
         if (! $this->hasSorting($name)) {
-            throw new Exception("Sorting with name [$name] not found.");
+            throw CriteriaException::missingSorting($name);
         }
 
         /** @var Sorting */

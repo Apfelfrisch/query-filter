@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Apfelfrisch\QueryFilter\Tests;
 
+use Apfelfrisch\QueryFilter\Exceptions\QueryFilterException;
 use Apfelfrisch\QueryFilter\QueryBag;
-use Exception;
 
 final class QueryBagTest extends TestCase
 {
@@ -43,7 +43,7 @@ final class QueryBagTest extends TestCase
     {
         $queryBag = new QueryBag(['string-key' => (object)['string']]);
 
-        $this->expectException(Exception::class);
+        $this->expectException(QueryFilterException::class);
 
         $this->assertSame('string', $queryBag->get('string-key'));
     }

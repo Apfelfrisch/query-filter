@@ -6,9 +6,10 @@ namespace Apfelfrisch\QueryFilter\Adapters;
 
 use Apfelfrisch\QueryFilter\Conditions\SortDirection;
 use Apfelfrisch\QueryFilter\CriteriaCollection;
+use Apfelfrisch\QueryFilter\Exceptions\CriteriaException;
+use Apfelfrisch\QueryFilter\Exceptions\QueryStringException;
 use Apfelfrisch\QueryFilter\QueryBag;
 use Apfelfrisch\QueryFilter\QueryParser;
-use Exception;
 
 final class SimpleQueryParser implements QueryParser
 {
@@ -31,8 +32,8 @@ final class SimpleQueryParser implements QueryParser
     }
 
     public function parse(
-        CriteriaCollection $allowedFilters,
-        CriteriaCollection $allowedSorts = new CriteriaCollection
+        CriteriaCollection $allowedFilters = new CriteriaCollection,
+        CriteriaCollection $allowedSorts = new CriteriaCollection,
     ): CriteriaCollection {
         $appliedCriterias = new CriteriaCollection();
 
@@ -49,11 +50,11 @@ final class SimpleQueryParser implements QueryParser
 
         foreach ($queryStringFilters as $filtername => $filterString) {
             if (! is_string($filtername)) {
-                throw new Exception("Query String not well formed.");
+                throw QueryStringException::unparseableQueryString();
             }
 
             if (! $allowedFilters->hasFilter($filtername)) {
-                throw new Exception("Filter [$filtername] not allowd.");
+                throw CriteriaException::forbiddenFilter($filtername, $allowedFilters);
             }
 
             $values = $this->getValues($filterString);
@@ -90,7 +91,7 @@ final class SimpleQueryParser implements QueryParser
             }
 
             if (! $allowedSorts->hasSorting($value)) {
-                throw new Exception("Sort over [$value] is not allowd.");
+                throw CriteriaException::forbiddenSorting($value, $allowedSorts);
             }
 
             $sortCriteria = $allowedSorts->getSorting($value);
@@ -104,7 +105,7 @@ final class SimpleQueryParser implements QueryParser
     private function getValues(mixed $filterString): array|string
     {
         if (! is_string($filterString)) {
-            throw new Exception("Query String not well formed.");
+            throw QueryStringException::unparseableQueryString();
         }
 
         if (! str_contains($filterString, $this->delimter)) {

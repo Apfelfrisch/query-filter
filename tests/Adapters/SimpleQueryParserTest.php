@@ -8,7 +8,10 @@ use Apfelfrisch\QueryFilter\Adapters\SimpleQueryParser;
 use Apfelfrisch\QueryFilter\Conditions\SortDirection;
 use Apfelfrisch\QueryFilter\CriteriaCollection;
 use Apfelfrisch\QueryFilter\Criterias\ExactFilter;
+use Apfelfrisch\QueryFilter\Criterias\PartialFilter;
 use Apfelfrisch\QueryFilter\Criterias\Sorting;
+use Apfelfrisch\QueryFilter\Exceptions\CriteriaException;
+use Apfelfrisch\QueryFilter\Exceptions\QueryStringException;
 use Apfelfrisch\QueryFilter\QueryBag;
 use Apfelfrisch\QueryFilter\Tests\TestCase;
 use Exception;
@@ -19,24 +22,24 @@ final class SimpleQueryParserTest extends TestCase
     public function test_throwing_exception_when_given_filter_is_not_allowd(): void
     {
         $parser = new SimpleQueryParser(keywordFilter: 'filter', keywordSort: 'sort');
-        $parser->setQuery(QueryBag::fromUrl("filter[name]=nils"));
+        $parser->setQuery(QueryBag::fromUrl("filter[street]=Dukelweg"));
 
-        $this->expectException(Exception::class);
-        $this->expectExceptionMessage('Filter [name] not allowd.');
+        $this->expectException(CriteriaException::class);
+        $this->expectExceptionMessage('Requested filter [street] is not allowed. Allowed filter(s) are [name , age]');
 
-        $parser->parse(new CriteriaCollection());
+        $parser->parse(new CriteriaCollection(new PartialFilter('name'), new PartialFilter('age')));
     }
 
     /** @test */
     public function test_throwing_exception_when_given_sort_is_not_allowd(): void
     {
         $parser = new SimpleQueryParser(keywordFilter: 'filter', keywordSort: 'sort');
-        $parser->setQuery(QueryBag::fromUrl("sort=nils"));
+        $parser->setQuery(QueryBag::fromUrl("sort=name"));
 
-        $this->expectException(Exception::class);
-        $this->expectExceptionMessage('Sort over [nils] is not allowd.');
+        $this->expectException(CriteriaException::class);
+        $this->expectExceptionMessage('Requested sorting [name] is not allowed. Allowed sort(s) are [street , street_no]');
 
-        $parser->parse(new CriteriaCollection());
+        $parser->parse(allowedSorts: new CriteriaCollection(new Sorting('street'), new Sorting('street_no')));
     }
 
     /** @test */
@@ -59,6 +62,18 @@ final class SimpleQueryParserTest extends TestCase
         $this->expectException(Exception::class);
 
         $parser->parse(new CriteriaCollection);
+    }
+
+    /** @test */
+    public function test_throwing_exception_query_is_unparseable(): void
+    {
+        $parser = new SimpleQueryParser(keywordFilter: 'filter', keywordSort: 'sort');
+        $parser->setQuery(new QueryBag(['filter' => ['name' => ['nils']]]));
+
+        $this->expectException(QueryStringException::class);
+        $this->expectExceptionMessage('Could not parse query string');
+
+        $parser->parse(new CriteriaCollection(new PartialFilter('name')));
     }
 
     /** @test */
