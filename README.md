@@ -54,7 +54,7 @@ $users = QueryFilter::new()
   ->get();
 ```
 
-### Sort Users by descending name
+### Sort Users ascending by name
 
 `/users?sort=name`
 
@@ -65,7 +65,7 @@ $users = QueryFilter::new()
   ->get();
 ```
 
-### Sort Users by ascing name and descending created_at 
+### Sort Users ascending by name and descending created_at 
 
 `/users?sort=name,-created_at`
 
