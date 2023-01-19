@@ -91,7 +91,7 @@ $users = QueryFilter::new()
 
 // Filter with name like "%John"
 $users = QueryFilter::new()
-  ->allowFilters(new Criterias\LeftStrictPartialFilterr('name'))
+  ->allowFilters(new Criterias\LeftStrictPartialFilter('name'))
   ->applyOn($queryBuilder)
   ->get();
 ```
