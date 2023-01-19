@@ -32,9 +32,9 @@ final class EloquentQueryBuilderTest extends TestCase
         $builder = $this->getBuilder();
         $builderAdapter = new EloquentQueryBuilder($builder);
 
-        $builderAdapter->where(new WhereCondition('test-field', Operator::Equal, 'test-value'));
+        $builderAdapter->where(new WhereCondition('test-column', Operator::Equal, 'test-value'));
 
-        $this->assertSame('select * where ("test-field" = ?)', $builder->toSql());
+        $this->assertSame('select * where ("test-column" = ?)', $builder->toSql());
         $this->assertEquals([0 => 'test-value'], $builder->getBindings());
     }
 
@@ -45,11 +45,11 @@ final class EloquentQueryBuilderTest extends TestCase
         $builderAdapter = new EloquentQueryBuilder($builder);
 
         $builderAdapter->where(
-            new WhereCondition('test-field', Operator::Equal, 'test-value'),
-            new WhereCondition('test-field-two', Operator::Equal, 'test-value-two')
+            new WhereCondition('test-column', Operator::Equal, 'test-value'),
+            new WhereCondition('test-column-two', Operator::Equal, 'test-value-two')
         );
 
-        $this->assertSame('select * where ("test-field" = ? and "test-field-two" = ?)', $builder->toSql());
+        $this->assertSame('select * where ("test-column" = ? and "test-column-two" = ?)', $builder->toSql());
         $this->assertEquals([0 => 'test-value', 1 => 'test-value-two'], $builder->getBindings());
     }
 
@@ -60,11 +60,11 @@ final class EloquentQueryBuilderTest extends TestCase
         $builderAdapter = new EloquentQueryBuilder($builder);
 
         $builderAdapter->where(
-            new WhereCondition('test-field', Operator::Equal, 'test-value'),
-            new OrWhereCondition('test-field-two', Operator::Equal, 'test-value-two'),
+            new WhereCondition('test-column', Operator::Equal, 'test-value'),
+            new OrWhereCondition('test-column-two', Operator::Equal, 'test-value-two'),
         );
 
-        $this->assertSame('select * where ("test-field" = ? or "test-field-two" = ?)', $builder->toSql());
+        $this->assertSame('select * where ("test-column" = ? or "test-column-two" = ?)', $builder->toSql());
         $this->assertEquals([0 => 'test-value', 1 => 'test-value-two'], $builder->getBindings());
     }
 
@@ -75,17 +75,17 @@ final class EloquentQueryBuilderTest extends TestCase
         $builderAdapter = new EloquentQueryBuilder($builder);
 
         $builderAdapter->where(
-            new WhereCondition('test-field-1', Operator::Equal, 'test-value-1'),
-            new WhereCondition('test-field-2', Operator::Equal, 'test-value-2'),
+            new WhereCondition('test-column-1', Operator::Equal, 'test-value-1'),
+            new WhereCondition('test-column-2', Operator::Equal, 'test-value-2'),
         );
 
         $builderAdapter->where(
-            new WhereCondition('test-field-3', Operator::Equal, 'test-value-3'),
-            new OrWhereCondition('test-field-4', Operator::Equal, 'test-value-4'),
+            new WhereCondition('test-column-3', Operator::Equal, 'test-value-3'),
+            new OrWhereCondition('test-column-4', Operator::Equal, 'test-value-4'),
         );
 
         $this->assertSame(
-            'select * where ("test-field-1" = ? and "test-field-2" = ?) and ("test-field-3" = ? or "test-field-4" = ?)',
+            'select * where ("test-column-1" = ? and "test-column-2" = ?) and ("test-column-3" = ? or "test-column-4" = ?)',
             $builder->toSql()
         );
         $this->assertEquals(
@@ -101,10 +101,10 @@ final class EloquentQueryBuilderTest extends TestCase
         $builderAdapter = new EloquentQueryBuilder($builder);
 
         $builderAdapter->whereIn(
-            new WhereInCondition('test-field', ['test-value', 'test-value-two', 'test-value-three']),
+            new WhereInCondition('test-column', ['test-value', 'test-value-two', 'test-value-three']),
         );
 
-        $this->assertSame('select * where "test-field" in (?, ?, ?)', $builder->toSql());
+        $this->assertSame('select * where "test-column" in (?, ?, ?)', $builder->toSql());
         $this->assertEquals([0 => 'test-value', 1 => 'test-value-two', 2 => 'test-value-three'], $builder->getBindings());
     }
 
@@ -114,9 +114,9 @@ final class EloquentQueryBuilderTest extends TestCase
         $builder = $this->getBuilder();
         $builderAdapter = new EloquentQueryBuilder($builder);
 
-        $builderAdapter->sort('test-field', SortDirection::Ascending);
+        $builderAdapter->sort('test-column', SortDirection::Ascending);
 
-        $this->assertSame('select * order by "test-field" asc', $builder->toSql());
+        $this->assertSame('select * order by "test-column" asc', $builder->toSql());
         $this->assertEquals([], $builder->getBindings());
     }
 
@@ -126,10 +126,10 @@ final class EloquentQueryBuilderTest extends TestCase
         $builder = $this->getBuilder();
         $builderAdapter = new EloquentQueryBuilder($builder);
 
-        $builderAdapter->sort('test-field', SortDirection::Ascending);
-        $builderAdapter->sort('test-field-two', SortDirection::Ascending);
+        $builderAdapter->sort('test-column', SortDirection::Ascending);
+        $builderAdapter->sort('test-column-two', SortDirection::Ascending);
 
-        $this->assertSame('select * order by "test-field" asc, "test-field-two" asc', $builder->toSql());
+        $this->assertSame('select * order by "test-column" asc, "test-column-two" asc', $builder->toSql());
         $this->assertEquals([], $builder->getBindings());
     }
 
@@ -139,9 +139,9 @@ final class EloquentQueryBuilderTest extends TestCase
         $builder = $this->getBuilder();
         $builderAdapter = new EloquentQueryBuilder($builder);
 
-        $builderAdapter->sort('test-field', SortDirection::Descending);
+        $builderAdapter->sort('test-column', SortDirection::Descending);
 
-        $this->assertSame('select * order by "test-field" desc', $builder->toSql());
+        $this->assertSame('select * order by "test-column" desc', $builder->toSql());
         $this->assertEquals([], $builder->getBindings());
     }
 
@@ -151,10 +151,10 @@ final class EloquentQueryBuilderTest extends TestCase
         $builder = $this->getBuilder();
         $builderAdapter = new EloquentQueryBuilder($builder);
 
-        $builderAdapter->sort('test-field', SortDirection::Descending);
-        $builderAdapter->sort('test-field-two', SortDirection::Descending);
+        $builderAdapter->sort('test-column', SortDirection::Descending);
+        $builderAdapter->sort('test-column-two', SortDirection::Descending);
 
-        $this->assertSame('select * order by "test-field" desc, "test-field-two" desc', $builder->toSql());
+        $this->assertSame('select * order by "test-column" desc, "test-column-two" desc', $builder->toSql());
         $this->assertEquals([], $builder->getBindings());
     }
 
@@ -164,10 +164,10 @@ final class EloquentQueryBuilderTest extends TestCase
         $builder = $this->getBuilder();
         $builderAdapter = new EloquentQueryBuilder($builder);
 
-        $builderAdapter->sort('test-field', SortDirection::Descending);
-        $builderAdapter->sort('test-field-two', SortDirection::Ascending);
+        $builderAdapter->sort('test-column', SortDirection::Descending);
+        $builderAdapter->sort('test-column-two', SortDirection::Ascending);
 
-        $this->assertSame('select * order by "test-field" desc, "test-field-two" asc', $builder->toSql());
+        $this->assertSame('select * order by "test-column" desc, "test-column-two" asc', $builder->toSql());
         $this->assertEquals([], $builder->getBindings());
     }
 

@@ -22,7 +22,7 @@ final class CallbackFilterTest extends TestCase
         $this->assertSame('test-filter', $filter->getName());
     }
 
-    public function test_setting_field_name(): void
+    public function test_setting_column_name(): void
     {
         $queryBuilder = new DummyQueryBuilderAdapter;
 
@@ -31,11 +31,11 @@ final class CallbackFilterTest extends TestCase
         };
 
         $filter = CallbackFilter::new('test-filter', $closure, 'value');
-        $filter->forField('field');
+        $filter->forColumn('column');
         $filter->apply($queryBuilder);
 
         $this->assertCount(1, $queryBuilder->getCondition('whereConditions'));
-        $this->assertEquals('field', $queryBuilder->getCondition('whereConditions')[0]->field);
+        $this->assertEquals('column', $queryBuilder->getCondition('whereConditions')[0]->column);
     }
 
     public function test_excecuting_a_callback_filter_on_the_query_builder(): void
@@ -52,20 +52,20 @@ final class CallbackFilterTest extends TestCase
             $builder->whereIn(new WhereInCondition($name, $value));
         };
 
-        $filter = new CallbackFilter('test-field', $closure, 'test-value');
+        $filter = new CallbackFilter('test-column', $closure, 'test-value');
 
         $this->assertSame($queryBuilder, $filter->apply($queryBuilder));
         $this->assertCount(2, $queryBuilder->getCondition('whereConditions'));
         $this->assertEquals(
             [
-                new WhereCondition('test-field', Operator::LessThan, 'test-value'),
-                new OrWhereCondition('test-field', Operator::GreaterThen, 'test-value'),
+                new WhereCondition('test-column', Operator::LessThan, 'test-value'),
+                new OrWhereCondition('test-column', Operator::GreaterThen, 'test-value'),
             ],
             $queryBuilder->getCondition('whereConditions')
         );
 
         $this->assertEquals(
-            new WhereInCondition('test-field', ['test-value']),
+            new WhereInCondition('test-column', ['test-value']),
             current($queryBuilder->getCondition('whereInConditions'))
         );
     }

@@ -9,13 +9,13 @@ use Apfelfrisch\QueryFilter\QueryBuilder;
 
 final class Sorting implements Criteria
 {
-    private string $field;
+    private string $column;
 
     public function __construct(
         private string $name,
         private SortDirection $sortDirection = SortDirection::Ascending,
     ) {
-        $this->field = $this->name;
+        $this->column = $this->name;
     }
 
     public static function new(string $name, SortDirection $sortDirection = SortDirection::Ascending): self
@@ -23,9 +23,9 @@ final class Sorting implements Criteria
         return new self($name, $sortDirection);
     }
 
-    public function forField(string $field): self
+    public function forColumn(string $column): self
     {
-        $this->field = $field;
+        $this->column = $column;
 
         return $this;
     }
@@ -47,10 +47,10 @@ final class Sorting implements Criteria
 
     public function apply(QueryBuilder $builder): QueryBuilder
     {
-        if (strlen($this->field) === 0) {
+        if (strlen($this->column) === 0) {
             return $builder;
         }
 
-        return $builder->sort($this->field, $this->sortDirection);
+        return $builder->sort($this->column, $this->sortDirection);
     }
 }

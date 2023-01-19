@@ -27,9 +27,9 @@ final class EloquentQueryBuilder implements QueryBuilder
         $this->builder->where(function ($builder) use ($wheres) {
             foreach ($wheres as $where) {
                 if ($where instanceof OrWhereCondition) {
-                    $builder->orWhere($where->field, $where->operator->value, $where->value);
+                    $builder->orWhere($where->column, $where->operator->value, $where->value);
                 } else {
-                    $builder->where($where->field, $where->operator->value, $where->value);
+                    $builder->where($where->column, $where->operator->value, $where->value);
                 }
             }
         });
@@ -39,14 +39,14 @@ final class EloquentQueryBuilder implements QueryBuilder
 
     public function whereIn(WhereInCondition $where): self
     {
-        $this->builder->whereIn($where->field, $where->values);
+        $this->builder->whereIn($where->column, $where->values);
 
         return $this;
     }
 
-    public function sort(string $field, SortDirection $sortDirection): self
+    public function sort(string $column, SortDirection $sortDirection): self
     {
-        $this->builder->orderBy($field, $sortDirection->value);
+        $this->builder->orderBy($column, $sortDirection->value);
 
         return $this;
     }

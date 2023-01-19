@@ -31,7 +31,7 @@ final class DoctrineQueryBuilder implements QueryBuilder
         foreach ($wheres as $where) {
             $expression = $this->buildWhereExpression($where, $expression);
 
-            $this->builder->setParameter(":$where->field", $where->value);
+            $this->builder->setParameter(":$where->column", $where->value);
         }
 
         $this->builder->andWhere($expression);
@@ -42,17 +42,17 @@ final class DoctrineQueryBuilder implements QueryBuilder
     public function whereIn(WhereInCondition $where): self
     {
         $this->builder->andWhere(
-            $this->builder->expr()->in($where->field, ":$where->field")
+            $this->builder->expr()->in($where->column, ":$where->column")
         );
 
-        $this->builder->setParameter(":$where->field", $where->values);
+        $this->builder->setParameter(":$where->column", $where->values);
 
         return $this;
     }
 
-    public function sort(string $field, SortDirection $sortDirection): self
+    public function sort(string $column, SortDirection $sortDirection): self
     {
-        $this->builder->addOrderBy($field, $sortDirection->value);
+        $this->builder->addOrderBy($column, $sortDirection->value);
 
         return $this;
     }
@@ -79,12 +79,12 @@ final class DoctrineQueryBuilder implements QueryBuilder
     private function buildOperatorExpression(WhereCondition|OrWhereCondition $where): string
     {
         return match ($where->operator) {
-            Operator::Equal => $this->builder->expr()->eq($where->field, ":$where->field"),
-            Operator::GreaterThen => $this->builder->expr()->gt($where->field, ":$where->field"),
-            Operator::GreaterThenEqual => $this->builder->expr()->gte($where->field, ":$where->field"),
-            Operator::LessThan => $this->builder->expr()->lt($where->field, ":$where->field"),
-            Operator::LessThanEqual => $this->builder->expr()->lte($where->field, ":$where->field"),
-            Operator::Like => $this->builder->expr()->like($where->field, ":$where->field"),
+            Operator::Equal => $this->builder->expr()->eq($where->column, ":$where->column"),
+            Operator::GreaterThen => $this->builder->expr()->gt($where->column, ":$where->column"),
+            Operator::GreaterThenEqual => $this->builder->expr()->gte($where->column, ":$where->column"),
+            Operator::LessThan => $this->builder->expr()->lt($where->column, ":$where->column"),
+            Operator::LessThanEqual => $this->builder->expr()->lte($where->column, ":$where->column"),
+            Operator::Like => $this->builder->expr()->like($where->column, ":$where->column"),
             default => throw new Exception("Unkown Operator [{$where->operator->value}]"),
         };
     }

@@ -36,11 +36,11 @@ final class DoctrineQueryBuilderTest extends TestCase
         $builderAdapter = new DoctrineQueryBuilder($builder);
 
         $builderAdapter->where(
-            new WhereCondition('test-field', $operator, 'test-value')
+            new WhereCondition('test-column', $operator, 'test-value')
         );
 
-        $this->assertSame('SELECT * FROM users WHERE test-field ' . $operator->value . ' :test-field', (string)$builder);
-        $this->assertEquals([':test-field' => 'test-value'], $builder->getParameters());
+        $this->assertSame('SELECT * FROM users WHERE test-column ' . $operator->value . ' :test-column', (string)$builder);
+        $this->assertEquals([':test-column' => 'test-value'], $builder->getParameters());
     }
 
     /** @test */
@@ -50,12 +50,12 @@ final class DoctrineQueryBuilderTest extends TestCase
         $builderAdapter = new DoctrineQueryBuilder($builder);
 
         $builderAdapter->where(
-            new WhereCondition('test-field', Operator::Equal, 'test-value'),
-            new WhereCondition('test-field-two', Operator::LessThanEqual, 'test-value-two')
+            new WhereCondition('test-column', Operator::Equal, 'test-value'),
+            new WhereCondition('test-column-two', Operator::LessThanEqual, 'test-value-two')
         );
 
-        $this->assertSame('SELECT * FROM users WHERE (test-field = :test-field) AND (test-field-two <= :test-field-two)', (string)$builder);
-        $this->assertEquals([':test-field' => 'test-value', ':test-field-two' => 'test-value-two'], $builder->getParameters());
+        $this->assertSame('SELECT * FROM users WHERE (test-column = :test-column) AND (test-column-two <= :test-column-two)', (string)$builder);
+        $this->assertEquals([':test-column' => 'test-value', ':test-column-two' => 'test-value-two'], $builder->getParameters());
     }
 
     /** @test */
@@ -65,12 +65,12 @@ final class DoctrineQueryBuilderTest extends TestCase
         $builderAdapter = new DoctrineQueryBuilder($builder);
 
         $builderAdapter->where(
-            new WhereCondition('test-field', Operator::Equal, 'test-value'),
-            new OrWhereCondition('test-field-two', Operator::Equal, 'test-value-two'),
+            new WhereCondition('test-column', Operator::Equal, 'test-value'),
+            new OrWhereCondition('test-column-two', Operator::Equal, 'test-value-two'),
         );
 
-        $this->assertSame('SELECT * FROM users WHERE (test-field = :test-field) OR (test-field-two = :test-field-two)', (string)$builder);
-        $this->assertEquals([':test-field' => 'test-value', ':test-field-two' => 'test-value-two'], $builder->getParameters());
+        $this->assertSame('SELECT * FROM users WHERE (test-column = :test-column) OR (test-column-two = :test-column-two)', (string)$builder);
+        $this->assertEquals([':test-column' => 'test-value', ':test-column-two' => 'test-value-two'], $builder->getParameters());
     }
 
     /** @test */
@@ -80,21 +80,21 @@ final class DoctrineQueryBuilderTest extends TestCase
         $builderAdapter = new DoctrineQueryBuilder($builder);
 
         $builderAdapter->where(
-            new WhereCondition('test-field-1', Operator::Equal, 'test-value-1'),
-            new WhereCondition('test-field-2', Operator::Equal, 'test-value-2'),
+            new WhereCondition('test-column-1', Operator::Equal, 'test-value-1'),
+            new WhereCondition('test-column-2', Operator::Equal, 'test-value-2'),
         );
 
         $builderAdapter->where(
-            new WhereCondition('test-field-3', Operator::Equal, 'test-value-3'),
-            new OrWhereCondition('test-field-4', Operator::Equal, 'test-value-4'),
+            new WhereCondition('test-column-3', Operator::Equal, 'test-value-3'),
+            new OrWhereCondition('test-column-4', Operator::Equal, 'test-value-4'),
         );
 
         $this->assertSame(
-            'SELECT * FROM users WHERE ((test-field-1 = :test-field-1) AND (test-field-2 = :test-field-2)) AND ((test-field-3 = :test-field-3) OR (test-field-4 = :test-field-4))',
+            'SELECT * FROM users WHERE ((test-column-1 = :test-column-1) AND (test-column-2 = :test-column-2)) AND ((test-column-3 = :test-column-3) OR (test-column-4 = :test-column-4))',
             (string)$builder
         );
         $this->assertEquals(
-            [':test-field-1' => 'test-value-1', ':test-field-2' => 'test-value-2', ':test-field-3' => 'test-value-3', ':test-field-4' => 'test-value-4'],
+            [':test-column-1' => 'test-value-1', ':test-column-2' => 'test-value-2', ':test-column-3' => 'test-value-3', ':test-column-4' => 'test-value-4'],
             $builder->getParameters()
         );
     }
@@ -106,11 +106,11 @@ final class DoctrineQueryBuilderTest extends TestCase
         $builderAdapter = new DoctrineQueryBuilder($builder);
 
         $builderAdapter->whereIn(
-            new WhereInCondition('test-field', ['test-value', 'test-value-two', 'test-value-three']),
+            new WhereInCondition('test-column', ['test-value', 'test-value-two', 'test-value-three']),
         );
 
-        $this->assertSame('SELECT * FROM users WHERE test-field IN (:test-field)', (string)$builder);
-        $this->assertEquals([':test-field' => ['test-value', 'test-value-two', 'test-value-three']], $builder->getParameters());
+        $this->assertSame('SELECT * FROM users WHERE test-column IN (:test-column)', (string)$builder);
+        $this->assertEquals([':test-column' => ['test-value', 'test-value-two', 'test-value-three']], $builder->getParameters());
     }
 
     /** @test */
@@ -119,9 +119,9 @@ final class DoctrineQueryBuilderTest extends TestCase
         $builder = $this->getBuilder();
         $builderAdapter = new DoctrineQueryBuilder($builder);
 
-        $builderAdapter->sort('test-field', SortDirection::Ascending);
+        $builderAdapter->sort('test-column', SortDirection::Ascending);
 
-        $this->assertSame('SELECT * FROM users ORDER BY test-field asc', (string)$builder);
+        $this->assertSame('SELECT * FROM users ORDER BY test-column asc', (string)$builder);
         $this->assertEquals([], $builder->getParameters());
     }
 
@@ -131,10 +131,10 @@ final class DoctrineQueryBuilderTest extends TestCase
         $builder = $this->getBuilder();
         $builderAdapter = new DoctrineQueryBuilder($builder);
 
-        $builderAdapter->sort('test-field', SortDirection::Ascending);
-        $builderAdapter->sort('test-field-two', SortDirection::Ascending);
+        $builderAdapter->sort('test-column', SortDirection::Ascending);
+        $builderAdapter->sort('test-column-two', SortDirection::Ascending);
 
-        $this->assertSame('SELECT * FROM users ORDER BY test-field asc, test-field-two asc', (string)$builder);
+        $this->assertSame('SELECT * FROM users ORDER BY test-column asc, test-column-two asc', (string)$builder);
         $this->assertEquals([], $builder->getParameters());
     }
 
@@ -144,9 +144,9 @@ final class DoctrineQueryBuilderTest extends TestCase
         $builder = $this->getBuilder();
         $builderAdapter = new DoctrineQueryBuilder($builder);
 
-        $builderAdapter->sort('test-field', SortDirection::Descending);
+        $builderAdapter->sort('test-column', SortDirection::Descending);
 
-        $this->assertSame('SELECT * FROM users ORDER BY test-field desc', (string)$builder);
+        $this->assertSame('SELECT * FROM users ORDER BY test-column desc', (string)$builder);
         $this->assertEquals([], $builder->getParameters());
     }
 
@@ -156,10 +156,10 @@ final class DoctrineQueryBuilderTest extends TestCase
         $builder = $this->getBuilder();
         $builderAdapter = new DoctrineQueryBuilder($builder);
 
-        $builderAdapter->sort('test-field', SortDirection::Descending);
-        $builderAdapter->sort('test-field-two', SortDirection::Descending);
+        $builderAdapter->sort('test-column', SortDirection::Descending);
+        $builderAdapter->sort('test-column-two', SortDirection::Descending);
 
-        $this->assertSame('SELECT * FROM users ORDER BY test-field desc, test-field-two desc', (string)$builder);
+        $this->assertSame('SELECT * FROM users ORDER BY test-column desc, test-column-two desc', (string)$builder);
         $this->assertEquals([], $builder->getParameters());
     }
 
@@ -169,10 +169,10 @@ final class DoctrineQueryBuilderTest extends TestCase
         $builder = $this->getBuilder();
         $builderAdapter = new DoctrineQueryBuilder($builder);
 
-        $builderAdapter->sort('test-field', SortDirection::Descending);
-        $builderAdapter->sort('test-field-two', SortDirection::Ascending);
+        $builderAdapter->sort('test-column', SortDirection::Descending);
+        $builderAdapter->sort('test-column-two', SortDirection::Ascending);
 
-        $this->assertSame('SELECT * FROM users ORDER BY test-field desc, test-field-two asc', (string)$builder);
+        $this->assertSame('SELECT * FROM users ORDER BY test-column desc, test-column-two asc', (string)$builder);
         $this->assertEquals([], $builder->getParameters());
     }
 

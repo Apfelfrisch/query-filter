@@ -9,7 +9,7 @@ use Closure;
 
 final class CallbackFilter implements Filter
 {
-    private string $field;
+    private string $column;
 
     /**
      * @template T of QueryBuilder
@@ -21,7 +21,7 @@ final class CallbackFilter implements Filter
         private Closure $callback,
         private string|array|null $value = null
     ) {
-        $this->field = $this->name;
+        $this->column = $this->name;
     }
 
     /**
@@ -34,9 +34,9 @@ final class CallbackFilter implements Filter
         return new self($name, $callback, $value);
     }
 
-    public function forField(string $field): self
+    public function forColumn(string $column): self
     {
-        $this->field = $field;
+        $this->column = $column;
 
         return $this;
     }
@@ -54,7 +54,7 @@ final class CallbackFilter implements Filter
 
     public function apply(QueryBuilder $builder): QueryBuilder
     {
-        ($this->callback)($builder, $this->field, $this->value);
+        ($this->callback)($builder, $this->column, $this->value);
 
         return $builder;
     }

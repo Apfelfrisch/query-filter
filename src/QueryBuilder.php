@@ -21,7 +21,7 @@ interface QueryBuilder
     public function whereIn(WhereInCondition $where): self;
 
     /** @return self<T> */
-    public function sort(string $field, SortDirection $sortDirection): self;
+    public function sort(string $column, SortDirection $sortDirection): self;
 
     /** @return T */
     public function builder(): mixed;

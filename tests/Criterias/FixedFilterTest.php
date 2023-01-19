@@ -18,7 +18,7 @@ final class FixedFilterTest extends TestCase
     /** @test */
     public function test_constructor_types(): void
     {
-        $filter = new FixedFilter('test-filter', new WhereCondition('field', Operator::Equal, 'value'));
+        $filter = new FixedFilter('test-filter', new WhereCondition('column', Operator::Equal, 'value'));
         $this->assertSame('test-filter', $filter->getName());
     }
 
@@ -27,13 +27,13 @@ final class FixedFilterTest extends TestCase
         $queryBuilder = new DummyQueryBuilderAdapter;
 
         $filter = new FixedFilter(
-            'test-field',
-            new WhereCondition('field', Operator::Equal, 'value'),
-            new OrWhereCondition('field-two', Operator::LessThan, 'value-two'),
-            new OrWhereCondition('field-three', Operator::LessThan, 'value-three'),
-            new SortCondition('field-four', SortDirection::Ascending),
-            new SortCondition('field-five', SortDirection::Descending),
-            new SortCondition('field-six', SortDirection::Ascending),
+            'test-column',
+            new WhereCondition('column', Operator::Equal, 'value'),
+            new OrWhereCondition('column-two', Operator::LessThan, 'value-two'),
+            new OrWhereCondition('column-three', Operator::LessThan, 'value-three'),
+            new SortCondition('column-four', SortDirection::Ascending),
+            new SortCondition('column-five', SortDirection::Descending),
+            new SortCondition('column-six', SortDirection::Ascending),
         );
 
         $this->assertSame($queryBuilder, $filter->apply($queryBuilder));

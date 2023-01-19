@@ -70,15 +70,15 @@ final class BetweenFilterTest extends TestCase
         $this->assertCount(0, $queryBuilder->getCondition('whereConditions'));
     }
 
-    public function test_setting_field_name(): void
+    public function test_setting_column_name(): void
     {
         $queryBuilder = new DummyQueryBuilderAdapter;
 
-        $filter = BetweenFilter::new('test-filter', '1', '2')->forField('field');
+        $filter = BetweenFilter::new('test-filter', '1', '2')->forColumn('column');
         $filter->apply($queryBuilder);
 
         $this->assertCount(2, $queryBuilder->getCondition('whereConditions'));
-        $this->assertEquals('field', $queryBuilder->getCondition('whereConditions')[0]->field);
-        $this->assertEquals('field', $queryBuilder->getCondition('whereConditions')[1]->field);
+        $this->assertEquals('column', $queryBuilder->getCondition('whereConditions')[0]->column);
+        $this->assertEquals('column', $queryBuilder->getCondition('whereConditions')[1]->column);
     }
 }

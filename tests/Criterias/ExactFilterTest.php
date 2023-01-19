@@ -20,27 +20,27 @@ final class ExactFilterTest extends TestCase
         $this->assertSame('test-filter', $filter->getName());
     }
 
-    public function test_setting_field_name(): void
+    public function test_setting_column_name(): void
     {
         $queryBuilder = new DummyQueryBuilderAdapter;
 
-        $filter = ExactFilter::new('test-filter', 'test-value')->forField('field');
+        $filter = ExactFilter::new('test-filter', 'test-value')->forColumn('column');
         $filter->apply($queryBuilder);
 
         $this->assertCount(1, $queryBuilder->getCondition('whereConditions'));
-        $this->assertEquals('field', $queryBuilder->getCondition('whereConditions')[0]->field);
+        $this->assertEquals('column', $queryBuilder->getCondition('whereConditions')[0]->column);
     }
 
     public function test_apply_value_string_to_query_builder(): void
     {
         $queryBuilder = new DummyQueryBuilderAdapter;
 
-        $filter = new ExactFilter('test-field', 'test-value');
+        $filter = new ExactFilter('test-column', 'test-value');
 
         $this->assertSame($queryBuilder, $filter->apply($queryBuilder));
         $this->assertCount(0, $queryBuilder->getCondition('whereInConditions'));
         $this->assertEquals(
-            new WhereCondition('test-field', Operator::Equal, 'test-value'),
+            new WhereCondition('test-column', Operator::Equal, 'test-value'),
             current($queryBuilder->getCondition('whereConditions'))
         );
     }
@@ -49,12 +49,12 @@ final class ExactFilterTest extends TestCase
     {
         $queryBuilder = new DummyQueryBuilderAdapter;
 
-        $filter = new ExactFilter('test-field', ['test-value', 'test-value-two']);
+        $filter = new ExactFilter('test-column', ['test-value', 'test-value-two']);
 
         $this->assertSame($queryBuilder, $filter->apply($queryBuilder));
         $this->assertCount(0, $queryBuilder->getCondition('whereConditions'));
         $this->assertEquals(
-            new WhereInCondition('test-field', ['test-value', 'test-value-two']),
+            new WhereInCondition('test-column', ['test-value', 'test-value-two']),
             current($queryBuilder->getCondition('whereInConditions'))
         );
     }

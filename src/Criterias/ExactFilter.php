@@ -11,14 +11,14 @@ use Apfelfrisch\QueryFilter\QueryBuilder;
 
 final class ExactFilter implements Filter
 {
-    private string $field;
+    private string $column;
 
     /** @param string|array<int, string>|null $value */
     public function __construct(
         private string $name,
         private string|array|null $value = null
     ) {
-        $this->field = $this->name;
+        $this->column = $this->name;
     }
 
     /** @param string|array<int, string>|null $value */
@@ -27,9 +27,9 @@ final class ExactFilter implements Filter
         return new self($name, $value);
     }
 
-    public function forField(string $field): self
+    public function forColumn(string $column): self
     {
-        $this->field = $field;
+        $this->column = $column;
 
         return $this;
     }
@@ -62,9 +62,9 @@ final class ExactFilter implements Filter
         }
 
         if (count($filteredValues) === 1) {
-            return $builder->where(new WhereCondition($this->field, Operator::Equal, current($filteredValues)));
+            return $builder->where(new WhereCondition($this->column, Operator::Equal, current($filteredValues)));
         }
 
-        return $builder->whereIn(new WhereInCondition($this->field, $filteredValues));
+        return $builder->whereIn(new WhereInCondition($this->column, $filteredValues));
     }
 }

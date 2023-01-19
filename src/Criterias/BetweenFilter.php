@@ -11,14 +11,14 @@ use InvalidArgumentException;
 
 final class BetweenFilter implements Filter
 {
-    private string $field;
+    private string $column;
 
     public function __construct(
         private string $name,
         private string|null $beginn = null,
         private string|null $end = null,
     ) {
-        $this->field = $this->name;
+        $this->column = $this->name;
     }
 
     public static function new(string $name, string|null $beginn = null, string|null $end = null): self
@@ -26,9 +26,9 @@ final class BetweenFilter implements Filter
         return new self($name, $beginn, $end);
     }
 
-    public function forField(string $field): self
+    public function forColumn(string $column): self
     {
-        $this->field = $field;
+        $this->column = $column;
 
         return $this;
     }
@@ -56,8 +56,8 @@ final class BetweenFilter implements Filter
         }
 
         return $builder->where(
-            new WhereCondition($this->field, Operator::GreaterThenEqual, $this->beginn),
-            new WhereCondition($this->field, Operator::LessThanEqual, $this->end),
+            new WhereCondition($this->column, Operator::GreaterThenEqual, $this->beginn),
+            new WhereCondition($this->column, Operator::LessThanEqual, $this->end),
         );
     }
 }

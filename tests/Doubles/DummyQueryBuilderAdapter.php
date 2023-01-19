@@ -32,9 +32,9 @@ final class DummyQueryBuilderAdapter implements QueryBuilder
         return $this;
     }
 
-    public function sort(string $field, SortDirection $sortDirection): self
+    public function sort(string $column, SortDirection $sortDirection): self
     {
-        $this->sortConditions[$field] = $sortDirection;
+        $this->sortConditions[$column] = $sortDirection;
 
         return $this;
     }

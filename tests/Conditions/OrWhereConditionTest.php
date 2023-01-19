@@ -13,9 +13,9 @@ final class OrWhereConditionTest extends TestCase
     /** @test */
     public function testOrWhereCondition()
     {
-        $condition = new OrWhereCondition('field', Operator::Equal, 'value');
+        $condition = new OrWhereCondition('column', Operator::Equal, 'value');
 
-        $this->assertSame($condition->field, 'field');
+        $this->assertSame($condition->column, 'column');
         $this->assertSame($condition->operator, Operator::Equal);
         $this->assertSame($condition->value, 'value');
     }

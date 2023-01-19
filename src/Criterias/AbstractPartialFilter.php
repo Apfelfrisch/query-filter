@@ -11,19 +11,19 @@ use Apfelfrisch\QueryFilter\QueryBuilder;
 
 abstract class AbstractPartialFilter implements Filter
 {
-    private string $field;
+    private string $column;
 
     /** @param string|array<int, string>|null $value */
     public function __construct(
         private string $name,
         private string|array|null $value = null
     ) {
-        $this->field = $this->name;
+        $this->column = $this->name;
     }
 
-    public function forField(string $field): self
+    public function forColumn(string $column): self
     {
-        $this->field = $field;
+        $this->column = $column;
 
         return $this;
     }
@@ -51,7 +51,7 @@ abstract class AbstractPartialFilter implements Filter
             }
 
             return $builder->where(
-                new WhereCondition($this->field, Operator::Like, $this->prepareValue($value))
+                new WhereCondition($this->column, Operator::Like, $this->prepareValue($value))
             );
         }
 

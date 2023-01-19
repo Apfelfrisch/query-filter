@@ -8,7 +8,7 @@ final class WhereInCondition
 {
     /** @param array<int, string> $values */
     public function __construct(
-        public readonly string $field,
+        public readonly string $column,
         public readonly array $values,
     ) {
     }
