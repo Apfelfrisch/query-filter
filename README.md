@@ -76,6 +76,21 @@ $users = QueryFilter::new()
   ->get();
 ```
 
+### Skipping forbidden criterias
+
+By default, this package throws an exception if a filter or sort criteria is requested but not allowed. You can silently skip forbidden criterias like so:
+
+```php
+// via Settings injection
+$settings = new Settings;
+$settings->setSkipForbiddenCriterias();
+
+new QueryFilter($settings);
+
+// directly on the QueryFilter
+QueryFilter::new()->skipForbiddenCriterias()
+```
+
 ### Specify FilterCriteria
 
 `/users?filter[name]=John`
