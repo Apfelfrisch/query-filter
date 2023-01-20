@@ -18,8 +18,7 @@ final class DummyQueryParser implements QueryParser
         QueryBag $query,
         CriteriaCollection $allowedFilters,
         CriteriaCollection $allowedSorts
-    ): CriteriaCollection
-    {
+    ): CriteriaCollection {
         $this->query = $query;
 
         $this->allowedFilters = $allowedFilters;
