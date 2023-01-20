@@ -27,9 +27,9 @@ final class EloquentQueryBuilder implements QueryBuilder
         $this->builder->where(function ($builder) use ($wheres) {
             foreach ($wheres as $where) {
                 if ($where instanceof OrWhereCondition) {
-                    $builder->orWhere($where->column, $where->operator->value, $where->value);
+                    $builder->orWhereRaw("$where->column {$where->operator->value} ?", $where->value);
                 } else {
-                    $builder->where($where->column, $where->operator->value, $where->value);
+                    $builder->whereRaw("$where->column {$where->operator->value} ?", $where->value);
                 }
             }
         });
@@ -39,14 +39,16 @@ final class EloquentQueryBuilder implements QueryBuilder
 
     public function whereIn(WhereInCondition $where): self
     {
-        $this->builder->whereIn($where->column, $where->values);
+        $placeholder = implode(', ', array_map(fn (): string => '?', $where->values));
+
+        $this->builder->whereRaw("$where->column in ($placeholder)", $where->values);
 
         return $this;
     }
 
     public function sort(string $column, SortDirection $sortDirection): self
     {
-        $this->builder->orderBy($column, $sortDirection->value);
+        $this->builder->orderByRaw("$column $sortDirection->value");
 
         return $this;
     }
