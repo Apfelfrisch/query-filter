@@ -4,13 +4,16 @@ declare(strict_types=1);
 
 namespace Apfelfrisch\QueryFilter;
 
+use Apfelfrisch\QueryFilter\Criterias\Criteria;
 use Apfelfrisch\QueryFilter\Criterias\Filter;
 use Apfelfrisch\QueryFilter\Criterias\PartialFilter;
 use Apfelfrisch\QueryFilter\Criterias\Sorting;
 
 final class QueryFilter
 {
+    /** @var CriteriaCollection<Filter> */
     private CriteriaCollection $allowedFilters;
+    /** @var CriteriaCollection<Sorting> */
     private CriteriaCollection $allowedSorts;
 
     public function __construct(
@@ -48,7 +51,10 @@ final class QueryFilter
         return $this;
     }
 
-    /** @param QueryBag|array<mixed>|null $queryParameters */
+    /**
+     * @param QueryBag|array<mixed>|null $queryParameters
+     * @return CriteriaCollection<Criteria>
+     */
     public function getCriterias(QueryBag|array|null $queryParameters = null): CriteriaCollection
     {
         if (! $queryParameters instanceof QueryBag) {

@@ -6,6 +6,9 @@ namespace Apfelfrisch\QueryFilter\Adapters;
 
 use Apfelfrisch\QueryFilter\Conditions\SortDirection;
 use Apfelfrisch\QueryFilter\CriteriaCollection;
+use Apfelfrisch\QueryFilter\Criterias\Criteria;
+use Apfelfrisch\QueryFilter\Criterias\Filter;
+use Apfelfrisch\QueryFilter\Criterias\Sorting;
 use Apfelfrisch\QueryFilter\Exceptions\CriteriaException;
 use Apfelfrisch\QueryFilter\Exceptions\QueryStringException;
 use Apfelfrisch\QueryFilter\QueryBag;
@@ -21,17 +24,27 @@ final class SimpleQueryParser implements QueryParser
     ) {
     }
 
+    /**
+     * @param CriteriaCollection<Filter> $allowedFilters
+     * @param CriteriaCollection<Sorting> $allowedSorts
+     * @return CriteriaCollection<Criteria>
+     */
     public function parse(
         QueryBag $query,
-        CriteriaCollection $allowedFilters = new CriteriaCollection,
-        CriteriaCollection $allowedSorts = new CriteriaCollection,
+        CriteriaCollection $allowedFilters = new CriteriaCollection(),
+        CriteriaCollection $allowedSorts = new CriteriaCollection(),
     ): CriteriaCollection {
         return $this->parseFilters($query, $allowedFilters)
             ->merge($this->parseSorts($query, $allowedSorts));
     }
 
+    /**
+     * @param CriteriaCollection<Filter> $allowedFilters
+     * @return CriteriaCollection<Filter>
+     */
     private function parseFilters(QueryBag $query, CriteriaCollection $allowedFilters): CriteriaCollection
     {
+        /** @var CriteriaCollection<Filter> $appliedCriterias */
         $appliedCriterias = new CriteriaCollection();
 
         $queryStringFilters = $query->getArray($this->keywordFilter);
@@ -60,8 +73,13 @@ final class SimpleQueryParser implements QueryParser
         return $appliedCriterias;
     }
 
+    /**
+     * @param CriteriaCollection<Sorting> $allowedSorts
+     * @return CriteriaCollection<Sorting>
+     */
     private function parseSorts(QueryBag $query, CriteriaCollection $allowedSorts): CriteriaCollection
     {
+        /** @var CriteriaCollection<Sorting> $appliedCriterias */
         $appliedCriterias = new CriteriaCollection();
 
         $values = $this->getValues($query->getString($this->keywordSort));

@@ -12,6 +12,8 @@ use ArrayIterator;
 use IteratorAggregate;
 
 /**
+ * @template T of Criteria
+ *
  * @implements IteratorAggregate<string, Criteria>
  */
 final class CriteriaCollection implements IteratorAggregate
@@ -26,6 +28,7 @@ final class CriteriaCollection implements IteratorAggregate
         }
     }
 
+    /** @return $this */
     public function add(Criteria $criteria): self
     {
         $this->criterias[$criteria->getName()] = $criteria;
@@ -87,20 +90,29 @@ final class CriteriaCollection implements IteratorAggregate
         return $this->get($name);
     }
 
+    /** @return self<Filter> */
     public function onlyFilters(): self
     {
+        /** @var self<Filter> */
         return new self(
             ...array_filter($this->criterias, fn (Criteria $criteria): bool => $criteria instanceof Filter)
         );
     }
 
+    /** @return self<Sorting> */
     public function onlySorts(): self
     {
+        /** @var self<Sorting> */
         return new self(
             ...array_filter($this->criterias, fn (Criteria $criteria): bool => $criteria instanceof Sorting)
         );
     }
 
+    /**
+     * @template TMerge of Criteria
+     * @param self<TMerge> $criteriaCollection
+     * @return self<Criteria>
+     */
     public function merge(self $criteriaCollection): self
     {
         return new self(
@@ -115,9 +127,9 @@ final class CriteriaCollection implements IteratorAggregate
     }
 
     /**
-     * @template T
-     * @param QueryBuilder<T> $builder
-     * @return QueryBuilder<T>
+     * @template TAdaptable
+     * @param QueryBuilder<TAdaptable> $builder
+     * @return QueryBuilder<TAdaptable>
      */
     public function applyOn(QueryBuilder $builder): QueryBuilder
     {
