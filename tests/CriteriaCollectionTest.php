@@ -120,6 +120,23 @@ final class CriteriaCollectionTest extends TestCase
         $this->assertCount(3, $criteriaCollection->onlySorts());
     }
 
+    public function test_merge_criteria_collections(): void
+    {
+        $criteriaCollectionOne = new CriteriaCollection(
+            new Criterias\ExactFilter('test-name', 'test-value')
+        );
+
+        $criteriaCollectionTwo = new CriteriaCollection(
+            new Criterias\Sorting('sorting')
+        );
+
+        $mergedCriterias = $criteriaCollectionOne->merge($criteriaCollectionTwo);
+
+        $this->assertCount(2, $mergedCriterias);
+        $this->assertTrue($mergedCriterias->hasFilter('test-name'));
+        $this->assertTrue($mergedCriterias->hasSorting('sorting'));
+    }
+
     public function provideCriteriaTypes()
     {
         yield 'excat-filter' => [

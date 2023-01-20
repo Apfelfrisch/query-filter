@@ -101,6 +101,13 @@ final class CriteriaCollection implements IteratorAggregate
         );
     }
 
+    public function merge(self $criteriaCollection): self
+    {
+        return new self(
+            ...array_merge($this->criterias, $criteriaCollection->criterias)
+        );
+    }
+
     /** @return ArrayIterator<string, Criteria> */
     public function getIterator(): ArrayIterator
     {

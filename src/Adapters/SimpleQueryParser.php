@@ -13,40 +13,28 @@ use Apfelfrisch\QueryFilter\QueryParser;
 
 final class SimpleQueryParser implements QueryParser
 {
-    private QueryBag $query;
-
-    /** @param non-empty-string $delimter */
+    /** @phpstan-param non-empty-string $delimter */
     public function __construct(
         private string $keywordFilter = 'filter',
         private string $keywordSort = 'sort',
         private string $delimter = ',',
     ) {
-        $this->query = new QueryBag();
-    }
-
-    public function setQuery(QueryBag $query): self
-    {
-        $this->query = $query;
-
-        return $this;
     }
 
     public function parse(
+        QueryBag $query,
         CriteriaCollection $allowedFilters = new CriteriaCollection,
         CriteriaCollection $allowedSorts = new CriteriaCollection,
     ): CriteriaCollection {
-        $appliedCriterias = new CriteriaCollection();
-
-        $this->parseFilters($allowedFilters, $appliedCriterias);
-
-        $this->parseSorts($allowedSorts, $appliedCriterias);
-
-        return $appliedCriterias;
+        return $this->parseFilters($query, $allowedFilters)
+            ->merge($this->parseSorts($query, $allowedSorts));
     }
 
-    private function parseFilters(CriteriaCollection $allowedFilters, CriteriaCollection $appliedCriterias): void
+    private function parseFilters(QueryBag $query, CriteriaCollection $allowedFilters): CriteriaCollection
     {
-        $queryStringFilters = $this->query->getArray($this->keywordFilter);
+        $appliedCriterias = new CriteriaCollection();
+
+        $queryStringFilters = $query->getArray($this->keywordFilter);
 
         foreach ($queryStringFilters as $filtername => $filterString) {
             if (! is_string($filtername)) {
@@ -68,11 +56,15 @@ final class SimpleQueryParser implements QueryParser
 
             $appliedCriterias->add($filter);
         }
+
+        return $appliedCriterias;
     }
 
-    private function parseSorts(CriteriaCollection $allowedSorts, CriteriaCollection $appliedCriterias): void
+    private function parseSorts(QueryBag $query, CriteriaCollection $allowedSorts): CriteriaCollection
     {
-        $values = $this->getValues($this->query->getString($this->keywordSort));
+        $appliedCriterias = new CriteriaCollection();
+
+        $values = $this->getValues($query->getString($this->keywordSort));
 
         if (is_string($values)) {
             $values = [$values];
@@ -99,6 +91,8 @@ final class SimpleQueryParser implements QueryParser
 
             $appliedCriterias->add($sortCriteria);
         }
+
+        return $appliedCriterias;
     }
 
     /** @return string|array<int, string> */

@@ -14,15 +14,14 @@ final class DummyQueryParser implements QueryParser
     public CriteriaCollection|null $allowedFilters = null;
     public CriteriaCollection|null $allowedSorts = null;
 
-    public function setQuery(QueryBag $query): self
+    public function parse(
+        QueryBag $query,
+        CriteriaCollection $allowedFilters,
+        CriteriaCollection $allowedSorts
+    ): CriteriaCollection
     {
         $this->query = $query;
 
-        return $this;
-    }
-
-    public function parse(CriteriaCollection $allowedFilters, CriteriaCollection $allowedSorts): CriteriaCollection
-    {
         $this->allowedFilters = $allowedFilters;
         $this->allowedSorts = $allowedSorts;
 

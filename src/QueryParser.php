@@ -6,7 +6,9 @@ namespace Apfelfrisch\QueryFilter;
 
 interface QueryParser
 {
-    public function setQuery(QueryBag $query): self;
-
-    public function parse(CriteriaCollection $allowedFilters, CriteriaCollection $allowedSorts): CriteriaCollection;
+    public function parse(
+        QueryBag $query,
+        CriteriaCollection $allowedFilters,
+        CriteriaCollection $allowedSorts,
+    ): CriteriaCollection;
 }

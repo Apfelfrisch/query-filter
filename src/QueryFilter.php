@@ -57,8 +57,7 @@ final class QueryFilter
 
         return $this->settings
             ->getQueryParser()
-            ->setQuery($queryParameters)
-            ->parse($this->allowedFilters, $this->allowedSorts);
+            ->parse($queryParameters, $this->allowedFilters, $this->allowedSorts);
     }
 
     /**
