@@ -16,12 +16,21 @@ use Apfelfrisch\QueryFilter\QueryParser;
 
 final class SimpleQueryParser implements QueryParser
 {
+    private bool $skipForbiddenCriterias = false;
+
     /** @phpstan-param non-empty-string $delimter */
     public function __construct(
         private string $keywordFilter = 'filter',
         private string $keywordSort = 'sort',
         private string $delimter = ',',
     ) {
+    }
+
+    public function skipForbiddenCriterias(bool $skip = true): self
+    {
+        $this->skipForbiddenCriterias = $skip;
+
+        return $this;
     }
 
     /**
@@ -55,6 +64,10 @@ final class SimpleQueryParser implements QueryParser
             }
 
             if (! $allowedFilters->hasFilter($filtername)) {
+                if ($this->skipForbiddenCriterias) {
+                    continue;
+                }
+
                 throw CriteriaException::forbiddenFilter($filtername, $allowedFilters);
             }
 
@@ -101,6 +114,10 @@ final class SimpleQueryParser implements QueryParser
             }
 
             if (! $allowedSorts->hasSorting($value)) {
+                if ($this->skipForbiddenCriterias) {
+                    continue;
+                }
+
                 throw CriteriaException::forbiddenSorting($value, $allowedSorts);
             }
 

@@ -13,6 +13,8 @@ use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 
 final class Settings
 {
+    private bool $skipForbiddenCriterias = false;
+
     private QueryParser $queryParser;
 
     /** @var array<class-string, class-string<QueryBuilder<mixed>>> */
@@ -21,6 +23,18 @@ final class Settings
     public function __construct()
     {
         $this->loadDefaults();
+    }
+
+    public function setSkipForbiddenCriterias(bool $skip = true): self
+    {
+        $this->skipForbiddenCriterias = $skip;
+
+        return $this;
+    }
+
+    public function skipForbiddenCriterias(): bool
+    {
+        return $this->skipForbiddenCriterias;
     }
 
     public function setQueryParser(QueryParser $queryParser): self

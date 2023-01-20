@@ -47,6 +47,37 @@ final class SimpleQueryParserTest extends TestCase
     }
 
     /** @test */
+    public function test_skipping_forbidding_filters(): void
+    {
+        $parser = new SimpleQueryParser(keywordFilter: 'filter', keywordSort: 'sort');
+        $parser->skipForbiddenCriterias();
+
+        $criterias = $parser->parse(
+            QueryBag::fromUrl("filter[street]=nils&filter[name]=nils"),
+            allowedFilters: new CriteriaCollection(new ExactFilter('name'))
+        );
+
+        $this->assertEquals(new CriteriaCollection(new ExactFilter('name', 'nils')), $criterias);
+    }
+
+    /** @test */
+    public function test_skipping_forbidding_sorts(): void
+    {
+        $parser = new SimpleQueryParser(keywordFilter: 'filter', keywordSort: 'sort');
+        $parser->skipForbiddenCriterias();
+
+        $criterias = $parser->parse(
+            QueryBag::fromUrl("sort=street,name,street_no"),
+            allowedSorts: new CriteriaCollection(new Sorting('street'), new Sorting('street_no'))
+        );
+
+        $this->assertEquals(
+            new CriteriaCollection(new Sorting('street'), new Sorting('street_no')),
+            $criterias
+        );
+    }
+
+    /** @test */
     public function test_throwing_exception_when_given_a_nested_filter_type(): void
     {
         $parser = new SimpleQueryParser(keywordFilter: 'filter', keywordSort: 'sort');
@@ -85,12 +116,12 @@ final class SimpleQueryParserTest extends TestCase
     {
         $parser = new SimpleQueryParser(keywordFilter: 'filter', keywordSort: 'sort');
 
-        $crierias = $parser->parse(
+        $criterias = $parser->parse(
             QueryBag::fromUrl("filter[name]=nils"),
             allowedFilters: new CriteriaCollection(new ExactFilter('name'))
         );
 
-        $this->assertEquals(new CriteriaCollection(new ExactFilter('name', 'nils')), $crierias);
+        $this->assertEquals(new CriteriaCollection(new ExactFilter('name', 'nils')), $criterias);
     }
 
     /** @test */
@@ -98,12 +129,12 @@ final class SimpleQueryParserTest extends TestCase
     {
         $parser = new SimpleQueryParser(keywordFilter: 'filter', keywordSort: 'sort');
 
-        $crierias = $parser->parse(
+        $criterias = $parser->parse(
             QueryBag::fromUrl("filter[name]=nils,refle"),
             allowedFilters: new CriteriaCollection(new ExactFilter('name'))
         );
 
-        $this->assertEquals(new CriteriaCollection(new ExactFilter('name', ['nils', 'refle'])), $crierias);
+        $this->assertEquals(new CriteriaCollection(new ExactFilter('name', ['nils', 'refle'])), $criterias);
     }
 
     /** @test */
@@ -111,12 +142,12 @@ final class SimpleQueryParserTest extends TestCase
     {
         $parser = new SimpleQueryParser(keywordFilter: 'filter', keywordSort: 'sort');
 
-        $crierias = $parser->parse(
+        $criterias = $parser->parse(
             QueryBag::fromUrl("sort=nils"),
             allowedSorts: new CriteriaCollection(new Sorting('nils'))
         );
 
-        $this->assertEquals(new CriteriaCollection(new Sorting('nils', SortDirection::Ascending)), $crierias);
+        $this->assertEquals(new CriteriaCollection(new Sorting('nils', SortDirection::Ascending)), $criterias);
     }
 
     /** @test */
@@ -124,12 +155,12 @@ final class SimpleQueryParserTest extends TestCase
     {
         $parser = new SimpleQueryParser(keywordFilter: 'filter', keywordSort: 'sort');
 
-        $crierias = $parser->parse(
+        $criterias = $parser->parse(
             QueryBag::fromUrl("sort=-nils"),
             allowedSorts: new CriteriaCollection(new Sorting('nils'))
         );
 
-        $this->assertEquals(new CriteriaCollection(new Sorting('nils', SortDirection::Descending)), $crierias);
+        $this->assertEquals(new CriteriaCollection(new Sorting('nils', SortDirection::Descending)), $criterias);
     }
 
     /** @test */
@@ -137,7 +168,7 @@ final class SimpleQueryParserTest extends TestCase
     {
         $parser = new SimpleQueryParser(keywordFilter: 'filter', keywordSort: 'sort');
 
-        $crierias = $parser->parse(
+        $criterias = $parser->parse(
             QueryBag::fromUrl("sort=-nils,refle"),
             allowedSorts: new CriteriaCollection(new Sorting('nils'), new Sorting('refle'))
         );
@@ -147,7 +178,7 @@ final class SimpleQueryParserTest extends TestCase
                 new Sorting('nils', SortDirection::Descending),
                 new Sorting('refle', SortDirection::Ascending),
             ),
-            $crierias
+            $criterias
         );
     }
 
@@ -156,12 +187,12 @@ final class SimpleQueryParserTest extends TestCase
     {
         $parser = new SimpleQueryParser(keywordFilter: 'filter', keywordSort: 'sort');
 
-        $crierias = $parser->parse(
+        $criterias = $parser->parse(
             QueryBag::fromUrl("sort= -nils"),
             allowedSorts: new CriteriaCollection(new Sorting('nils'))
         );
 
-        $this->assertEquals(new CriteriaCollection(new Sorting('nils', SortDirection::Descending)), $crierias);
+        $this->assertEquals(new CriteriaCollection(new Sorting('nils', SortDirection::Descending)), $criterias);
     }
 
     /** @test */
@@ -169,12 +200,12 @@ final class SimpleQueryParserTest extends TestCase
     {
         $parser = new SimpleQueryParser(keywordFilter: 'filter', keywordSort: 'sort');
 
-        $crierias = $parser->parse(
+        $criterias = $parser->parse(
             QueryBag::fromUrl("sort= ,nils"),
             allowedSorts: new CriteriaCollection(new Sorting('nils'))
         );
 
-        $this->assertEquals(new CriteriaCollection(new Sorting('nils', SortDirection::Ascending)), $crierias);
+        $this->assertEquals(new CriteriaCollection(new Sorting('nils', SortDirection::Ascending)), $criterias);
     }
 
     /** @test */
@@ -182,12 +213,12 @@ final class SimpleQueryParserTest extends TestCase
     {
         $parser = new SimpleQueryParser(keywordFilter: 'filter', keywordSort: 'sort');
 
-        $crierias = $parser->parse(
+        $criterias = $parser->parse(
             QueryBag::fromUrl("filter[name]= &filter[name_two]= nils"),
             allowedFilters: new CriteriaCollection(new ExactFilter('name'), new ExactFilter('name_two'))
         );
 
-        $this->assertEquals(new CriteriaCollection(new ExactFilter('name_two', 'nils')), $crierias);
+        $this->assertEquals(new CriteriaCollection(new ExactFilter('name_two', 'nils')), $criterias);
     }
 
     /** @test */
@@ -195,7 +226,7 @@ final class SimpleQueryParserTest extends TestCase
     {
         $parser = new SimpleQueryParser(keywordFilter: 'filter', keywordSort: 'sort');
 
-        $crierias = $parser->parse(
+        $criterias = $parser->parse(
             QueryBag::fromUrl("sort=-nils, refle"),
             allowedSorts: new CriteriaCollection(new Sorting('nils'), new Sorting('refle'))
         );
@@ -205,7 +236,7 @@ final class SimpleQueryParserTest extends TestCase
                 new Sorting('nils', SortDirection::Descending),
                 new Sorting('refle', SortDirection::Ascending),
             ),
-            $crierias
+            $criterias
         );
     }
 
@@ -214,11 +245,11 @@ final class SimpleQueryParserTest extends TestCase
     {
         $parser = new SimpleQueryParser(keywordFilter: 'filter', keywordSort: 'sort');
 
-        $crierias = $parser->parse(
+        $criterias = $parser->parse(
             QueryBag::fromUrl("filter[name]=nils, refle"),
             allowedFilters: new CriteriaCollection(new ExactFilter('name'))
         );
 
-        $this->assertEquals(new CriteriaCollection(new ExactFilter('name', ['nils', 'refle'])), $crierias);
+        $this->assertEquals(new CriteriaCollection(new ExactFilter('name', ['nils', 'refle'])), $criterias);
     }
 }

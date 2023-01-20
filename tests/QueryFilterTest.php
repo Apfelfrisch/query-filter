@@ -95,4 +95,33 @@ final class QueryFilterTest extends TestCase
 
         $this->assertEquals(new QueryBag(['test-string' => 'test']), $uriParser->query);
     }
+
+    /** @test */
+    public function test_skipping_forbidden_criterias(): void
+    {
+        $uriParser = new DummyQueryParser;
+
+        $settings = (new Settings)
+            ->setQueryParser($uriParser)
+            ->setSkipForbiddenCriterias(true);
+
+        $this->assertFalse($uriParser->skipForbiddenCriterias);
+
+        // Skipping Option from Settings
+        $uriFilter = QueryFilter::new($settings);
+        $uriFilter->getCriterias(null);
+        $this->assertTrue($uriParser->skipForbiddenCriterias);
+
+        // Skipping Option explicit false
+        $uriFilter->skipForbiddenCriterias(false);
+        $uriFilter->getCriterias(null);
+
+        $this->assertFalse($uriParser->skipForbiddenCriterias);
+
+        // Skipping Option explicit true
+        $uriFilter->skipForbiddenCriterias(true);
+        $uriFilter->getCriterias(null);
+
+        $this->assertTrue($uriParser->skipForbiddenCriterias);
+    }
 }

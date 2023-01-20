@@ -11,6 +11,8 @@ use Apfelfrisch\QueryFilter\Criterias\Sorting;
 
 final class QueryFilter
 {
+    private bool $skipForbiddenCriterias;
+
     /** @var CriteriaCollection<Filter> */
     private CriteriaCollection $allowedFilters;
     /** @var CriteriaCollection<Sorting> */
@@ -21,12 +23,20 @@ final class QueryFilter
     ) {
         $this->allowedFilters = new CriteriaCollection();
         $this->allowedSorts = new CriteriaCollection();
+        $this->skipForbiddenCriterias = $settings->skipForbiddenCriterias();
     }
 
     public static function new(
         Settings $settings = new Settings(),
     ): self {
         return new self($settings);
+    }
+
+    public function skipForbiddenCriterias(bool $skip = true): self
+    {
+        $this->skipForbiddenCriterias = $skip;
+
+        return $this;
     }
 
     public function allowFilters(string|Filter ...$filters): self
@@ -63,6 +73,7 @@ final class QueryFilter
 
         return $this->settings
             ->getQueryParser()
+            ->skipForbiddenCriterias($this->skipForbiddenCriterias)
             ->parse($queryParameters, $this->allowedFilters, $this->allowedSorts);
     }
 

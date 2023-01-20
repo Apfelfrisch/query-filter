@@ -10,6 +10,8 @@ use Apfelfrisch\QueryFilter\Criterias\Sorting;
 
 interface QueryParser
 {
+    public function skipForbiddenCriterias(bool $skip = true): self;
+
     /**
      * @param CriteriaCollection<Filter> $allowedFilters
      * @param CriteriaCollection<Sorting> $allowedSorts

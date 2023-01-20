@@ -1,6 +1,6 @@
 {
     "name": "apfelfrisch/query-filter",
-    "description": "Parse, build, serialize and validate UN/EDIFACT messages",    
+    "description": "A Framework agnostic Query Filter that sorts and filters queries using URL parameters",    
     "license": "MIT",
     "require": { 
         "php": "~8.1.0 || ~8.2.0"

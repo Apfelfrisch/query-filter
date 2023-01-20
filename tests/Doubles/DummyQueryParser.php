@@ -10,9 +10,17 @@ use Apfelfrisch\QueryFilter\QueryParser;
 
 final class DummyQueryParser implements QueryParser
 {
+    public bool $skipForbiddenCriterias = false;
     public QueryBag|null $query = null;
     public CriteriaCollection|null $allowedFilters = null;
     public CriteriaCollection|null $allowedSorts = null;
+
+    public function skipForbiddenCriterias(bool $skip = true): self
+    {
+        $this->skipForbiddenCriterias = $skip;
+
+        return $this;
+    }
 
     public function parse(
         QueryBag $query,
