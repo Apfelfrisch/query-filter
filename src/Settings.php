@@ -7,6 +7,8 @@ namespace Apfelfrisch\QueryFilter;
 use Apfelfrisch\QueryFilter\Adapters\DoctrineQueryBuilder;
 use Apfelfrisch\QueryFilter\Adapters\EloquentQueryBuilder;
 use Apfelfrisch\QueryFilter\Adapters\SimpleQueryParser;
+use Apfelfrisch\QueryFilter\Criterias\Filter;
+use Apfelfrisch\QueryFilter\Criterias\PartialFilter;
 use Apfelfrisch\QueryFilter\Exceptions\QueryFilterException;
 use Doctrine\DBAL\Query\QueryBuilder as DoctrineBuilder;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
@@ -19,6 +21,9 @@ final class Settings
 
     /** @var array<class-string, class-string<QueryBuilder<mixed>>> */
     private array $adapterMappings = [];
+
+    /** @phpstan-var class-string<Filter> */
+    private string $defaultFilterClass;
 
     public function __construct()
     {
@@ -47,6 +52,24 @@ final class Settings
     public function getQueryParser(): QueryParser
     {
         return $this->queryParser;
+    }
+
+    /** @param class-string<Filter> $filterClass */
+    public function setDefaultFilterClass(string $filterClass): self
+    {
+        if (! is_subclass_of($filterClass, Filter::class)) {
+            throw new QueryFilterException("[" . self::class . "::setDefaultFilterClass] only exepts class strings of [" . Filter::class . "]");
+        }
+
+        $this->defaultFilterClass = $filterClass;
+
+        return $this;
+    }
+
+    /** @phpstan-return class-string<Filter> */
+    public function getDefaultFilterClass(): string
+    {
+        return $this->defaultFilterClass;
     }
 
     /**
@@ -92,6 +115,7 @@ final class Settings
     {
         try {
             $this->setQueryParser(new SimpleQueryParser);
+            $this->setDefaultFilterClass(PartialFilter::class);
 
             if (class_exists(EloquentBuilder::class)) {
                 $this->addQueryBuilderMapping(EloquentBuilder::class, EloquentQueryBuilder::class);

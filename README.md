@@ -6,6 +6,9 @@
 
 This Package provides a Framework agnostic Query Filter wich allows you to filter and sort queries based on the provided URL parameters. It comes with built-in adapters for Eloquent and Doctrine QueryBuilder, but can be easily extended to support other query building tools as well. The built-in URL parser supports basic [JSON API](https://jsonapi.org/) functionality, and can easily be swapped out for a customized parser if needed.
 
+## Yet another query filter - but why?
+
+I was searching for a query-filter that separates the criteria builder from the SQL builder, this way the criteria can be created in one location and then passed to another, which is useful for adding them into repositories. Additionally, I needed the capability to write custom QueryBuilderAdapter for different implementations, mainly for using it with In-Memory Repositories for testing purposes.
 
 ## Basic Usage
 
@@ -81,6 +84,9 @@ $users = QueryFilter::new()
 By default, this package throws an exception if a filter or sort criteria is requested but not allowed. You can silently skip forbidden criterias like so:
 
 ```php
+use Apfelfrisch\QueryFilter\Settings;
+use Apfelfrisch\QueryFilter\QueryFilter;
+
 // via Settings injection
 $settings = new Settings;
 $settings->setSkipForbiddenCriterias();
@@ -111,8 +117,20 @@ $users = QueryFilter::new()
   ->get();
 ```
 
-### Write custom Citerias
-todo
+### Write a custom Filter
+Your customer Filter has to implement the Filter interface. Concrete implementations can be found under the Criterias folder.
+
+If you want to set your Filter as default, you can do it like so:
+
+```php
+use Apfelfrisch\QueryFilter\Settings;
+use Apfelfrisch\QueryFilter\QueryFilter;
+
+$settings = new Setting();
+$settings->setDefaultFilterClass(MyCustomerFilterClass::class);
+
+$queryFilter = new QueryFilter($settings);
+```
 
 ### Write custom QueryParser
 todo

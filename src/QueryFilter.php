@@ -41,9 +41,11 @@ final class QueryFilter
 
     public function allowFilters(string|Filter ...$filters): self
     {
+        $defaultFilter = $this->settings->getDefaultFilterClass();
+
         foreach ($filters as $filter) {
             $this->allowedFilters->add(
-                $filter instanceof Filter ? $filter : new PartialFilter($filter)
+                $filter instanceof Filter ? $filter : new $defaultFilter($filter)
             );
         }
 

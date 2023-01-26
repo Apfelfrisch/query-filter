@@ -7,6 +7,9 @@ namespace Apfelfrisch\QueryFilter\Tests;
 use Apfelfrisch\QueryFilter\Adapters\DoctrineQueryBuilder;
 use Apfelfrisch\QueryFilter\Adapters\EloquentQueryBuilder;
 use Apfelfrisch\QueryFilter\Adapters\SimpleQueryParser;
+use Apfelfrisch\QueryFilter\Criterias\ExactFilter;
+use Apfelfrisch\QueryFilter\Criterias\PartialFilter;
+use Apfelfrisch\QueryFilter\Exceptions\QueryFilterException;
 use Apfelfrisch\QueryFilter\Settings;
 use Apfelfrisch\QueryFilter\Tests\TestsDoubles\DummyQueryBuilderAdapter;
 use Apfelfrisch\QueryFilter\Tests\TestsDoubles\DummyQueryParser;
@@ -22,11 +25,12 @@ final class SettingsTest extends TestCase
         $settings = new Settings;
 
         $this->assertInstanceOf(SimpleQueryParser::class, $settings->getQueryParser());
+        $this->assertSame(PartialFilter::class, $settings->getDefaultFilterClass());
         $this->assertInstanceOf(EloquentQueryBuilder::class, $settings->adaptQueryBuilder($this->createStub(EloquentBuilder::class)));
         $this->assertInstanceOf(DoctrineQueryBuilder::class, $settings->adaptQueryBuilder($this->createStub(DoctrineBuilder::class)));
     }
 
-    public function test_setting_a_customer_query_parser(): void
+    public function test_set_a_customer_query_parser(): void
     {
         $settings = new Settings;
 
@@ -46,11 +50,32 @@ final class SettingsTest extends TestCase
         $this->assertInstanceOf(DummyQueryBuilderAdapter::class, $settings->adaptQueryBuilder($this->createStub(EloquentBuilder::class)));
     }
 
+    public function test_set_a_customer_filter(): void
+    {
+        $settings = new Settings;
+
+        $settings->setDefaultFilterClass(ExactFilter::class);
+
+        $this->assertSame(ExactFilter::class, $settings->getDefaultFilterClass());
+    }
+
+    public function test_throw_exception_if_filter_string_does_not_implement_filter_interface(): void
+    {
+        $settings = new Settings;
+
+        $this->expectException(QueryFilterException::class);
+        $this->expectExceptionMessage(
+            '[Apfelfrisch\QueryFilter\Settings::setDefaultFilterClass] only exepts class strings of [Apfelfrisch\QueryFilter\Criterias\Filter]'
+        );
+
+        $settings->setDefaultFilterClass(self::class);
+    }
+
     public function test_throw_exception_if_adaptable_is_unkown(): void
     {
         $settings = new Settings;
 
-        $this->expectException(Exception::class);
+        $this->expectException(QueryFilterException::class);
 
         $settings->addQueryBuilderMapping(UnkownClass::class, DummyQueryBuilderAdapter::class);
     }

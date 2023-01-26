@@ -32,6 +32,28 @@ final class QueryFilterTest extends TestCase
     }
 
     /** @test */
+    public function test_adding_default_filter_when_allowd_via_filter_name(): void
+    {
+        $uriParser = new DummyQueryParser;
+        $settings = (new Settings)->setQueryParser($uriParser);
+        $uriFilter = QueryFilter::new($settings);
+        $uriFilter->allowFilters('default-filter', 'default-filter-two');
+
+        $this->assertInstanceOf(CriteriaCollection::class, $uriFilter->getCriterias());
+        $this->assertInstanceof($settings->getDefaultFilterClass(), $uriParser->allowedFilters->get('default-filter'));
+        $this->assertInstanceof($settings->getDefaultFilterClass(), $uriParser->allowedFilters->get('default-filter-two'));
+
+        $uriParser = new DummyQueryParser;
+        $settings = (new Settings)->setDefaultFilterClass(ExactFilter::class)->setQueryParser($uriParser);
+        $uriFilter = QueryFilter::new($settings);
+        $uriFilter->allowFilters('default-filter', 'default-filter-two');
+
+        $this->assertInstanceOf(CriteriaCollection::class, $uriFilter->getCriterias());
+        $this->assertInstanceof(ExactFilter::class, $uriParser->allowedFilters->get('default-filter'));
+        $this->assertInstanceof(ExactFilter::class, $uriParser->allowedFilters->get('default-filter-two'));
+    }
+
+    /** @test */
     public function test_adding_allow_sort(): void
     {
         $allowSortOne = new Sorting('test-sort-one');
