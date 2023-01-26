@@ -6,7 +6,6 @@ namespace Apfelfrisch\QueryFilter;
 
 use Apfelfrisch\QueryFilter\Criterias\Criteria;
 use Apfelfrisch\QueryFilter\Criterias\Filter;
-use Apfelfrisch\QueryFilter\Criterias\PartialFilter;
 use Apfelfrisch\QueryFilter\Criterias\Sorting;
 
 final class QueryFilter
