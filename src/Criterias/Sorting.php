@@ -30,9 +30,11 @@ final class Sorting implements Criteria
         return $this;
     }
 
-    public function setSortDirection(SortDirection $sortDirection): void
+    public function setSortDirection(SortDirection $sortDirection): self
     {
         $this->sortDirection = $sortDirection;
+
+        return $this;
     }
 
     public function getSortDirection(): SortDirection

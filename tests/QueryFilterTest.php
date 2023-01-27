@@ -32,7 +32,20 @@ final class QueryFilterTest extends TestCase
     }
 
     /** @test */
-    public function test_adding_default_filter_when_allowd_via_filter_name(): void
+    public function test_adding_default_criterias(): void
+    {
+        $filter = ExactFilter::new('test-excat-filter')->setValue('1');
+        $sorting = new Sorting('test-sort-one');
+        $criterias = QueryFilter::new()
+            ->defaultCriterias($filter, $sorting)
+            ->getCriterias([]);
+
+        $this->assertSame($filter, $criterias->get('test-excat-filter'));
+        $this->assertSame($sorting, $criterias->get('test-sort-one'));
+    }
+
+    /** @test */
+    public function test_adding_default_filter_class(): void
     {
         $uriParser = new DummyQueryParser;
         $settings = (new Settings)->setQueryParser($uriParser);

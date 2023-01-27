@@ -21,9 +21,10 @@ final class FixedFilter implements Filter
         $this->conditions = array_values($conditions);
     }
 
-    public function setValue(string|array $value): void
+    public function setValue(string|array $value): self
     {
         // Filter ist Fixed, so setValue has no effect
+        return $this;
     }
 
     public function getName(): string

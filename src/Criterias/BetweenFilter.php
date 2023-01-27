@@ -34,7 +34,7 @@ final class BetweenFilter implements Filter
     }
 
     /** @param string|array<int, string> $value */
-    public function setValue(string|array $value): void
+    public function setValue(string|array $value): self
     {
         if (! is_array($value) || count($value) !== 2) {
             throw new CriteriaException("Value for " . BetweenFilter::class . " has to be an array with two strings.");
@@ -42,6 +42,8 @@ final class BetweenFilter implements Filter
 
         $this->beginn = $value[0];
         $this->end = $value[1];
+
+        return $this;
     }
 
     public function getName(): string

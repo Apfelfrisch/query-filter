@@ -12,6 +12,8 @@ final class QueryFilter
 {
     private bool $skipForbiddenCriterias;
 
+    /** @var CriteriaCollection<Criteria> */
+    private CriteriaCollection $defaultCriterias;
     /** @var CriteriaCollection<Filter> */
     private CriteriaCollection $allowedFilters;
     /** @var CriteriaCollection<Sorting> */
@@ -20,6 +22,7 @@ final class QueryFilter
     public function __construct(
         private Settings $settings = new Settings(),
     ) {
+        $this->defaultCriterias = new CriteriaCollection();
         $this->allowedFilters = new CriteriaCollection();
         $this->allowedSorts = new CriteriaCollection();
         $this->skipForbiddenCriterias = $settings->skipForbiddenCriterias();
@@ -34,6 +37,15 @@ final class QueryFilter
     public function skipForbiddenCriterias(bool $skip = true): self
     {
         $this->skipForbiddenCriterias = $skip;
+
+        return $this;
+    }
+
+    public function defaultCriterias(Criteria ...$criterias): self
+    {
+        foreach ($criterias as $criteria) {
+            $this->defaultCriterias->add($criteria);
+        }
 
         return $this;
     }
@@ -72,10 +84,12 @@ final class QueryFilter
             $queryParameters = new QueryBag($queryParameters ?? $_GET);
         }
 
-        return $this->settings
+        return $this->defaultCriterias->merge(
+            $this->settings
             ->getQueryParser()
             ->skipForbiddenCriterias($this->skipForbiddenCriterias)
-            ->parse($queryParameters, $this->allowedFilters, $this->allowedSorts);
+            ->parse($queryParameters, $this->allowedFilters, $this->allowedSorts)
+        );
     }
 
     /**

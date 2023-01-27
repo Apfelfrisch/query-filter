@@ -29,9 +29,11 @@ abstract class AbstractPartialFilter implements Filter
     }
 
     /** @param string|array<int, string> $value */
-    public function setValue(string|array $value): void
+    public function setValue(string|array $value): self
     {
         $this->value = $value;
+
+        return $this;
     }
 
     public function getName(): string
