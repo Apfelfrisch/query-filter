@@ -37,7 +37,7 @@ final class QueryFilterTest extends TestCase
         $filter = ExactFilter::new('test-excat-filter')->setValue('1');
         $sorting = new Sorting('test-sort-one');
         $criterias = QueryFilter::new()
-            ->defaultCriterias($filter, $sorting)
+            ->addDefaultCriterias($filter, $sorting)
             ->getCriterias([]);
 
         $this->assertSame($filter, $criterias->get('test-excat-filter'));
@@ -158,5 +158,42 @@ final class QueryFilterTest extends TestCase
         $uriFilter->getCriterias(null);
 
         $this->assertTrue($uriParser->skipForbiddenCriterias);
+    }
+
+    /** @test */
+    public function test_cloning_instance(): void
+    {
+        $emptyFiler = new QueryFilter;
+        $defaultCriteria = clone $emptyFiler;
+        $allowdCriteria = clone $emptyFiler;
+        $allowdSorts = clone $emptyFiler;
+
+        $defaultCriteria->addDefaultCriterias(ExactFilter::new('criteria'));
+        $allowdCriteria->allowFilters(ExactFilter::new('criteria'));
+        $allowdSorts->allowSorts(new Sorting('criteria'));
+
+        $this->assertFalse($this->getPrivateProberty($emptyFiler, 'defaultCriterias')->has('criteria'));
+        $this->assertFalse($this->getPrivateProberty($emptyFiler, 'allowedFilters')->has('criteria'));
+        $this->assertFalse($this->getPrivateProberty($emptyFiler, 'allowedSorts')->has('criteria'));
+
+        $this->assertTrue($this->getPrivateProberty($defaultCriteria, 'defaultCriterias')->has('criteria'));
+        $this->assertFalse($this->getPrivateProberty($defaultCriteria, 'allowedFilters')->has('criteria'));
+        $this->assertFalse($this->getPrivateProberty($defaultCriteria, 'allowedSorts')->has('criteria'));
+
+        $this->assertFalse($this->getPrivateProberty($allowdCriteria, 'defaultCriterias')->has('criteria'));
+        $this->assertTrue($this->getPrivateProberty($allowdCriteria, 'allowedFilters')->has('criteria'));
+        $this->assertFalse($this->getPrivateProberty($allowdCriteria, 'allowedSorts')->has('criteria'));
+
+        $this->assertFalse($this->getPrivateProberty($allowdSorts, 'defaultCriterias')->has('criteria'));
+        $this->assertFalse($this->getPrivateProberty($allowdSorts, 'allowedFilters')->has('criteria'));
+        $this->assertTrue($this->getPrivateProberty($allowdSorts, 'allowedSorts')->has('criteria'));
+    }
+
+    private function getPrivateProberty(QueryFilter $queryFilter, string $probertyName): CriteriaCollection
+    {
+        $reflectionProperty = new \ReflectionProperty(QueryFilter::class, $probertyName);
+        $reflectionProperty->setAccessible(true);
+
+        return $reflectionProperty->getValue($queryFilter);
     }
 }

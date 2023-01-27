@@ -41,7 +41,7 @@ final class QueryFilter
         return $this;
     }
 
-    public function defaultCriterias(Criteria ...$criterias): self
+    public function addDefaultCriterias(Criteria ...$criterias): self
     {
         foreach ($criterias as $criteria) {
             $this->defaultCriterias->add($criteria);
@@ -106,5 +106,12 @@ final class QueryFilter
         );
 
         return $builder;
+    }
+
+    public function __clone(): void
+    {
+        $this->allowedSorts = clone $this->allowedSorts;
+        $this->allowedFilters = clone $this->allowedFilters;
+        $this->defaultCriterias = clone $this->defaultCriterias;
     }
 }
