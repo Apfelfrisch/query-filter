@@ -16,6 +16,6 @@ final class PartialFilterTest extends AbstractPartialFilterTest
 
     protected function buildFilter(...$values): AbstractPartialFilter
     {
-        return new PartialFilter(...$values);
+        return PartialFilter::new(...$values);
     }
 }

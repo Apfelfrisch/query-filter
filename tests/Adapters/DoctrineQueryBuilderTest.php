@@ -44,6 +44,25 @@ final class DoctrineQueryBuilderTest extends TestCase
     }
 
     /** @test */
+    public function test_single_where_null(): void
+    {
+        $builder = $this->getBuilder();
+        $builderAdapter = new DoctrineQueryBuilder($builder);
+
+        $builderAdapter->where(new WhereCondition('test-column', Operator::Equal, null));
+
+        $this->assertSame('SELECT * FROM users WHERE test-column IS NULL', (string)$builder);
+        $this->assertEquals([], $builder->getParameters());
+
+        $builder = $this->getBuilder();
+        $builderAdapter = new DoctrineQueryBuilder($builder);
+        $builderAdapter->where(new WhereCondition('test-column', Operator::NotEqual, null));
+
+        $this->assertSame('SELECT * FROM users WHERE test-column IS NOT NULL', (string)$builder);
+        $this->assertEquals([], $builder->getParameters());
+    }
+
+    /** @test */
     public function test_multiple_where(): void
     {
         $builder = $this->getBuilder();

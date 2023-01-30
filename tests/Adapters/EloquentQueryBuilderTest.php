@@ -39,6 +39,25 @@ final class EloquentQueryBuilderTest extends TestCase
     }
 
     /** @test */
+    public function test_single_where_null(): void
+    {
+        $builder = $this->getBuilder();
+        $builderAdapter = new EloquentQueryBuilder($builder);
+
+        $builderAdapter->where(new WhereCondition('test-column', Operator::Equal, null));
+
+        $this->assertSame('select * where (test-column is null)', $builder->toSql());
+        $this->assertEquals([], $builder->getBindings());
+
+        $builder = $this->getBuilder();
+        $builderAdapter = new EloquentQueryBuilder($builder);
+        $builderAdapter->where(new WhereCondition('test-column', Operator::NotEqual, null));
+
+        $this->assertSame('select * where (test-column is not null)', $builder->toSql());
+        $this->assertEquals([], $builder->getBindings());
+    }
+
+    /** @test */
     public function test_multiple_where(): void
     {
         $builder = $this->getBuilder();

@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace Apfelfrisch\QueryFilter\Adapters;
 
+use Apfelfrisch\QueryFilter\Conditions\Operator;
 use Apfelfrisch\QueryFilter\Conditions\OrWhereCondition;
 use Apfelfrisch\QueryFilter\Conditions\SortDirection;
 use Apfelfrisch\QueryFilter\Conditions\WhereCondition;
 use Apfelfrisch\QueryFilter\Conditions\WhereInCondition;
+use Apfelfrisch\QueryFilter\Exceptions\ConditionException;
 use Apfelfrisch\QueryFilter\QueryBuilder;
 use Illuminate\Contracts\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Contracts\Database\Query\Builder;
@@ -27,9 +29,9 @@ final class EloquentQueryBuilder implements QueryBuilder
         $this->builder->where(function ($builder) use ($wheres) {
             foreach ($wheres as $where) {
                 if ($where instanceof OrWhereCondition) {
-                    $builder->orWhereRaw("$where->column {$where->operator->value} ?", $where->value);
+                    $builder->orWhereRaw($this->buildRawString($where), $where->value);
                 } else {
-                    $builder->whereRaw("$where->column {$where->operator->value} ?", $where->value);
+                    $builder->whereRaw($this->buildRawString($where), $where->value);
                 }
             }
         });
@@ -56,5 +58,18 @@ final class EloquentQueryBuilder implements QueryBuilder
     public function builder(): Builder|EloquentBuilder
     {
         return $this->builder;
+    }
+
+    private function buildRawString(WhereCondition|OrWhereCondition $where): string
+    {
+        if ($where->value === null) {
+            return match ($where->operator) {
+                Operator::Equal => "$where->column is null",
+                Operator::NotEqual => "$where->column is not null",
+                default => throw ConditionException::invalidOperatorForNullableField($where->operator),
+            };
+        }
+
+        return "$where->column {$where->operator->value} ?";
     }
 }

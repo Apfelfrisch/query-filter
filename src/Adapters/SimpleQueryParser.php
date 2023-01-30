@@ -77,6 +77,10 @@ final class SimpleQueryParser implements QueryParser
                 continue;
             }
 
+            if (is_array($values) && $values === []) {
+                continue;
+            }
+
             $filter = $allowedFilters->getFilter($filtername);
             $filter->setValue($this->getValues($filterString));
 
@@ -141,8 +145,12 @@ final class SimpleQueryParser implements QueryParser
             return trim($filterString);
         }
 
-        return array_map(static function (string $value): string {
+        $trimmedValues = array_map(static function (string $value): string {
             return trim($value);
         }, explode($this->delimter, $filterString));
+
+        return array_filter($trimmedValues, static function (string $value): bool {
+            return $value !== '';
+        });
     }
 }

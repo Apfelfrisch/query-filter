@@ -5,12 +5,12 @@ declare(strict_types=1);
 namespace Apfelfrisch\QueryFilter\Tests\Conditions;
 
 use Apfelfrisch\QueryFilter\Conditions\Operator;
-use Apfelfrisch\QueryFilter\Conditions\OrWhereCondition;
+use Apfelfrisch\QueryFilter\Conditions\WhereCondition;
 use Apfelfrisch\QueryFilter\Exceptions\ConditionException;
 use Apfelfrisch\QueryFilter\Tests\TestCase;
 use Iterator;
 
-final class OrWhereConditionTest extends TestCase
+final class WhereConditionTest extends TestCase
 {
     /**
      * @test
@@ -23,7 +23,7 @@ final class OrWhereConditionTest extends TestCase
             $this->expectExceptionMessage($exceptionMessage);
         }
 
-        $this->assertInstanceOf(OrWhereCondition::class, new OrWhereCondition($column, $operator, $value));
+        $this->assertInstanceOf(WhereCondition::class, new WhereCondition($column, $operator, $value));
     }
 
     public function conditionAttributes(): Iterator

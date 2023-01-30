@@ -59,24 +59,24 @@ final class ExactFilterTest extends TestCase
         );
     }
 
-    public function test_ignore_empty_string_values(): void
+    public function test_accept_empty_string_and_null_values(): void
     {
         $queryBuilder = new DummyQueryBuilderAdapter;
         $filter = new ExactFilter('test-filter', null);
 
         $this->assertSame($queryBuilder, $filter->apply($queryBuilder));
-        $this->assertCount(0, $queryBuilder->getAllConditions());
+        $this->assertCount(1, $queryBuilder->getAllConditions());
 
         $filter = new ExactFilter('test-filter', '');
         $queryBuilder = new DummyQueryBuilderAdapter;
 
         $this->assertSame($queryBuilder, $filter->apply($queryBuilder));
-        $this->assertCount(0, $queryBuilder->getAllConditions());
+        $this->assertCount(1, $queryBuilder->getAllConditions());
 
         $queryBuilder = new DummyQueryBuilderAdapter;
-        $filter = new ExactFilter('test-filter', ['', '']);
+        $filter = new ExactFilter('test-filter', ['', null]);
 
         $this->assertSame($queryBuilder, $filter->apply($queryBuilder));
-        $this->assertCount(0, $queryBuilder->getAllConditions());
+        $this->assertCount(2, $queryBuilder->getAllConditions());
     }
 }

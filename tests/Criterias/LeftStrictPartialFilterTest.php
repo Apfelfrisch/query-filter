@@ -16,6 +16,6 @@ final class LeftStrictPartialFilterTest extends AbstractPartialFilterTest
 
     protected function buildFilter(...$values): AbstractPartialFilter
     {
-        return new LeftStrictPartialFilter(...$values);
+        return LeftStrictPartialFilter::new(...$values);
     }
 }

@@ -13,7 +13,7 @@ final class ExactFilter implements Filter
 {
     private string $column;
 
-    /** @param string|array<int, string>|null $value */
+    /** @param string|array<int, string|null>|null $value */
     public function __construct(
         private string $name,
         private string|array|null $value = null
@@ -21,7 +21,7 @@ final class ExactFilter implements Filter
         $this->column = $this->name;
     }
 
-    /** @param string|array<int, string>|null $value */
+    /** @param string|array<int, string|null>|null $value */
     public static function new(string $name, string|array|null $value = null): self
     {
         return new self($name, $value);
@@ -34,7 +34,7 @@ final class ExactFilter implements Filter
         return $this;
     }
 
-    /** @param string|array<int, string> $value */
+    /** @param string|array<int, string|null> $value */
     public function setValue(string|array $value): self
     {
         $this->value = $value;
@@ -49,24 +49,27 @@ final class ExactFilter implements Filter
 
     public function apply(QueryBuilder $builder): QueryBuilder
     {
-        if (null === $value = $this->value) {
+        if ($this->value === []) {
             return $builder;
         }
 
-        if (is_string($value)) {
-            $value = [$value];
+        $values = $this->value;
+
+        if (! is_array($values)) {
+            $values = [$values];
         }
 
-        $filteredValues = array_filter($value, strlen(...));
-
-        if ($filteredValues === []) {
-            return $builder;
+        // Dont use WhereInCondition if there is a null value
+        if (count($values) > 1 && ! in_array(null, $values, true)) {
+            return $builder->whereIn(new WhereInCondition($this->column, $values));
         }
 
-        if (count($filteredValues) === 1) {
-            return $builder->where(new WhereCondition($this->column, Operator::Equal, current($filteredValues)));
+        $conditions = [];
+
+        foreach ($values as $value) {
+            $conditions[] = new WhereCondition($this->column, Operator::Equal, $value);
         }
 
-        return $builder->whereIn(new WhereInCondition($this->column, $filteredValues));
+        return $builder->where(...$conditions);
     }
 }

@@ -214,11 +214,11 @@ final class SimpleQueryParserTest extends TestCase
         $parser = new SimpleQueryParser(keywordFilter: 'filter', keywordSort: 'sort');
 
         $criterias = $parser->parse(
-            QueryBag::fromUrl("filter[name]= &filter[name_two]= nils"),
-            allowedFilters: new CriteriaCollection(new ExactFilter('name'), new ExactFilter('name_two'))
+            QueryBag::fromUrl("filter[name]= &filter[name_two]= , &filter[name_three]= nils"),
+            allowedFilters: new CriteriaCollection(new ExactFilter('name'), new ExactFilter('name_two'), new ExactFilter('name_three'))
         );
 
-        $this->assertEquals(new CriteriaCollection(new ExactFilter('name_two', 'nils')), $criterias);
+        $this->assertEquals(new CriteriaCollection(new ExactFilter('name_three', 'nils')), $criterias);
     }
 
     /** @test */

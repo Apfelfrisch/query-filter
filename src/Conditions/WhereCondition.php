@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Apfelfrisch\QueryFilter\Conditions;
 
+use Apfelfrisch\QueryFilter\Exceptions\ConditionException;
+
 final class WhereCondition
 {
     public function __construct(
@@ -11,5 +13,8 @@ final class WhereCondition
         public readonly Operator $operator,
         public readonly string|null $value,
     ) {
+        if ($value === null && ! in_array($this->operator, [Operator::Equal, Operator::NotEqual])) {
+            throw ConditionException::invalidOperatorForNullableField($operator);
+        }
     }
 }

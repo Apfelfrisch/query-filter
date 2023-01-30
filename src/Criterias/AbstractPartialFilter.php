@@ -57,14 +57,16 @@ abstract class AbstractPartialFilter implements Filter
             );
         }
 
-        if (count(array_filter($value, strlen(...))) === 0) {
+        $filteredValues = array_filter($value, fn (string|null $value) => $value !== null && strlen($value) > 0);
+
+        if ($filteredValues === []) {
             return $builder;
         }
 
         $conditions = [];
 
-        foreach (array_filter($value, strlen(...)) as $partialValue) {
-            $conditions[] = new OrWhereCondition($this->name, Operator::Like, $this->prepareValue($partialValue));
+        foreach ($filteredValues as $value) {
+            $conditions[] = new OrWhereCondition($this->name, Operator::Like, $this->prepareValue($value));
         }
 
         return $builder->where(...$conditions);
