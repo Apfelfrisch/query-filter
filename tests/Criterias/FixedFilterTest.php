@@ -6,8 +6,6 @@ namespace Apfelfrisch\QueryFilter\Tests\Criterias;
 
 use Apfelfrisch\QueryFilter\Conditions\Operator;
 use Apfelfrisch\QueryFilter\Conditions\OrWhereCondition;
-use Apfelfrisch\QueryFilter\Conditions\SortCondition;
-use Apfelfrisch\QueryFilter\Conditions\SortDirection;
 use Apfelfrisch\QueryFilter\Conditions\WhereCondition;
 use Apfelfrisch\QueryFilter\Criterias\FixedFilter;
 use Apfelfrisch\QueryFilter\Tests\TestCase;
@@ -31,13 +29,9 @@ final class FixedFilterTest extends TestCase
             new WhereCondition('column', Operator::Equal, 'value'),
             new OrWhereCondition('column-two', Operator::LessThan, 'value-two'),
             new OrWhereCondition('column-three', Operator::LessThan, 'value-three'),
-            new SortCondition('column-four', SortDirection::Ascending),
-            new SortCondition('column-five', SortDirection::Descending),
-            new SortCondition('column-six', SortDirection::Ascending),
         );
 
         $this->assertSame($queryBuilder, $filter->apply($queryBuilder));
         $this->assertCount(3, $queryBuilder->getCondition('whereConditions'));
-        $this->assertCount(3, $queryBuilder->getCondition('sortConditions'));
     }
 }
