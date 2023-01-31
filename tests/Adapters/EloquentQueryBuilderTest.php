@@ -34,7 +34,7 @@ final class EloquentQueryBuilderTest extends TestCase
 
         $builderAdapter->where(new WhereCondition('test-column', Operator::Equal, 'test-value'));
 
-        $this->assertSame('select * where (test-column = ?)', $builder->toSql());
+        $this->assertSame('select * from users where (test-column = ?)', $builder->toSql());
         $this->assertEquals([0 => 'test-value'], $builder->getBindings());
     }
 
@@ -46,14 +46,14 @@ final class EloquentQueryBuilderTest extends TestCase
 
         $builderAdapter->where(new WhereCondition('test-column', Operator::Equal, null));
 
-        $this->assertSame('select * where (test-column is null)', $builder->toSql());
+        $this->assertSame('select * from users where (test-column is null)', $builder->toSql());
         $this->assertEquals([], $builder->getBindings());
 
         $builder = $this->getBuilder();
         $builderAdapter = new EloquentQueryBuilder($builder);
         $builderAdapter->where(new WhereCondition('test-column', Operator::NotEqual, null));
 
-        $this->assertSame('select * where (test-column is not null)', $builder->toSql());
+        $this->assertSame('select * from users where (test-column is not null)', $builder->toSql());
         $this->assertEquals([], $builder->getBindings());
     }
 
@@ -68,7 +68,7 @@ final class EloquentQueryBuilderTest extends TestCase
             new WhereCondition('test-column-two', Operator::Equal, 'test-value-two')
         );
 
-        $this->assertSame('select * where (test-column = ? and test-column-two = ?)', $builder->toSql());
+        $this->assertSame('select * from users where (test-column = ? and test-column-two = ?)', $builder->toSql());
         $this->assertEquals([0 => 'test-value', 1 => 'test-value-two'], $builder->getBindings());
     }
 
@@ -83,7 +83,7 @@ final class EloquentQueryBuilderTest extends TestCase
             new OrWhereCondition('test-column-two', Operator::Equal, 'test-value-two'),
         );
 
-        $this->assertSame('select * where (test-column = ? or test-column-two = ?)', $builder->toSql());
+        $this->assertSame('select * from users where (test-column = ? or test-column-two = ?)', $builder->toSql());
         $this->assertEquals([0 => 'test-value', 1 => 'test-value-two'], $builder->getBindings());
     }
 
@@ -104,7 +104,7 @@ final class EloquentQueryBuilderTest extends TestCase
         );
 
         $this->assertSame(
-            'select * where (test-column-1 = ? and test-column-2 = ?) and (test-column-3 = ? or test-column-4 = ?)',
+            'select * from users where (test-column-1 = ? and test-column-2 = ?) and (test-column-3 = ? or test-column-4 = ?)',
             $builder->toSql()
         );
         $this->assertEquals(
@@ -123,8 +123,21 @@ final class EloquentQueryBuilderTest extends TestCase
             new WhereInCondition('test-column', ['test-value', 'test-value-two', 'test-value-three']),
         );
 
-        $this->assertSame('select * where test-column in (?, ?, ?)', $builder->toSql());
+        $this->assertSame('select * from users where test-column in (?, ?, ?)', $builder->toSql());
         $this->assertEquals([0 => 'test-value', 1 => 'test-value-two', 2 => 'test-value-three'], $builder->getBindings());
+    }
+
+    /** @test */
+    public function test_selects(): void
+    {
+        $builder = $this->getBuilder();
+        $builderAdapter = new EloquentQueryBuilder($builder);
+
+        $builderAdapter->select('name', 'DATE(brithday)');
+        $builderAdapter->select('city');
+
+        $this->assertSame('select name, DATE(brithday), city from users', $builder->toSql());
+        $this->assertEquals([], $builder->getBindings());
     }
 
     /** @test */
@@ -135,7 +148,7 @@ final class EloquentQueryBuilderTest extends TestCase
 
         $builderAdapter->sort('test-column', SortDirection::Ascending);
 
-        $this->assertSame('select * order by test-column asc', $builder->toSql());
+        $this->assertSame('select * from users order by test-column asc', $builder->toSql());
         $this->assertEquals([], $builder->getBindings());
     }
 
@@ -148,7 +161,7 @@ final class EloquentQueryBuilderTest extends TestCase
         $builderAdapter->sort('test-column', SortDirection::Ascending);
         $builderAdapter->sort('test-column-two', SortDirection::Ascending);
 
-        $this->assertSame('select * order by test-column asc, test-column-two asc', $builder->toSql());
+        $this->assertSame('select * from users order by test-column asc, test-column-two asc', $builder->toSql());
         $this->assertEquals([], $builder->getBindings());
     }
 
@@ -160,7 +173,7 @@ final class EloquentQueryBuilderTest extends TestCase
 
         $builderAdapter->sort('test-column', SortDirection::Descending);
 
-        $this->assertSame('select * order by test-column desc', $builder->toSql());
+        $this->assertSame('select * from users order by test-column desc', $builder->toSql());
         $this->assertEquals([], $builder->getBindings());
     }
 
@@ -173,7 +186,7 @@ final class EloquentQueryBuilderTest extends TestCase
         $builderAdapter->sort('test-column', SortDirection::Descending);
         $builderAdapter->sort('test-column-two', SortDirection::Descending);
 
-        $this->assertSame('select * order by test-column desc, test-column-two desc', $builder->toSql());
+        $this->assertSame('select * from users order by test-column desc, test-column-two desc', $builder->toSql());
         $this->assertEquals([], $builder->getBindings());
     }
 
@@ -186,16 +199,20 @@ final class EloquentQueryBuilderTest extends TestCase
         $builderAdapter->sort('test-column', SortDirection::Descending);
         $builderAdapter->sort('test-column-two', SortDirection::Ascending);
 
-        $this->assertSame('select * order by test-column desc, test-column-two asc', $builder->toSql());
+        $this->assertSame('select * from users order by test-column desc, test-column-two asc', $builder->toSql());
         $this->assertEquals([], $builder->getBindings());
     }
 
     private function getBuilder(): Builder
     {
-        return new Builder(
+        $builder = new Builder(
             $this->createStub(ConnectionInterface::class),
             new Grammar,
             $this->createStub(Processor::class)
         );
+
+        $builder->select('*')->fromRaw('users');
+
+        return $builder;
     }
 }

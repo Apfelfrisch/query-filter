@@ -24,6 +24,19 @@ final class DoctrineQueryBuilder implements QueryBuilder
     ) {
     }
 
+    public function select(string ...$selects): self
+    {
+        // Reset `SELECT *`
+        $preSelects = $this->builder->getQueryPart('select');
+        if (is_array($preSelects) && count($preSelects) === 1 && current($preSelects) === '*') {
+            $this->builder->resetQueryPart('select');
+        }
+
+        $this->builder->addSelect(...$selects);
+
+        return $this;
+    }
+
     public function where(WhereCondition|OrWhereCondition ...$wheres): self
     {
         $expression = null;

@@ -24,6 +24,18 @@ final class EloquentQueryBuilder implements QueryBuilder
     ) {
     }
 
+    public function select(string ...$selects): self
+    {
+        // Reset `SELECT *`
+        if (count($this->builder->columns ?? []) === 1 && strval($this->builder->columns[0]) === '*') {
+            $this->builder->columns = [];
+        }
+
+        $this->builder->selectRaw(implode(', ', $selects));
+
+        return $this;
+    }
+
     public function where(WhereCondition|OrWhereCondition ...$wheres): self
     {
         $this->builder->where(function ($builder) use ($wheres) {

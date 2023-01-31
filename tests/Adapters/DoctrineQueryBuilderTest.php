@@ -133,6 +133,19 @@ final class DoctrineQueryBuilderTest extends TestCase
     }
 
     /** @test */
+    public function test_selects(): void
+    {
+        $builder = $this->getBuilder();
+        $builderAdapter = new DoctrineQueryBuilder($builder);
+
+        $builderAdapter->select('name', 'DATE(brithday)');
+        $builderAdapter->select('city');
+
+        $this->assertSame('SELECT name, DATE(brithday), city FROM users', (string)$builder);
+        $this->assertEquals([], $builder->getParameters());
+    }
+
+    /** @test */
     public function test_sort_asc(): void
     {
         $builder = $this->getBuilder();
