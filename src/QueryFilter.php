@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Apfelfrisch\QueryFilter;
 
+use Apfelfrisch\QueryFilter\Criterias\AllowField;
 use Apfelfrisch\QueryFilter\Criterias\Criteria;
 use Apfelfrisch\QueryFilter\Criterias\Filter;
 use Apfelfrisch\QueryFilter\Criterias\Sorting;
@@ -45,6 +46,17 @@ final class QueryFilter
     {
         foreach ($criterias as $criteria) {
             $this->defaultCriterias->add($criteria);
+        }
+
+        return $this;
+    }
+
+    public function allowFields(string|AllowField ...$allowFields): self
+    {
+        foreach ($allowFields as $allowField) {
+            $this->defaultCriterias->add(
+                $allowField instanceof AllowField ? $allowField : new AllowField($allowField)
+            );
         }
 
         return $this;

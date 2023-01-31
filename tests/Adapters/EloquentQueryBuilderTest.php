@@ -10,6 +10,8 @@ use Apfelfrisch\QueryFilter\Conditions\OrWhereCondition;
 use Apfelfrisch\QueryFilter\Conditions\SortDirection;
 use Apfelfrisch\QueryFilter\Conditions\WhereCondition;
 use Apfelfrisch\QueryFilter\Conditions\WhereInCondition;
+use Apfelfrisch\QueryFilter\Criterias\BetweenFilter;
+use Apfelfrisch\QueryFilter\QueryFilter;
 use Apfelfrisch\QueryFilter\Tests\TestCase;
 use Illuminate\Database\ConnectionInterface;
 use Illuminate\Database\Query\Builder;
@@ -201,6 +203,22 @@ final class EloquentQueryBuilderTest extends TestCase
 
         $this->assertSame('select * from users order by test-column desc, test-column-two asc', $builder->toSql());
         $this->assertEquals([], $builder->getBindings());
+    }
+
+    /** @test */
+    public function test_adapter_on_query_filter(): void
+    {
+        $builder = QueryFilter::new()
+            ->addDefaultCriterias(BetweenFilter::new('created_at', '2020-01-01', '2020-01-31'))
+            ->allowFilters('name')
+            ->allowSorts('street')
+            ->allowFields('name', 'email')
+            ->applyOn($this->getBuilder(), ['filter' => ['name' => 'nils'], 'sort' => '-street']);
+
+        $this->assertSame(
+            'select name, email from users where (created_at >= ? and created_at <= ?) and (name like ?) order by street desc',
+            $builder->toSql()
+        );
     }
 
     private function getBuilder(): Builder

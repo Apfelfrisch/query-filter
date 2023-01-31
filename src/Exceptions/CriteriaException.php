@@ -11,9 +11,9 @@ use Apfelfrisch\QueryFilter\Criterias\Sorting;
 
 class CriteriaException extends QueryFilterException
 {
-    public static function missingCriteria(string $name): self
+    public static function missingAllowField(string $name): self
     {
-        return new self("Criteria [$name] is not found.");
+        return new self("AllowField [$name] is not found.");
     }
 
     public static function missingSorting(string $name): self

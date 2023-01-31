@@ -12,7 +12,8 @@
         "phpstan/phpstan-phpunit": "^1.2",
         "illuminate/database": "^9.43",
         "doctrine/dbal": "^3.5",
-        "infection/infection": "^0.26.16"
+        "infection/infection": "^0.26.16",
+        "friendsofphp/php-cs-fixer": "^3.14"
     },
     "autoload": {
         "psr-4": {

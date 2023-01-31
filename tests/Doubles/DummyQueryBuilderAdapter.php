@@ -12,6 +12,8 @@ use Apfelfrisch\QueryFilter\QueryBuilder;
 
 final class DummyQueryBuilderAdapter implements QueryBuilder
 {
+    private array $selectConditions = [];
+
     private array $whereConditions = [];
 
     private array $whereInConditions = [];
@@ -35,6 +37,13 @@ final class DummyQueryBuilderAdapter implements QueryBuilder
     public function sort(string $column, SortDirection $sortDirection): self
     {
         $this->sortConditions[$column] = $sortDirection;
+
+        return $this;
+    }
+
+    public function select(string ...$selects): self
+    {
+        $this->selectConditions[] = $selects;
 
         return $this;
     }

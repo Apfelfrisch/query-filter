@@ -23,6 +23,9 @@ interface QueryBuilder
     /** @return self<T> */
     public function sort(string $column, SortDirection $sortDirection): self;
 
+    /** @return self<T> */
+    public function select(string ...$selects): self;
+
     /** @return T */
     public function builder(): mixed;
 }

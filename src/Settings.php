@@ -12,6 +12,7 @@ use Apfelfrisch\QueryFilter\Criterias\PartialFilter;
 use Apfelfrisch\QueryFilter\Exceptions\QueryFilterException;
 use Doctrine\DBAL\Query\QueryBuilder as DoctrineBuilder;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
+use Illuminate\Database\Query\Builder as IlluminateBuilder;
 
 final class Settings
 {
@@ -116,6 +117,10 @@ final class Settings
         try {
             $this->setQueryParser(new SimpleQueryParser);
             $this->setDefaultFilterClass(PartialFilter::class);
+
+            if (class_exists(IlluminateBuilder::class)) {
+                $this->addQueryBuilderMapping(IlluminateBuilder::class, EloquentQueryBuilder::class);
+            }
 
             if (class_exists(EloquentBuilder::class)) {
                 $this->addQueryBuilderMapping(EloquentBuilder::class, EloquentQueryBuilder::class);

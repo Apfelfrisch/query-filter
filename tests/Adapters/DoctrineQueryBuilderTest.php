@@ -10,6 +10,8 @@ use Apfelfrisch\QueryFilter\Conditions\OrWhereCondition;
 use Apfelfrisch\QueryFilter\Conditions\SortDirection;
 use Apfelfrisch\QueryFilter\Conditions\WhereCondition;
 use Apfelfrisch\QueryFilter\Conditions\WhereInCondition;
+use Apfelfrisch\QueryFilter\Criterias\BetweenFilter;
+use Apfelfrisch\QueryFilter\QueryFilter;
 use Apfelfrisch\QueryFilter\Tests\TestCase;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Query\Expression\ExpressionBuilder;
@@ -206,6 +208,22 @@ final class DoctrineQueryBuilderTest extends TestCase
 
         $this->assertSame('SELECT * FROM users ORDER BY test-column desc, test-column-two asc', (string)$builder);
         $this->assertEquals([], $builder->getParameters());
+    }
+
+    /** @test */
+    public function test_adapter_on_query_filter(): void
+    {
+        $builder = QueryFilter::new()
+            ->addDefaultCriterias(BetweenFilter::new('created_at', '2020-01-01', '2020-01-31'))
+            ->allowFilters('name')
+            ->allowSorts('street')
+            ->allowFields('name', 'email')
+            ->applyOn($this->getBuilder(), ['filter' => ['name' => 'nils'], 'sort' => '-street']);
+
+        $this->assertSame(
+            'SELECT name, email FROM users WHERE ((created_at >= :created_at) AND (created_at <= :created_at)) AND (name LIKE :name) ORDER BY street desc',
+            (string)$builder
+        );
     }
 
     private function getBuilder(): QueryBuilder
