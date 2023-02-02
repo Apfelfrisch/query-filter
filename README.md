@@ -131,7 +131,7 @@ $users = QueryFilter::new()
 ```
 
 ### Write a custom Filter
-Your customer Filter has to implement the Filter interface. Concrete implementations can be found under the Criterias folder.
+Your customer Filter has to implement the [Filter interface](https://github.com/Apfelfrisch/query-filter/blob/main/src/Criterias/Filter.php). Concrete implementations can be found in the [Criterias](https://github.com/Apfelfrisch/query-filter/tree/main/src/Criterias) folder.
 
 If you want to set your Filter as default, you can do it like so:
 
