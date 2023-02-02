@@ -218,7 +218,7 @@ final class DoctrineQueryBuilderTest extends TestCase
             ->allowFilters('name')
             ->allowSorts('street')
             ->allowFields('name', 'email')
-            ->applyOn($this->getBuilder(), ['filter' => ['name' => 'nils'], 'sort' => '-street']);
+            ->applyOn($this->getBuilder(), ['filter' => ['name' => 'nils'], 'sort' => '-street', 'fields' => 'name,email']);
 
         $this->assertSame(
             'SELECT name, email FROM users WHERE ((created_at >= :created_at) AND (created_at <= :created_at)) AND (name LIKE :name) ORDER BY street desc',

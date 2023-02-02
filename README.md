@@ -79,6 +79,19 @@ $users = QueryFilter::new()
   ->get();
 ```
 
+### Allow only specfic fields
+
+If needed, you can restrict the selected fields. If you do so, you must specify the fields via URI parameter. In the example below, only name and lastname will be selected.
+
+`/users?fields=name,lastname`
+
+```php
+$users = QueryFilter::new()
+  ->allowFields('name', 'lastname', 'street')
+  ->applyOn($queryBuilder)
+  ->get();
+```
+
 ### Skipping forbidden criterias
 
 By default, this package throws an exception if a filter or sort criteria is requested but not allowed. You can silently skip forbidden criterias like so:

@@ -213,7 +213,7 @@ final class EloquentQueryBuilderTest extends TestCase
             ->allowFilters('name')
             ->allowSorts('street')
             ->allowFields('name', 'email')
-            ->applyOn($this->getBuilder(), ['filter' => ['name' => 'nils'], 'sort' => '-street']);
+            ->applyOn($this->getBuilder(), ['filter' => ['name' => 'nils'], 'sort' => '-street', 'fields' => 'name,email']);
 
         $this->assertSame(
             'select name, email from users where (created_at >= ? and created_at <= ?) and (name like ?) order by street desc',

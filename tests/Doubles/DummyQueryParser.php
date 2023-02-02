@@ -12,8 +12,7 @@ final class DummyQueryParser implements QueryParser
 {
     public bool $skipForbiddenCriterias = false;
     public QueryBag|null $query = null;
-    public CriteriaCollection|null $allowedFilters = null;
-    public CriteriaCollection|null $allowedSorts = null;
+    public CriteriaCollection|null $allowedCriterias = null;
 
     public function skipForbiddenCriterias(bool $skip = true): self
     {
@@ -22,15 +21,11 @@ final class DummyQueryParser implements QueryParser
         return $this;
     }
 
-    public function parse(
-        QueryBag $query,
-        CriteriaCollection $allowedFilters,
-        CriteriaCollection $allowedSorts
-    ): CriteriaCollection {
+    public function parse(QueryBag $query, CriteriaCollection $allowdCriterias): CriteriaCollection
+    {
         $this->query = $query;
 
-        $this->allowedFilters = $allowedFilters;
-        $this->allowedSorts = $allowedSorts;
+        $this->allowedCriterias = $allowdCriterias;
 
         return new CriteriaCollection();
     }

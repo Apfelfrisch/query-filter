@@ -37,8 +37,8 @@ final class QueryFilterTest extends TestCase
         $uriFilter->allowFilters($allowFilterOne, $allowFilterTwo);
 
         $this->assertInstanceOf(CriteriaCollection::class, $uriFilter->getCriterias());
-        $this->assertSame($allowFilterOne, $this->uriParser->allowedFilters->getFilter('test-excat-filter'));
-        $this->assertSame($allowFilterTwo, $this->uriParser->allowedFilters->getFilter('test-partial-filter-two'));
+        $this->assertSame($allowFilterOne, $this->uriParser->allowedCriterias->getFilter('test-excat-filter'));
+        $this->assertSame($allowFilterTwo, $this->uriParser->allowedCriterias->getFilter('test-partial-filter-two'));
     }
 
     /** @test */
@@ -61,8 +61,8 @@ final class QueryFilterTest extends TestCase
         $uriFilter->allowFilters('default-filter', 'default-filter-two');
 
         $this->assertInstanceOf(CriteriaCollection::class, $uriFilter->getCriterias());
-        $this->assertInstanceof($this->settings->getDefaultFilterClass(), $this->uriParser->allowedFilters->getFilter('default-filter'));
-        $this->assertInstanceof($this->settings->getDefaultFilterClass(), $this->uriParser->allowedFilters->getFilter('default-filter-two'));
+        $this->assertInstanceof($this->settings->getDefaultFilterClass(), $this->uriParser->allowedCriterias->getFilter('default-filter'));
+        $this->assertInstanceof($this->settings->getDefaultFilterClass(), $this->uriParser->allowedCriterias->getFilter('default-filter-two'));
 
         $uriParser = new DummyQueryParser;
         $settings = (new Settings)->setDefaultFilterClass(ExactFilter::class)->setQueryParser($uriParser);
@@ -70,8 +70,8 @@ final class QueryFilterTest extends TestCase
         $uriFilter->allowFilters('default-filter', 'default-filter-two');
 
         $this->assertInstanceOf(CriteriaCollection::class, $uriFilter->getCriterias());
-        $this->assertInstanceof(ExactFilter::class, $uriParser->allowedFilters->getFilter('default-filter'));
-        $this->assertInstanceof(ExactFilter::class, $uriParser->allowedFilters->getFilter('default-filter-two'));
+        $this->assertInstanceof(ExactFilter::class, $uriParser->allowedCriterias->getFilter('default-filter'));
+        $this->assertInstanceof(ExactFilter::class, $uriParser->allowedCriterias->getFilter('default-filter-two'));
     }
 
     /** @test */
@@ -84,20 +84,22 @@ final class QueryFilterTest extends TestCase
         $uriFilter->allowSorts($allowSortOne, $allowSortTwo);
 
         $this->assertInstanceOf(CriteriaCollection::class, $uriFilter->getCriterias());
-        $this->assertSame($allowSortOne, $this->uriParser->allowedSorts->getSorting('test-sort-one'));
-        $this->assertSame($allowSortTwo, $this->uriParser->allowedSorts->getSorting('test-sort-two'));
+        $this->assertSame($allowSortOne, $this->uriParser->allowedCriterias->getSorting('test-sort-one'));
+        $this->assertSame($allowSortTwo, $this->uriParser->allowedCriterias->getSorting('test-sort-two'));
     }
 
     /** @test */
     public function test_adding_allow_fields(): void
     {
-        $uriFilter = QueryFilter::new($this->settings);
-        $criterias = $uriFilter
-            ->allowFields('test-field-one', AllowField::new('test-field-two')->as('alias'))
-            ->getCriterias();
+        $allowFieldOne = AllowField::new('test-field-one');
+        $allowFieldTwo = AllowField::new('test-field-two')->as('alias');
 
-        $this->assertInstanceOf(AllowField::class, $criterias->getAllowField('test-field-one'));
-        $this->assertInstanceOf(AllowField::class, $criterias->getAllowField('test-field-two-as-alias'));
+        $uriFilter = QueryFilter::new($this->settings);
+        $uriFilter->allowFields($allowFieldOne, $allowFieldTwo);
+
+        $this->assertInstanceOf(CriteriaCollection::class, $uriFilter->getCriterias());
+        $this->assertSame($allowFieldOne, $this->uriParser->allowedCriterias->getAllowField('test-field-one'));
+        $this->assertSame($allowFieldTwo, $this->uriParser->allowedCriterias->getAllowField('test-field-two-as-alias'));
     }
 
     /** @test */
@@ -185,20 +187,20 @@ final class QueryFilterTest extends TestCase
         $allowdSorts->allowSorts(new Sorting('criteria'));
 
         $this->assertFalse($this->getPrivateProberty($emptyFiler, 'defaultCriterias')->hasFilter('criteria'));
-        $this->assertFalse($this->getPrivateProberty($emptyFiler, 'allowedFilters')->hasFilter('criteria'));
-        $this->assertFalse($this->getPrivateProberty($emptyFiler, 'allowedSorts')->hasSorting('criteria'));
+        $this->assertFalse($this->getPrivateProberty($emptyFiler, 'allowdCriterias')->hasFilter('criteria'));
+        $this->assertFalse($this->getPrivateProberty($emptyFiler, 'allowdCriterias')->hasSorting('criteria'));
 
         $this->assertTrue($this->getPrivateProberty($defaultCriteria, 'defaultCriterias')->hasFilter('criteria'));
-        $this->assertFalse($this->getPrivateProberty($defaultCriteria, 'allowedFilters')->hasFilter('criteria'));
-        $this->assertFalse($this->getPrivateProberty($defaultCriteria, 'allowedSorts')->hasSorting('criteria'));
+        $this->assertFalse($this->getPrivateProberty($defaultCriteria, 'allowdCriterias')->hasFilter('criteria'));
+        $this->assertFalse($this->getPrivateProberty($defaultCriteria, 'allowdCriterias')->hasSorting('criteria'));
 
         $this->assertFalse($this->getPrivateProberty($allowdCriteria, 'defaultCriterias')->hasFilter('criteria'));
-        $this->assertTrue($this->getPrivateProberty($allowdCriteria, 'allowedFilters')->hasFilter('criteria'));
-        $this->assertFalse($this->getPrivateProberty($allowdCriteria, 'allowedSorts')->hasSorting('criteria'));
+        $this->assertTrue($this->getPrivateProberty($allowdCriteria, 'allowdCriterias')->hasFilter('criteria'));
+        $this->assertFalse($this->getPrivateProberty($allowdCriteria, 'allowdCriterias')->hasSorting('criteria'));
 
         $this->assertFalse($this->getPrivateProberty($allowdSorts, 'defaultCriterias')->hasFilter('criteria'));
-        $this->assertFalse($this->getPrivateProberty($allowdSorts, 'allowedFilters')->hasFilter('criteria'));
-        $this->assertTrue($this->getPrivateProberty($allowdSorts, 'allowedSorts')->hasSorting('criteria'));
+        $this->assertFalse($this->getPrivateProberty($allowdSorts, 'allowdCriterias')->hasFilter('criteria'));
+        $this->assertTrue($this->getPrivateProberty($allowdSorts, 'allowdCriterias')->hasSorting('criteria'));
     }
 
     private function getPrivateProberty(QueryFilter $queryFilter, string $probertyName): CriteriaCollection

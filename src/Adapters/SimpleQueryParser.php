@@ -6,9 +6,6 @@ namespace Apfelfrisch\QueryFilter\Adapters;
 
 use Apfelfrisch\QueryFilter\Conditions\SortDirection;
 use Apfelfrisch\QueryFilter\CriteriaCollection;
-use Apfelfrisch\QueryFilter\Criterias\Criteria;
-use Apfelfrisch\QueryFilter\Criterias\Filter;
-use Apfelfrisch\QueryFilter\Criterias\Sorting;
 use Apfelfrisch\QueryFilter\Exceptions\CriteriaException;
 use Apfelfrisch\QueryFilter\Exceptions\QueryStringException;
 use Apfelfrisch\QueryFilter\QueryBag;
@@ -22,6 +19,7 @@ final class SimpleQueryParser implements QueryParser
     public function __construct(
         private string $keywordFilter = 'filter',
         private string $keywordSort = 'sort',
+        private string $keywordFields = 'fields',
         private string $delimter = ',',
     ) {
     }
@@ -33,27 +31,20 @@ final class SimpleQueryParser implements QueryParser
         return $this;
     }
 
-    /**
-     * @param CriteriaCollection<Filter> $allowedFilters
-     * @param CriteriaCollection<Sorting> $allowedSorts
-     * @return CriteriaCollection<Criteria>
-     */
     public function parse(
         QueryBag $query,
-        CriteriaCollection $allowedFilters = new CriteriaCollection(),
-        CriteriaCollection $allowedSorts = new CriteriaCollection(),
+        CriteriaCollection $allowdCriterias = new CriteriaCollection(),
     ): CriteriaCollection {
-        return $this->parseFilters($query, $allowedFilters)
-            ->merge($this->parseSorts($query, $allowedSorts));
+        return $this->parseFilters($query, $allowdCriterias)
+            ->merge(
+                $this->parseSorts($query, $allowdCriterias)
+            )->merge(
+                $this->parseFields($query, $allowdCriterias)
+            );
     }
 
-    /**
-     * @param CriteriaCollection<Filter> $allowedFilters
-     * @return CriteriaCollection<Filter>
-     */
-    private function parseFilters(QueryBag $query, CriteriaCollection $allowedFilters): CriteriaCollection
+    private function parseFilters(QueryBag $query, CriteriaCollection $allowdCriterias): CriteriaCollection
     {
-        /** @var CriteriaCollection<Filter> $appliedCriterias */
         $appliedCriterias = new CriteriaCollection();
 
         $queryStringFilters = $query->getArray($this->keywordFilter);
@@ -63,12 +54,12 @@ final class SimpleQueryParser implements QueryParser
                 throw QueryStringException::unparseableQueryString();
             }
 
-            if (! $allowedFilters->hasFilter($filtername)) {
+            if (! $allowdCriterias->hasFilter($filtername)) {
                 if ($this->skipForbiddenCriterias) {
                     continue;
                 }
 
-                throw CriteriaException::forbiddenFilter($filtername, $allowedFilters);
+                throw CriteriaException::forbiddenFilter($filtername, $allowdCriterias);
             }
 
             $values = $this->getValues($filterString);
@@ -81,7 +72,7 @@ final class SimpleQueryParser implements QueryParser
                 continue;
             }
 
-            $filter = $allowedFilters->getFilter($filtername);
+            $filter = $allowdCriterias->getFilter($filtername);
             $filter->setValue($this->getValues($filterString));
 
             $appliedCriterias->add($filter);
@@ -90,13 +81,8 @@ final class SimpleQueryParser implements QueryParser
         return $appliedCriterias;
     }
 
-    /**
-     * @param CriteriaCollection<Sorting> $allowedSorts
-     * @return CriteriaCollection<Sorting>
-     */
-    private function parseSorts(QueryBag $query, CriteriaCollection $allowedSorts): CriteriaCollection
+    private function parseSorts(QueryBag $query, CriteriaCollection $allowdCriterias): CriteriaCollection
     {
-        /** @var CriteriaCollection<Sorting> $appliedCriterias */
         $appliedCriterias = new CriteriaCollection();
 
         $values = $this->getValues($query->getString($this->keywordSort));
@@ -117,18 +103,47 @@ final class SimpleQueryParser implements QueryParser
                 $sortDirection = SortDirection::Ascending;
             }
 
-            if (! $allowedSorts->hasSorting($value)) {
+            if (! $allowdCriterias->hasSorting($value)) {
                 if ($this->skipForbiddenCriterias) {
                     continue;
                 }
 
-                throw CriteriaException::forbiddenSorting($value, $allowedSorts);
+                throw CriteriaException::forbiddenSorting($value, $allowdCriterias);
             }
 
-            $sortCriteria = $allowedSorts->getSorting($value);
+            $sortCriteria = $allowdCriterias->getSorting($value);
             $sortCriteria->setSortDirection($sortDirection);
 
             $appliedCriterias->add($sortCriteria);
+        }
+
+        return $appliedCriterias;
+    }
+
+    private function parseFields(QueryBag $query, CriteriaCollection $allowdCriterias): CriteriaCollection
+    {
+        $appliedCriterias = new CriteriaCollection();
+
+        $values = $this->getValues($query->getString($this->keywordFields));
+
+        if (is_string($values)) {
+            $values = [$values];
+        }
+
+        foreach ($values as $value) {
+            if ($value === '') {
+                continue;
+            }
+
+            if (! $allowdCriterias->hasAllowField($value)) {
+                if ($this->skipForbiddenCriterias) {
+                    continue;
+                }
+
+                throw CriteriaException::forbiddenSorting($value, $allowdCriterias);
+            }
+
+            $appliedCriterias->add($allowdCriterias->getAllowField($value));
         }
 
         return $appliedCriterias;

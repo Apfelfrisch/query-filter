@@ -13,8 +13,6 @@ use ArrayIterator;
 use IteratorAggregate;
 
 /**
- * @template T of Criteria
- *
  * @implements IteratorAggregate<string, Criteria>
  */
 final class CriteriaCollection implements IteratorAggregate
@@ -35,7 +33,6 @@ final class CriteriaCollection implements IteratorAggregate
         }
     }
 
-    /** @return $this */
     public function add(Criteria $criteria): self
     {
         match (true) {
@@ -90,7 +87,6 @@ final class CriteriaCollection implements IteratorAggregate
         return $this->selectFields[$name];
     }
 
-    /** @return self<AllowField> */
     public function onlyAllowFields(): self
     {
         $instance = clone $this;
@@ -101,7 +97,6 @@ final class CriteriaCollection implements IteratorAggregate
         return $instance;
     }
 
-    /** @return self<Filter> */
     public function onlyFilters(): self
     {
         $instance = clone $this;
@@ -112,7 +107,6 @@ final class CriteriaCollection implements IteratorAggregate
         return $instance;
     }
 
-    /** @return self<Sorting> */
     public function onlySorts(): self
     {
         $instance = clone $this;
@@ -123,11 +117,6 @@ final class CriteriaCollection implements IteratorAggregate
         return $instance;
     }
 
-    /**
-     * @template TMerge of Criteria
-     * @param self<TMerge> $criteriaCollections
-     * @return self<Criteria>
-     */
     public function merge(self ...$criteriaCollections): self
     {
         $instance = clone $this;

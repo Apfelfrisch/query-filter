@@ -13,19 +13,15 @@ final class QueryFilter
 {
     private bool $skipForbiddenCriterias;
 
-    /** @var CriteriaCollection<Criteria> */
     private CriteriaCollection $defaultCriterias;
-    /** @var CriteriaCollection<Filter> */
-    private CriteriaCollection $allowedFilters;
-    /** @var CriteriaCollection<Sorting> */
-    private CriteriaCollection $allowedSorts;
+
+    private CriteriaCollection $allowdCriterias;
 
     public function __construct(
         private Settings $settings = new Settings(),
     ) {
         $this->defaultCriterias = new CriteriaCollection();
-        $this->allowedFilters = new CriteriaCollection();
-        $this->allowedSorts = new CriteriaCollection();
+        $this->allowdCriterias = new CriteriaCollection();
         $this->skipForbiddenCriterias = $settings->skipForbiddenCriterias();
     }
 
@@ -54,7 +50,7 @@ final class QueryFilter
     public function allowFields(string|AllowField ...$allowFields): self
     {
         foreach ($allowFields as $allowField) {
-            $this->defaultCriterias->add(
+            $this->allowdCriterias->add(
                 $allowField instanceof AllowField ? $allowField : new AllowField($allowField)
             );
         }
@@ -67,7 +63,7 @@ final class QueryFilter
         $defaultFilter = $this->settings->getDefaultFilterClass();
 
         foreach ($filters as $filter) {
-            $this->allowedFilters->add(
+            $this->allowdCriterias->add(
                 $filter instanceof Filter ? $filter : new $defaultFilter($filter)
             );
         }
@@ -78,7 +74,7 @@ final class QueryFilter
     public function allowSorts(string|Sorting ...$sorts): self
     {
         foreach ($sorts as $sort) {
-            $this->allowedSorts->add(
+            $this->allowdCriterias->add(
                 $sort instanceof Sorting ? $sort : new Sorting($sort)
             );
         }
@@ -100,7 +96,7 @@ final class QueryFilter
             $this->settings
             ->getQueryParser()
             ->skipForbiddenCriterias($this->skipForbiddenCriterias)
-            ->parse($queryParameters, $this->allowedFilters, $this->allowedSorts)
+            ->parse($queryParameters, $this->allowdCriterias)
         );
     }
 
@@ -122,8 +118,7 @@ final class QueryFilter
 
     public function __clone(): void
     {
-        $this->allowedSorts = clone $this->allowedSorts;
-        $this->allowedFilters = clone $this->allowedFilters;
+        $this->allowdCriterias = clone $this->allowdCriterias;
         $this->defaultCriterias = clone $this->defaultCriterias;
     }
 }
