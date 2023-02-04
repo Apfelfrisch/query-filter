@@ -74,7 +74,7 @@ $users = QueryFilter::new()
 
 ```php
 $users = QueryFilter::new()
-  ->allowSorts('name')
+  ->allowSorts('name', 'created_at')
   ->applyOn($queryBuilder)
   ->get();
 ```
