@@ -139,7 +139,7 @@ If you want to set your Filter as default, you can do it like so:
 use Apfelfrisch\QueryFilter\Settings;
 use Apfelfrisch\QueryFilter\QueryFilter;
 
-$settings = new Setting();
+$settings = new Settings();
 $settings->setDefaultFilterClass(MyCustomerFilterClass::class);
 
 $queryFilter = new QueryFilter($settings);
