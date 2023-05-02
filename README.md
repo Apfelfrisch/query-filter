@@ -4,7 +4,7 @@
 ![Static Analysis](https://github.com/Apfelfrisch/query-filter/actions/workflows/phpstan.yml/badge.svg)
 ![Mutation tests](https://github.com/Apfelfrisch/query-filter/actions/workflows/infection.yml/badge.svg)
 
-This Package provides a Framework agnostic Query Filter wich allows you to filter and sort queries based on the provided URL parameters. It comes with built-in adapters for Eloquent and Doctrine QueryBuilder, but can be easily extended to support other query building tools as well. The built-in URL parser supports basic [JSON API](https://jsonapi.org/) functionality, and can easily be swapped out for a customized parser if needed.
+This Package provides a Framework agnostic Query Filter wich allows you to filter and sort queries based on the provided URL parameters. It comes with built-in adapters for Eloquent and Doctrine QueryBuilder, but can be extended to support other query building tools as well. The built-in URL parser supports basic [JSON API](https://jsonapi.org/) functionality, and can be swapped out for a customized parser if needed.
 
 ## Yet another query filter - but why?
 
