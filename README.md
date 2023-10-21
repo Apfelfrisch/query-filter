@@ -10,6 +10,10 @@ This Package provides a Framework agnostic Query Filter wich allows you to filte
 
 I was searching for a query-filter that separates the criteria builder from the SQL builder, this way the criteria can be created in one location and then passed to another, which is useful for adding them into repositories. Additionally, I needed the capability to write custom QueryBuilderAdapter for different implementations, mainly for using it with In-Memory Repositories for testing purposes.
 
+## Installation
+
+`composer require apfelfrisch/query-filter`
+
 ## Basic Usage
 
 ### Filter Users with the Name John 
