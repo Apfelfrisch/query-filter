@@ -8,10 +8,10 @@ use Apfelfrisch\QueryFilter\CriteriaCollection;
 use Apfelfrisch\QueryFilter\Criterias;
 use Apfelfrisch\QueryFilter\Exceptions\CriteriaException;
 use Exception;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 final class CriteriaCollectionTest extends TestCase
 {
-    /** @test */
     public function test_add_filter_to_collection(): void
     {
         $criteriaCollection = new CriteriaCollection;
@@ -24,7 +24,6 @@ final class CriteriaCollectionTest extends TestCase
         $this->assertFalse($criteriaCollection->hasFilter('test-name-three'));
     }
 
-    /** @test */
     public function test_provide_a_filter_by_name(): void
     {
         $criteria = new Criterias\ExactFilter('test-name', 'test-value');
@@ -35,7 +34,6 @@ final class CriteriaCollectionTest extends TestCase
         $this->assertSame($criteria, $criteriaCollection->getFilter($criteria->getName()));
     }
 
-    /** @test */
     public function test_throw_exception_when_allow_field_was_not_found(): void
     {
         $criteriaCollection = new CriteriaCollection;
@@ -46,7 +44,6 @@ final class CriteriaCollectionTest extends TestCase
         $criteriaCollection->getAllowField('test-name');
     }
 
-    /** @test */
     public function test_throw_exception_when_filter_was_not_found(): void
     {
         $criteriaCollection = new CriteriaCollection;
@@ -57,7 +54,6 @@ final class CriteriaCollectionTest extends TestCase
         $criteriaCollection->getFilter('test-name');
     }
 
-    /** @test */
     public function test_throw_exception_when_sorting_was_not_found(): void
     {
         $criteriaCollection = new CriteriaCollection;
@@ -68,10 +64,7 @@ final class CriteriaCollectionTest extends TestCase
         $criteriaCollection->getSorting('test-name');
     }
 
-    /**
-     * @test
-     * @dataProvider provideCriteriaTypes
-     */
+    #[DataProvider('provideCriteriaTypes')]
     public function test_criteria_collection_has_criteria_of_type(
         CriteriaCollection $criteriaCollection,
         bool $hasFilter,
@@ -83,10 +76,7 @@ final class CriteriaCollectionTest extends TestCase
         $this->assertSame($hasAllowField, $criteriaCollection->hasAllowField('test-name'));
     }
 
-    /**
-     * @test
-     * @dataProvider provideCriteriaTypes
-     */
+    #[DataProvider('provideCriteriaTypes')]
     public function test_criteria_collection_provides_criteria_of_type(
         CriteriaCollection $criteriaCollection,
         bool $hasFilter,
@@ -148,7 +138,7 @@ final class CriteriaCollectionTest extends TestCase
         $this->assertTrue($mergedCriterias->hasAllowField('allow-field'));
     }
 
-    public function provideCriteriaTypes(): iterable
+    public static function provideCriteriaTypes(): iterable
     {
         yield 'pure-filters' => [
             new CriteriaCollection(new Criterias\ExactFilter('test-name', 'test-value')), true, false, false,

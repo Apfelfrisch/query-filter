@@ -1,12 +1,12 @@
 {
     "name": "apfelfrisch/query-filter",
-    "description": "A Framework agnostic query filter that sorts and filters queries using URL parameters",    
+    "description": "A Framework agnostic query filter that sorts and filters queries using URL parameters",
     "license": "MIT",
-    "require": { 
+    "require": {
         "php": "~8.1.0 || ~8.2.0"
     },
     "require-dev": {
-        "phpunit/phpunit": "^9.3",
+        "phpunit/phpunit": "^10.5",
         "symfony/var-dumper": "^5.2",
         "phpstan/phpstan": "^1.9",
         "phpstan/phpstan-phpunit": "^1.2",

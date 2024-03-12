@@ -27,7 +27,6 @@ final class QueryFilterTest extends TestCase
         $this->settings = (new Settings)->setQueryParser($this->uriParser);
     }
 
-    /** @test */
     public function test_adding_allow_filters(): void
     {
         $allowFilterOne = new ExactFilter('test-excat-filter');
@@ -41,7 +40,6 @@ final class QueryFilterTest extends TestCase
         $this->assertSame($allowFilterTwo, $this->uriParser->allowedCriterias->getFilter('test-partial-filter-two'));
     }
 
-    /** @test */
     public function test_adding_default_criterias(): void
     {
         $filter = ExactFilter::new('test-excat-filter')->setValue('1');
@@ -54,7 +52,6 @@ final class QueryFilterTest extends TestCase
         $this->assertSame($sorting, $criterias->getSorting('test-sort-one'));
     }
 
-    /** @test */
     public function test_adding_default_filter_class(): void
     {
         $uriFilter = QueryFilter::new($this->settings);
@@ -74,7 +71,6 @@ final class QueryFilterTest extends TestCase
         $this->assertInstanceof(ExactFilter::class, $uriParser->allowedCriterias->getFilter('default-filter-two'));
     }
 
-    /** @test */
     public function test_adding_allow_sort(): void
     {
         $allowSortOne = new Sorting('test-sort-one');
@@ -88,7 +84,6 @@ final class QueryFilterTest extends TestCase
         $this->assertSame($allowSortTwo, $this->uriParser->allowedCriterias->getSorting('test-sort-two'));
     }
 
-    /** @test */
     public function test_adding_allow_fields(): void
     {
         $allowFieldOne = AllowField::new('test-field-one');
@@ -102,7 +97,6 @@ final class QueryFilterTest extends TestCase
         $this->assertSame($allowFieldTwo, $this->uriParser->allowedCriterias->getAllowField('test-field-two-as-alias'));
     }
 
-    /** @test */
     public function test_parse_with_mappend_query_adapter(): void
     {
         $uriParser = new DummyQueryParser;
@@ -116,7 +110,6 @@ final class QueryFilterTest extends TestCase
         $this->assertSame($adaptableClass, $uriFilter->applyOn($adaptableClass));
     }
 
-    /** @test */
     public function test_parse_query_bag_parameters(): void
     {
         $uriFilter = QueryFilter::new($this->settings);
@@ -125,7 +118,6 @@ final class QueryFilterTest extends TestCase
         $this->assertEquals(new QueryBag(['test-string' => 'test']), $this->uriParser->query);
     }
 
-    /** @test */
     public function test_parse_plain_array_query_parameters(): void
     {
         $uriFilter = QueryFilter::new($this->settings);
@@ -134,7 +126,6 @@ final class QueryFilterTest extends TestCase
         $this->assertEquals(new QueryBag(['test-string' => 'test']), $this->uriParser->query);
     }
 
-    /** @test */
     public function test_parse_global_get_query_parameters(): void
     {
         $_GET['test-string'] = 'test';
@@ -145,7 +136,6 @@ final class QueryFilterTest extends TestCase
         $this->assertEquals(new QueryBag(['test-string' => 'test']), $this->uriParser->query);
     }
 
-    /** @test */
     public function test_skipping_forbidden_criterias(): void
     {
         $uriParser = new DummyQueryParser;
@@ -174,7 +164,6 @@ final class QueryFilterTest extends TestCase
         $this->assertTrue($uriParser->skipForbiddenCriterias);
     }
 
-    /** @test */
     public function test_cloning_instance(): void
     {
         $emptyFiler = new QueryFilter;

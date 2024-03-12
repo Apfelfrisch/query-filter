@@ -9,7 +9,6 @@ use Apfelfrisch\QueryFilter\QueryBag;
 
 final class QueryBagTest extends TestCase
 {
-    /** @test */
     public function test_parsing_parameters_from_url_like_string(): void
     {
         $queryBag = QueryBag::fromUrl('/user?id=1');
@@ -19,7 +18,6 @@ final class QueryBagTest extends TestCase
         $this->assertSame('1', $queryBag->get('id'));
     }
 
-    /** @test */
     public function test_getting_values_from_query_bag(): void
     {
         $queryBag = new QueryBag(['string-key' => 'string']);
@@ -29,7 +27,6 @@ final class QueryBagTest extends TestCase
         $this->assertSame(['string'], $queryBag->getArray('string-key'));
     }
 
-    /** @test */
     public function test_cheching_if_value_is_existent(): void
     {
         $queryBag = new QueryBag(['existent-string-key' => 'string']);
@@ -38,7 +35,6 @@ final class QueryBagTest extends TestCase
         $this->assertSame(false, $queryBag->has('non-existent-string-key'));
     }
 
-    /** @test */
     public function test_throwing_exception_on_non_scalar_value(): void
     {
         $queryBag = new QueryBag(['string-key' => (object)['string']]);

@@ -19,7 +19,6 @@ use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 
 final class SettingsTest extends TestCase
 {
-    /** @test */
     public function test_load_default_setting(): void
     {
         $settings = new Settings;
