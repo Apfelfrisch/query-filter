@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Apfelfrisch\QueryFilter\Tests\TestsDoubles;
+namespace Apfelfrisch\QueryFilter\Tests\Doubles;
 
 use Apfelfrisch\QueryFilter\Conditions\OrWhereCondition;
 use Apfelfrisch\QueryFilter\Conditions\SortDirection;

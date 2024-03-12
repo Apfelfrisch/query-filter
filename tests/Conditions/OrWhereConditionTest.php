@@ -9,13 +9,11 @@ use Apfelfrisch\QueryFilter\Conditions\OrWhereCondition;
 use Apfelfrisch\QueryFilter\Exceptions\ConditionException;
 use Apfelfrisch\QueryFilter\Tests\TestCase;
 use Iterator;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 final class OrWhereConditionTest extends TestCase
 {
-    /**
-     * @test
-     * @dataProvider conditionAttributes
-     */
+    #[DataProvider('conditionAttributes')]
     public function testThrowExceptionWhenNullableValueHasInvalOperator($column, $operator, $value, $exceptionMessage): void
     {
         if ($exceptionMessage !== null) {
@@ -26,7 +24,7 @@ final class OrWhereConditionTest extends TestCase
         $this->assertInstanceOf(OrWhereCondition::class, new OrWhereCondition($column, $operator, $value));
     }
 
-    public function conditionAttributes(): Iterator
+    public static function conditionAttributes(): Iterator
     {
         yield Operator::Equal->value => [
             'column', Operator::Equal, null, null,

@@ -3,6 +3,9 @@
   <testsuites>
     <testsuite name="Package Test Suite">
       <directory suffix=".php">./tests/</directory>
+      <exclude>./tests/Doubles</exclude>
+      <exclude>./tests/TestCase.php</exclude>
+      <exclude>./tests/Criterias/AbstractPartialFilterTestCase.php</exclude>
     </testsuite>
   </testsuites>
   <source>

@@ -14,8 +14,13 @@ use Apfelfrisch\QueryFilter\Criterias\BetweenFilter;
 use Apfelfrisch\QueryFilter\QueryFilter;
 use Apfelfrisch\QueryFilter\Tests\TestCase;
 use Doctrine\DBAL\Connection;
-use Doctrine\DBAL\Query\Expression\ExpressionBuilder;
+use Doctrine\DBAL\Driver;
+use Doctrine\DBAL\Driver\Result;
+use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Doctrine\DBAL\Query\QueryBuilder;
+use Doctrine\DBAL\Schema\AbstractSchemaManager;
+use Doctrine\DBAL\Schema\SchemaConfig;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\MockObject\MockObject;
 
 final class DoctrineQueryBuilderTest extends TestCase
@@ -28,10 +33,7 @@ final class DoctrineQueryBuilderTest extends TestCase
         $this->assertSame($builder, $builderAdapter->builder());
     }
 
-    /**
-     * @test
-     * @dataProvider provideWhereOperatorCases
-     */
+    #[DataProvider('provideWhereOperatorCases')]
     public function test_single_where(Operator $operator): void
     {
         $builder = $this->getBuilder();
@@ -45,7 +47,6 @@ final class DoctrineQueryBuilderTest extends TestCase
         $this->assertEquals([':test-column' => 'test-value'], $builder->getParameters());
     }
 
-    /** @test */
     public function test_single_where_null(): void
     {
         $builder = $this->getBuilder();
@@ -64,7 +65,6 @@ final class DoctrineQueryBuilderTest extends TestCase
         $this->assertEquals([], $builder->getParameters());
     }
 
-    /** @test */
     public function test_multiple_where(): void
     {
         $builder = $this->getBuilder();
@@ -79,7 +79,6 @@ final class DoctrineQueryBuilderTest extends TestCase
         $this->assertEquals([':test-column' => 'test-value', ':test-column-two' => 'test-value-two'], $builder->getParameters());
     }
 
-    /** @test */
     public function test_two_or_where(): void
     {
         $builder = $this->getBuilder();
@@ -94,7 +93,6 @@ final class DoctrineQueryBuilderTest extends TestCase
         $this->assertEquals([':test-column' => 'test-value', ':test-column-two' => 'test-value-two'], $builder->getParameters());
     }
 
-    /** @test */
     public function test_mix_where_and_or_where(): void
     {
         $builder = $this->getBuilder();
@@ -120,7 +118,6 @@ final class DoctrineQueryBuilderTest extends TestCase
         );
     }
 
-    /** @test */
     public function test_where_in(): void
     {
         $builder = $this->getBuilder();
@@ -134,7 +131,6 @@ final class DoctrineQueryBuilderTest extends TestCase
         $this->assertEquals([':test-column' => ['test-value', 'test-value-two', 'test-value-three']], $builder->getParameters());
     }
 
-    /** @test */
     public function test_selects(): void
     {
         $builder = $this->getBuilder();
@@ -147,7 +143,6 @@ final class DoctrineQueryBuilderTest extends TestCase
         $this->assertEquals([], $builder->getParameters());
     }
 
-    /** @test */
     public function test_sort_asc(): void
     {
         $builder = $this->getBuilder();
@@ -159,7 +154,6 @@ final class DoctrineQueryBuilderTest extends TestCase
         $this->assertEquals([], $builder->getParameters());
     }
 
-    /** @test */
     public function test_sort_multiple_asc(): void
     {
         $builder = $this->getBuilder();
@@ -172,7 +166,6 @@ final class DoctrineQueryBuilderTest extends TestCase
         $this->assertEquals([], $builder->getParameters());
     }
 
-    /** @test */
     public function test_sort_desc(): void
     {
         $builder = $this->getBuilder();
@@ -184,7 +177,6 @@ final class DoctrineQueryBuilderTest extends TestCase
         $this->assertEquals([], $builder->getParameters());
     }
 
-    /** @test */
     public function test_sort_multiple_desc(): void
     {
         $builder = $this->getBuilder();
@@ -197,7 +189,6 @@ final class DoctrineQueryBuilderTest extends TestCase
         $this->assertEquals([], $builder->getParameters());
     }
 
-    /** @test */
     public function test_sort_multiple_mixed_order(): void
     {
         $builder = $this->getBuilder();
@@ -210,7 +201,6 @@ final class DoctrineQueryBuilderTest extends TestCase
         $this->assertEquals([], $builder->getParameters());
     }
 
-    /** @test */
     public function test_adapter_on_query_filter(): void
     {
         $builder = QueryFilter::new()
@@ -226,16 +216,29 @@ final class DoctrineQueryBuilderTest extends TestCase
         );
     }
 
+    public static function provideWhereOperatorCases(): iterable
+    {
+        yield 'operator-eq' => [Operator::Equal];
+        yield 'operator-gt' => [Operator::GreaterThen];
+        yield 'operator-gte' => [Operator::GreaterThenEqual];
+        yield 'operator-lt' => [Operator::LessThan];
+        yield 'operator-lte' => [Operator::LessThanEqual];
+    }
+
     private function getBuilder(): QueryBuilder
     {
         /** @var MockObject|Connection */
-        $connection = $this->createMock(Connection::class);
+        $connection = $this->getMockBuilder(Connection::class)
+            ->setConstructorArgs([[], $this->createDriverMock()])
+            ->onlyMethods(['quote'])
+            ->getMockForAbstractClass();
+        $connection->method('quote')->willReturnCallback(static fn (string $input) => sprintf("'%s'", $input));
 
-        $expressionBuilder = new ExpressionBuilder($connection);
+        // $expressionBuilder = new ExpressionBuilder($connection);
 
-        $connection->expects(self::any())
-           ->method('getExpressionBuilder')
-           ->willReturn($expressionBuilder);
+        // $connection->expects(self::any())
+        //    ->method('getExpressionBuilder')
+        //    ->willReturn($expressionBuilder);
 
         $builder = new QueryBuilder($connection);
         $builder->select('*')->from('users');
@@ -243,12 +246,44 @@ final class DoctrineQueryBuilderTest extends TestCase
         return $builder;
     }
 
-    public function provideWhereOperatorCases(): iterable
+    private function createDriverMock(): Driver
     {
-        yield 'operator-eq' => [Operator::Equal];
-        yield 'operator-gt' => [Operator::GreaterThen];
-        yield 'operator-gte' => [Operator::GreaterThenEqual];
-        yield 'operator-lt' => [Operator::LessThan];
-        yield 'operator-lte' => [Operator::LessThanEqual];
+        $result = $this->createMock(Result::class);
+        $result->method('fetchAssociative')
+            ->willReturn(false);
+
+        $connection = $this->createMock(Driver\Connection::class);
+        $connection->method('query')
+            ->willReturn($result);
+
+        $driver = $this->createMock(Driver::class);
+        $driver->method('connect')
+            ->willReturn($connection);
+        $driver->method('getDatabasePlatform')
+            ->willReturn($platform = $this->createPlatformMock());
+
+        if (method_exists(Driver::class, 'getSchemaManager')) {
+            $driver->method('getSchemaManager')
+                ->willReturnCallback([$platform, 'createSchemaManager']);
+        }
+
+        return $driver;
+    }
+
+    private function createPlatformMock(): AbstractPlatform
+    {
+        $schemaManager = $this->createMock(AbstractSchemaManager::class);
+        $schemaManager->method('createSchemaConfig')
+            ->willReturn(new SchemaConfig());
+
+        $platform = $this->getMockBuilder(AbstractPlatform::class)
+            ->onlyMethods(['supportsIdentityColumns', 'createSchemaManager'])
+            ->getMockForAbstractClass();
+        $platform->method('supportsIdentityColumns')
+            ->willReturn(true);
+        $platform->method('createSchemaManager')
+            ->willReturn($schemaManager);
+
+        return $platform;
     }
 }

@@ -1,7 +1,7 @@
 coverage/
 vendor/
 .php-cs-fixer.cache
-.phpunit.result.cache
+.phpunit.cache/
 composer.lock
 composer.phar
 infection.html

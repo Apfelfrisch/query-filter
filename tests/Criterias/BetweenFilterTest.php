@@ -7,8 +7,8 @@ namespace Apfelfrisch\QueryFilter\Tests\Criterias;
 use Apfelfrisch\QueryFilter\Conditions\Operator;
 use Apfelfrisch\QueryFilter\Conditions\WhereCondition;
 use Apfelfrisch\QueryFilter\Criterias\BetweenFilter;
+use Apfelfrisch\QueryFilter\Tests\Doubles\DummyQueryBuilderAdapter;
 use Apfelfrisch\QueryFilter\Tests\TestCase;
-use Apfelfrisch\QueryFilter\Tests\TestsDoubles\DummyQueryBuilderAdapter;
 
 final class BetweenFilterTest extends TestCase
 {

@@ -11,10 +11,9 @@ use Apfelfrisch\QueryFilter\Criterias\ExactFilter;
 use Apfelfrisch\QueryFilter\Criterias\PartialFilter;
 use Apfelfrisch\QueryFilter\Exceptions\QueryFilterException;
 use Apfelfrisch\QueryFilter\Settings;
-use Apfelfrisch\QueryFilter\Tests\TestsDoubles\DummyQueryBuilderAdapter;
-use Apfelfrisch\QueryFilter\Tests\TestsDoubles\DummyQueryParser;
+use Apfelfrisch\QueryFilter\Tests\Doubles\DummyQueryBuilderAdapter;
+use Apfelfrisch\QueryFilter\Tests\Doubles\DummyQueryParser;
 use Doctrine\DBAL\Query\QueryBuilder as DoctrineBuilder;
-use Exception;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 
 final class SettingsTest extends TestCase
@@ -75,6 +74,9 @@ final class SettingsTest extends TestCase
         $settings = new Settings;
 
         $this->expectException(QueryFilterException::class);
+        $this->expectExceptionMessage(
+            'Unkown adaptable QueryBuilder class [Apfelfrisch\QueryFilter\Tests\UnkownClass]'
+        );
 
         $settings->addQueryBuilderMapping(UnkownClass::class, DummyQueryBuilderAdapter::class);
     }
@@ -83,7 +85,10 @@ final class SettingsTest extends TestCase
     {
         $settings = new Settings;
 
-        $this->expectException(Exception::class);
+        $this->expectException(QueryFilterException::class);
+        $this->expectExceptionMessage(
+            'Adapter [Apfelfrisch\QueryFilter\Tests\Doubles\DummyQueryParser] must implement [Apfelfrisch\QueryFilter\QueryBuilder].'
+        );
 
         $settings->addQueryBuilderMapping(EloquentBuilder::class, DummyQueryParser::class);
     }
@@ -92,7 +97,10 @@ final class SettingsTest extends TestCase
     {
         $settings = new Settings;
 
-        $this->expectException(Exception::class);
+        $this->expectException(QueryFilterException::class);
+        $this->expectExceptionMessage(
+            'Could not find Adapter for [Apfelfrisch\QueryFilter\Tests\Doubles\DummyQueryParser]'
+        );
 
         $settings->adaptQueryBuilder(new DummyQueryParser);
     }

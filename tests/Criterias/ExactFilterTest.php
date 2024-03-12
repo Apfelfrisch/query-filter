@@ -8,8 +8,8 @@ use Apfelfrisch\QueryFilter\Conditions\Operator;
 use Apfelfrisch\QueryFilter\Conditions\WhereCondition;
 use Apfelfrisch\QueryFilter\Conditions\WhereInCondition;
 use Apfelfrisch\QueryFilter\Criterias\ExactFilter;
+use Apfelfrisch\QueryFilter\Tests\Doubles\DummyQueryBuilderAdapter;
 use Apfelfrisch\QueryFilter\Tests\TestCase;
-use Apfelfrisch\QueryFilter\Tests\TestsDoubles\DummyQueryBuilderAdapter;
 
 final class ExactFilterTest extends TestCase
 {

@@ -6,8 +6,8 @@ namespace Apfelfrisch\QueryFilter\Tests\Criterias;
 
 use Apfelfrisch\QueryFilter\Conditions\SortDirection;
 use Apfelfrisch\QueryFilter\Criterias\Sorting;
+use Apfelfrisch\QueryFilter\Tests\Doubles\DummyQueryBuilderAdapter;
 use Apfelfrisch\QueryFilter\Tests\TestCase;
-use Apfelfrisch\QueryFilter\Tests\TestsDoubles\DummyQueryBuilderAdapter;
 
 final class SortTest extends TestCase
 {

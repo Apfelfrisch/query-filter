@@ -28,7 +28,6 @@ final class EloquentQueryBuilderTest extends TestCase
         $this->assertSame($builder, $builderAdapter->builder());
     }
 
-    /** @test */
     public function test_single_where(): void
     {
         $builder = $this->getBuilder();
@@ -40,7 +39,6 @@ final class EloquentQueryBuilderTest extends TestCase
         $this->assertEquals([0 => 'test-value'], $builder->getBindings());
     }
 
-    /** @test */
     public function test_single_where_null(): void
     {
         $builder = $this->getBuilder();
@@ -59,7 +57,6 @@ final class EloquentQueryBuilderTest extends TestCase
         $this->assertEquals([], $builder->getBindings());
     }
 
-    /** @test */
     public function test_multiple_where(): void
     {
         $builder = $this->getBuilder();
@@ -74,7 +71,6 @@ final class EloquentQueryBuilderTest extends TestCase
         $this->assertEquals([0 => 'test-value', 1 => 'test-value-two'], $builder->getBindings());
     }
 
-    /** @test */
     public function test_two_or_where(): void
     {
         $builder = $this->getBuilder();
@@ -89,7 +85,6 @@ final class EloquentQueryBuilderTest extends TestCase
         $this->assertEquals([0 => 'test-value', 1 => 'test-value-two'], $builder->getBindings());
     }
 
-    /** @test */
     public function test_mix_where_and_or_where(): void
     {
         $builder = $this->getBuilder();
@@ -115,7 +110,6 @@ final class EloquentQueryBuilderTest extends TestCase
         );
     }
 
-    /** @test */
     public function test_where_in(): void
     {
         $builder = $this->getBuilder();
@@ -129,7 +123,6 @@ final class EloquentQueryBuilderTest extends TestCase
         $this->assertEquals([0 => 'test-value', 1 => 'test-value-two', 2 => 'test-value-three'], $builder->getBindings());
     }
 
-    /** @test */
     public function test_selects(): void
     {
         $builder = $this->getBuilder();
@@ -142,7 +135,6 @@ final class EloquentQueryBuilderTest extends TestCase
         $this->assertEquals([], $builder->getBindings());
     }
 
-    /** @test */
     public function test_sort_asc(): void
     {
         $builder = $this->getBuilder();
@@ -154,7 +146,6 @@ final class EloquentQueryBuilderTest extends TestCase
         $this->assertEquals([], $builder->getBindings());
     }
 
-    /** @test */
     public function test_sort_multiple_asc(): void
     {
         $builder = $this->getBuilder();
@@ -167,7 +158,6 @@ final class EloquentQueryBuilderTest extends TestCase
         $this->assertEquals([], $builder->getBindings());
     }
 
-    /** @test */
     public function test_sort_desc(): void
     {
         $builder = $this->getBuilder();
@@ -179,7 +169,6 @@ final class EloquentQueryBuilderTest extends TestCase
         $this->assertEquals([], $builder->getBindings());
     }
 
-    /** @test */
     public function test_sort_multiple_desc(): void
     {
         $builder = $this->getBuilder();
@@ -192,7 +181,6 @@ final class EloquentQueryBuilderTest extends TestCase
         $this->assertEquals([], $builder->getBindings());
     }
 
-    /** @test */
     public function test_sort_multiple_mixed_order(): void
     {
         $builder = $this->getBuilder();
@@ -205,7 +193,6 @@ final class EloquentQueryBuilderTest extends TestCase
         $this->assertEquals([], $builder->getBindings());
     }
 
-    /** @test */
     public function test_adapter_on_query_filter(): void
     {
         $builder = QueryFilter::new()

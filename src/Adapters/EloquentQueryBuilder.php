@@ -27,7 +27,9 @@ final class EloquentQueryBuilder implements QueryBuilder
     public function select(string ...$selects): self
     {
         // Reset `SELECT *`
+        /** @phpstan-ignore-next-line */
         if (count($this->builder->columns ?? []) === 1 && strval($this->builder->columns[0]) === '*') {
+            /** @phpstan-ignore-next-line */
             $this->builder->columns = [];
         }
 

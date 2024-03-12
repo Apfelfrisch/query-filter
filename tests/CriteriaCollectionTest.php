@@ -6,6 +6,7 @@ namespace Apfelfrisch\QueryFilter\Tests;
 
 use Apfelfrisch\QueryFilter\CriteriaCollection;
 use Apfelfrisch\QueryFilter\Criterias;
+use Apfelfrisch\QueryFilter\Criterias\Criteria;
 use Apfelfrisch\QueryFilter\Exceptions\CriteriaException;
 use Exception;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -32,6 +33,17 @@ final class CriteriaCollectionTest extends TestCase
         $criteriaCollection->add($criteria);
 
         $this->assertSame($criteria, $criteriaCollection->getFilter($criteria->getName()));
+    }
+
+    public function test_throw_exception_when_a_criteria_is_unkown(): void
+    {
+        $criteriaCollection = new CriteriaCollection;
+        $stub = $this->createStub(Criteria::class);
+
+        $this->expectException(CriteriaException::class);
+        $this->expectExceptionMessage('Unsupported criteria type ['. $stub::class . ']');
+
+        $criteriaCollection->add($stub);
     }
 
     public function test_throw_exception_when_allow_field_was_not_found(): void

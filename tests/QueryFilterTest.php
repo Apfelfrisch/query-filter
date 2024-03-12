@@ -13,8 +13,8 @@ use Apfelfrisch\QueryFilter\QueryBag;
 use Apfelfrisch\QueryFilter\QueryFilter;
 use Apfelfrisch\QueryFilter\QueryParser;
 use Apfelfrisch\QueryFilter\Settings;
-use Apfelfrisch\QueryFilter\Tests\TestsDoubles\DummyQueryBuilderAdapter;
-use Apfelfrisch\QueryFilter\Tests\TestsDoubles\DummyQueryParser;
+use Apfelfrisch\QueryFilter\Tests\Doubles\DummyQueryBuilderAdapter;
+use Apfelfrisch\QueryFilter\Tests\Doubles\DummyQueryParser;
 
 final class QueryFilterTest extends TestCase
 {
@@ -142,7 +142,7 @@ final class QueryFilterTest extends TestCase
 
         $settings = (new Settings)
             ->setQueryParser($uriParser)
-            ->setSkipForbiddenCriterias(true);
+            ->setSkipForbiddenCriterias();
 
         $this->assertFalse($uriParser->skipForbiddenCriterias);
 

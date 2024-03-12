@@ -18,7 +18,6 @@ use Exception;
 
 final class SimpleQueryParserTest extends TestCase
 {
-    /** @test */
     public function test_throwing_exception_when_given_filter_is_not_allowd(): void
     {
         $parser = new SimpleQueryParser(keywordFilter: 'filter', keywordSort: 'sort');
@@ -32,7 +31,6 @@ final class SimpleQueryParserTest extends TestCase
         );
     }
 
-    /** @test */
     public function test_throwing_exception_when_given_sort_is_not_allowd(): void
     {
         $parser = new SimpleQueryParser(keywordFilter: 'filter', keywordSort: 'sort');
@@ -46,7 +44,6 @@ final class SimpleQueryParserTest extends TestCase
         );
     }
 
-    /** @test */
     public function test_skipping_forbidding_filters(): void
     {
         $parser = new SimpleQueryParser(keywordFilter: 'filter', keywordSort: 'sort');
@@ -60,7 +57,6 @@ final class SimpleQueryParserTest extends TestCase
         $this->assertEquals(new CriteriaCollection(new ExactFilter('name', 'nils')), $criterias);
     }
 
-    /** @test */
     public function test_skipping_forbidding_sorts(): void
     {
         $parser = new SimpleQueryParser(keywordFilter: 'filter', keywordSort: 'sort');
@@ -77,7 +73,6 @@ final class SimpleQueryParserTest extends TestCase
         );
     }
 
-    /** @test */
     public function test_throwing_exception_when_given_a_nested_filter_type(): void
     {
         $parser = new SimpleQueryParser(keywordFilter: 'filter', keywordSort: 'sort');
@@ -87,7 +82,6 @@ final class SimpleQueryParserTest extends TestCase
         $parser->parse(QueryBag::fromUrl("filter[[name]]=nils"), new CriteriaCollection);
     }
 
-    /** @test */
     public function test_throwing_exception_when_given_a_nested_sort(): void
     {
         $parser = new SimpleQueryParser(keywordFilter: 'filter', keywordSort: 'sort');
@@ -97,7 +91,6 @@ final class SimpleQueryParserTest extends TestCase
         $parser->parse(QueryBag::fromUrl("sort[name]=nils"), new CriteriaCollection);
     }
 
-    /** @test */
     public function test_throwing_exception_query_is_unparseable(): void
     {
         $parser = new SimpleQueryParser(keywordFilter: 'filter', keywordSort: 'sort');
@@ -111,7 +104,6 @@ final class SimpleQueryParserTest extends TestCase
         );
     }
 
-    /** @test */
     public function test_allowd_filter_with_one_value(): void
     {
         $parser = new SimpleQueryParser(keywordFilter: 'filter', keywordSort: 'sort');
@@ -124,7 +116,6 @@ final class SimpleQueryParserTest extends TestCase
         $this->assertEquals(new CriteriaCollection(new ExactFilter('name', 'nils')), $criterias);
     }
 
-    /** @test */
     public function test_allowd_filter_with_multiple_values(): void
     {
         $parser = new SimpleQueryParser(keywordFilter: 'filter', keywordSort: 'sort');
@@ -137,7 +128,6 @@ final class SimpleQueryParserTest extends TestCase
         $this->assertEquals(new CriteriaCollection(new ExactFilter('name', ['nils', 'refle'])), $criterias);
     }
 
-    /** @test */
     public function test_allowd_sorting_with_one_ascinding_value(): void
     {
         $parser = new SimpleQueryParser(keywordFilter: 'filter', keywordSort: 'sort');
@@ -150,7 +140,6 @@ final class SimpleQueryParserTest extends TestCase
         $this->assertEquals(new CriteriaCollection(new Sorting('nils', SortDirection::Ascending)), $criterias);
     }
 
-    /** @test */
     public function test_allowd_sorting_with_one_descing_value(): void
     {
         $parser = new SimpleQueryParser(keywordFilter: 'filter', keywordSort: 'sort');
@@ -163,7 +152,6 @@ final class SimpleQueryParserTest extends TestCase
         $this->assertEquals(new CriteriaCollection(new Sorting('nils', SortDirection::Descending)), $criterias);
     }
 
-    /** @test */
     public function test_allowd_sorting_with_multiple_values(): void
     {
         $parser = new SimpleQueryParser(keywordFilter: 'filter', keywordSort: 'sort');
@@ -182,7 +170,6 @@ final class SimpleQueryParserTest extends TestCase
         );
     }
 
-    /** @test */
     public function test_trimming_spaces_in_sort_value(): void
     {
         $parser = new SimpleQueryParser(keywordFilter: 'filter', keywordSort: 'sort');
@@ -195,7 +182,6 @@ final class SimpleQueryParserTest extends TestCase
         $this->assertEquals(new CriteriaCollection(new Sorting('nils', SortDirection::Descending)), $criterias);
     }
 
-    /** @test */
     public function test_skipping_empty_sorts(): void
     {
         $parser = new SimpleQueryParser(keywordFilter: 'filter', keywordSort: 'sort');
@@ -208,7 +194,6 @@ final class SimpleQueryParserTest extends TestCase
         $this->assertEquals(new CriteriaCollection(new Sorting('nils', SortDirection::Ascending)), $criterias);
     }
 
-    /** @test */
     public function test_skipping_empty_filter(): void
     {
         $parser = new SimpleQueryParser(keywordFilter: 'filter', keywordSort: 'sort');
@@ -221,7 +206,6 @@ final class SimpleQueryParserTest extends TestCase
         $this->assertEquals(new CriteriaCollection(new ExactFilter('name_three', 'nils')), $criterias);
     }
 
-    /** @test */
     public function test_trimming_spaces_in_sort_lists(): void
     {
         $parser = new SimpleQueryParser(keywordFilter: 'filter', keywordSort: 'sort');
@@ -240,7 +224,6 @@ final class SimpleQueryParserTest extends TestCase
         );
     }
 
-    /** @test */
     public function test_trimming_spaces_in_filter_lists(): void
     {
         $parser = new SimpleQueryParser(keywordFilter: 'filter', keywordSort: 'sort');

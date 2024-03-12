@@ -8,8 +8,8 @@ use Apfelfrisch\QueryFilter\Conditions\Operator;
 use Apfelfrisch\QueryFilter\Conditions\OrWhereCondition;
 use Apfelfrisch\QueryFilter\Conditions\WhereCondition;
 use Apfelfrisch\QueryFilter\Criterias\FixedFilter;
+use Apfelfrisch\QueryFilter\Tests\Doubles\DummyQueryBuilderAdapter;
 use Apfelfrisch\QueryFilter\Tests\TestCase;
-use Apfelfrisch\QueryFilter\Tests\TestsDoubles\DummyQueryBuilderAdapter;
 
 final class FixedFilterTest extends TestCase
 {

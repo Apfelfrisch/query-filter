@@ -10,8 +10,8 @@ use Apfelfrisch\QueryFilter\Conditions\WhereCondition;
 use Apfelfrisch\QueryFilter\Conditions\WhereInCondition;
 use Apfelfrisch\QueryFilter\Criterias\CallbackFilter;
 use Apfelfrisch\QueryFilter\QueryBuilder;
+use Apfelfrisch\QueryFilter\Tests\Doubles\DummyQueryBuilderAdapter;
 use Apfelfrisch\QueryFilter\Tests\TestCase;
-use Apfelfrisch\QueryFilter\Tests\TestsDoubles\DummyQueryBuilderAdapter;
 
 final class CallbackFilterTest extends TestCase
 {

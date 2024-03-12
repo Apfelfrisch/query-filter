@@ -9,10 +9,10 @@ use Apfelfrisch\QueryFilter\Conditions\OrWhereCondition;
 use Apfelfrisch\QueryFilter\Conditions\WhereCondition;
 use Apfelfrisch\QueryFilter\Criterias\AbstractPartialFilter;
 use Apfelfrisch\QueryFilter\Criterias\PartialFilter;
+use Apfelfrisch\QueryFilter\Tests\Doubles\DummyQueryBuilderAdapter;
 use Apfelfrisch\QueryFilter\Tests\TestCase;
-use Apfelfrisch\QueryFilter\Tests\TestsDoubles\DummyQueryBuilderAdapter;
 
-abstract class AbstractPartialFilterTest extends TestCase
+abstract class AbstractPartialFilterTestCase extends TestCase
 {
     abstract protected function prepareValue(string $value): string;
 

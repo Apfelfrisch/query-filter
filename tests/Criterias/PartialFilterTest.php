@@ -7,7 +7,7 @@ namespace Apfelfrisch\QueryFilter\Tests\Criterias;
 use Apfelfrisch\QueryFilter\Criterias\AbstractPartialFilter;
 use Apfelfrisch\QueryFilter\Criterias\PartialFilter;
 
-final class PartialFilterTest extends AbstractPartialFilterTest
+final class PartialFilterTest extends AbstractPartialFilterTestCase
 {
     protected function prepareValue(string $value): string
     {
