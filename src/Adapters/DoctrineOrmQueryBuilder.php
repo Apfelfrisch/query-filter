@@ -11,19 +11,21 @@ use Apfelfrisch\QueryFilter\Conditions\WhereCondition;
 use Apfelfrisch\QueryFilter\Conditions\WhereInCondition;
 use Apfelfrisch\QueryFilter\Exceptions\ConditionException;
 use Apfelfrisch\QueryFilter\QueryBuilder;
-use Doctrine\DBAL\Query\Expression\CompositeExpression;
-use Doctrine\DBAL\Query\QueryBuilder as BaseQueryBuilder;
+use Doctrine\ORM\Query\Expr\Comparison;
+use Doctrine\ORM\Query\Expr\Composite;
+use Doctrine\ORM\QueryBuilder as BaseQueryBuilder;
 
 /**
  * @implements QueryBuilder<BaseQueryBuilder>
  */
-final class DoctrineQueryBuilder implements QueryBuilder
+final class DoctrineOrmQueryBuilder implements QueryBuilder
 {
     /** @var array<array-key, string> */
     private array $selects = [];
 
     public function __construct(
         private BaseQueryBuilder $builder,
+        private string $alias,
     ) {
     }
 
@@ -54,9 +56,7 @@ final class DoctrineQueryBuilder implements QueryBuilder
             }
         }
 
-        if ($expression) {
-            $this->builder->andWhere($expression);
-        }
+        $this->builder->andWhere($expression);
 
         return $this;
     }
@@ -64,7 +64,7 @@ final class DoctrineQueryBuilder implements QueryBuilder
     public function whereIn(WhereInCondition $where): self
     {
         $this->builder->andWhere(
-            $this->builder->expr()->in($where->column, ":$where->column"),
+            $this->builder->expr()->in($this->column($where), ":$where->column"),
         );
 
         $this->builder->setParameter(":$where->column", $where->values);
@@ -74,7 +74,7 @@ final class DoctrineQueryBuilder implements QueryBuilder
 
     public function sort(string $column, SortDirection $sortDirection): self
     {
-        $this->builder->addOrderBy($column, $sortDirection->value);
+        $this->builder->addOrderBy($this->column($column), $sortDirection->value);
 
         return $this;
     }
@@ -84,39 +84,52 @@ final class DoctrineQueryBuilder implements QueryBuilder
         return $this->builder;
     }
 
-    private function buildWhereExpression(WhereCondition|OrWhereCondition $where, CompositeExpression|null $expression = null): CompositeExpression
+    private function buildWhereExpression(WhereCondition|OrWhereCondition $where, Composite|null $expression = null): Composite
     {
         if ($expression === null) {
             // The first Expression is always and, deptiy it might be a OrWhereCondition
-            return $this->builder->expr()->and($this->buildOperatorExpression($where));
+            return $this->builder->expr()->andX($this->buildOperatorExpression($where));
         }
 
         if ($where instanceof OrWhereCondition) {
-            return $this->builder->expr()->or($expression, $this->buildOperatorExpression($where));
+            return $this->builder->expr()->orX($this->buildOperatorExpression($where));
         }
 
-        return $this->builder->expr()->and($expression, $this->buildOperatorExpression($where));
+        return $this->builder->expr()->andX($this->buildOperatorExpression($where));
     }
 
-    private function buildOperatorExpression(WhereCondition|OrWhereCondition $where): string
+    private function buildOperatorExpression(WhereCondition|OrWhereCondition $where): Comparison|string
     {
         if ($where->value === null) {
             return match ($where->operator) {
-                Operator::Equal => $this->builder->expr()->isNull($where->column),
-                Operator::NotEqual => $this->builder->expr()->isNotNull($where->column),
+                Operator::Equal => $this->builder->expr()->isNull($this->column($where)),
+                Operator::NotEqual => $this->builder->expr()->isNotNull($this->column($where)),
                 default => throw ConditionException::invalidOperatorForNullableField($where->operator),
             };
         }
 
         return match ($where->operator) {
-            Operator::Equal => $this->builder->expr()->eq($where->column, ":$where->column"),
-            Operator::NotEqual => $this->builder->expr()->neq($where->column, ":$where->column"),
-            Operator::GreaterThen => $this->builder->expr()->gt($where->column, ":$where->column"),
-            Operator::GreaterThenEqual => $this->builder->expr()->gte($where->column, ":$where->column"),
-            Operator::LessThan => $this->builder->expr()->lt($where->column, ":$where->column"),
-            Operator::LessThanEqual => $this->builder->expr()->lte($where->column, ":$where->column"),
-            Operator::Like => $this->builder->expr()->like($where->column, ":$where->column"),
-            Operator::NotLike => $this->builder->expr()->notLike($where->column, ":$where->column"),
+            Operator::Equal => $this->builder->expr()->eq($this->column($where), ":$where->column"),
+            Operator::NotEqual => $this->builder->expr()->neq($this->column($where), ":$where->column"),
+            Operator::GreaterThen => $this->builder->expr()->gt($this->column($where), ":$where->column"),
+            Operator::GreaterThenEqual => $this->builder->expr()->gte($this->column($where), ":$where->column"),
+            Operator::LessThan => $this->builder->expr()->lt($this->column($where), ":$where->column"),
+            Operator::LessThanEqual => $this->builder->expr()->lte($this->column($where), ":$where->column"),
+            Operator::Like => $this->builder->expr()->like($this->column($where), ":$where->column"),
+            Operator::NotLike => $this->builder->expr()->notLike($this->column($where), ":$where->column"),
         };
+    }
+
+    private function column(WhereCondition|OrWhereCondition|WhereInCondition|string $condition): string
+    {
+        if (! is_string($condition)) {
+            $condition = $condition->column;
+        }
+
+        if (str_contains($condition, '.')) {
+            return $condition;
+        }
+
+        return $this->alias . "." . $condition;
     }
 }

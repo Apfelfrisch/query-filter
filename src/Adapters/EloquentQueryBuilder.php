@@ -20,17 +20,21 @@ use Illuminate\Contracts\Database\Query\Builder;
 final class EloquentQueryBuilder implements QueryBuilder
 {
     public function __construct(
-        private Builder|EloquentBuilder $builder
+        private Builder|EloquentBuilder $builder,
     ) {
     }
 
     public function select(string ...$selects): self
     {
-        // Reset `SELECT *`
         /** @phpstan-ignore-next-line */
-        if (count($this->builder->columns ?? []) === 1 && strval($this->builder->columns[0]) === '*') {
+        if (count($this->builder->columns ?? []) === 1) {
             /** @phpstan-ignore-next-line */
-            $this->builder->columns = [];
+            $expression = $this->builder->columns[0];
+
+            if (is_string($expression) && $expression === '*') {
+                /** @phpstan-ignore-next-line */
+                $this->builder->columns = [];
+            }
         }
 
         $this->builder->selectRaw(implode(', ', $selects));
@@ -40,7 +44,7 @@ final class EloquentQueryBuilder implements QueryBuilder
 
     public function where(WhereCondition|OrWhereCondition ...$wheres): self
     {
-        $this->builder->where(function ($builder) use ($wheres) {
+        $this->builder->where(function (Builder|EloquentBuilder $builder) use ($wheres) {
             foreach ($wheres as $where) {
                 if ($where instanceof OrWhereCondition) {
                     $builder->orWhereRaw($this->buildRawString($where), $where->value);

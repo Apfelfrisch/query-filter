@@ -11,12 +11,20 @@ use Apfelfrisch\QueryFilter\QueryParser;
 final class DummyQueryParser implements QueryParser
 {
     public bool $skipForbiddenCriterias = false;
+    public bool $forceCamelCase = false;
     public QueryBag|null $query = null;
     public CriteriaCollection|null $allowedCriterias = null;
 
     public function skipForbiddenCriterias(bool $skip = true): self
     {
         $this->skipForbiddenCriterias = $skip;
+
+        return $this;
+    }
+
+    public function forceCamelCase(bool $forceCamelCase = true): self
+    {
+        $this->forceCamelCase = $forceCamelCase;
 
         return $this;
     }

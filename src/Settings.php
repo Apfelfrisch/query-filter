@@ -18,6 +18,8 @@ final class Settings
 {
     private bool $skipForbiddenCriterias = false;
 
+    private bool $forceCamelCase = false;
+
     private QueryParser $queryParser;
 
     /** @var array<class-string, class-string<QueryBuilder<mixed>>> */
@@ -43,6 +45,18 @@ final class Settings
         return $this->skipForbiddenCriterias;
     }
 
+    public function setForceCamelCase(bool $forceCamelCase = true): self
+    {
+        $this->forceCamelCase = $forceCamelCase;
+
+        return $this;
+    }
+
+    public function forceCamelCase(): bool
+    {
+        return $this->forceCamelCase;
+    }
+
     public function setQueryParser(QueryParser $queryParser): self
     {
         $this->queryParser = $queryParser;
@@ -58,6 +72,7 @@ final class Settings
     /** @param class-string<Filter> $filterClass */
     public function setDefaultFilterClass(string $filterClass): self
     {
+        /** @phpstan-ignore function.alreadyNarrowedType */
         if (! is_subclass_of($filterClass, Filter::class)) {
             throw new QueryFilterException("[" . self::class . "::setDefaultFilterClass] only exepts class strings of [" . Filter::class . "]");
         }
@@ -115,7 +130,7 @@ final class Settings
     private function loadDefaults(): void
     {
         try {
-            $this->setQueryParser(new SimpleQueryParser);
+            $this->setQueryParser(new SimpleQueryParser());
             $this->setDefaultFilterClass(PartialFilter::class);
 
             if (class_exists(IlluminateBuilder::class)) {

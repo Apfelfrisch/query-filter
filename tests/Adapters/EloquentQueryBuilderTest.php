@@ -13,10 +13,11 @@ use Apfelfrisch\QueryFilter\Conditions\WhereInCondition;
 use Apfelfrisch\QueryFilter\Criterias\BetweenFilter;
 use Apfelfrisch\QueryFilter\QueryFilter;
 use Apfelfrisch\QueryFilter\Tests\TestCase;
-use Illuminate\Database\ConnectionInterface;
+use Illuminate\Database\Connection;
 use Illuminate\Database\Query\Builder;
-use Illuminate\Database\Query\Grammars\Grammar;
+use Illuminate\Database\Query\Grammars\MySqlGrammar;
 use Illuminate\Database\Query\Processors\Processor;
+use PHPUnit\Framework\MockObject\Stub;
 
 final class EloquentQueryBuilderTest extends TestCase
 {
@@ -64,7 +65,7 @@ final class EloquentQueryBuilderTest extends TestCase
 
         $builderAdapter->where(
             new WhereCondition('test-column', Operator::Equal, 'test-value'),
-            new WhereCondition('test-column-two', Operator::Equal, 'test-value-two')
+            new WhereCondition('test-column-two', Operator::Equal, 'test-value-two'),
         );
 
         $this->assertSame('select * from users where (test-column = ? and test-column-two = ?)', $builder->toSql());
@@ -102,11 +103,11 @@ final class EloquentQueryBuilderTest extends TestCase
 
         $this->assertSame(
             'select * from users where (test-column-1 = ? and test-column-2 = ?) and (test-column-3 = ? or test-column-4 = ?)',
-            $builder->toSql()
+            $builder->toSql(),
         );
         $this->assertEquals(
             [0 => 'test-value-1', 1 => 'test-value-2', 2 => 'test-value-3', 3 => 'test-value-4'],
-            $builder->getBindings()
+            $builder->getBindings(),
         );
     }
 
@@ -204,16 +205,20 @@ final class EloquentQueryBuilderTest extends TestCase
 
         $this->assertSame(
             'select name, email from users where (created_at >= ? and created_at <= ?) and (name like ?) order by street desc',
-            $builder->toSql()
+            $builder->toSql(),
         );
     }
 
     private function getBuilder(): Builder
     {
+        /** @var Connection&Stub */
+        $connection = $this->createStub(Connection::class);
+        $grammar = new MySqlGrammar($connection);
+
         $builder = new Builder(
-            $this->createStub(ConnectionInterface::class),
-            new Grammar,
-            $this->createStub(Processor::class)
+            $connection,
+            $grammar,
+            $this->createStub(Processor::class),
         );
 
         $builder->select('*')->fromRaw('users');

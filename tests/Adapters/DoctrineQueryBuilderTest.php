@@ -13,21 +13,16 @@ use Apfelfrisch\QueryFilter\Conditions\WhereInCondition;
 use Apfelfrisch\QueryFilter\Criterias\BetweenFilter;
 use Apfelfrisch\QueryFilter\QueryFilter;
 use Apfelfrisch\QueryFilter\Tests\TestCase;
-use Doctrine\DBAL\Connection;
-use Doctrine\DBAL\Driver;
-use Doctrine\DBAL\Driver\Result;
-use Doctrine\DBAL\Platforms\AbstractPlatform;
+use Doctrine\DBAL\DriverManager;
 use Doctrine\DBAL\Query\QueryBuilder;
-use Doctrine\DBAL\Schema\AbstractSchemaManager;
-use Doctrine\DBAL\Schema\SchemaConfig;
 use PHPUnit\Framework\Attributes\DataProvider;
-use PHPUnit\Framework\MockObject\MockObject;
 
 final class DoctrineQueryBuilderTest extends TestCase
 {
     public function test_providing_the_giving_builder(): void
     {
         $builder = $this->getBuilder();
+
         $builderAdapter = new DoctrineQueryBuilder($builder);
 
         $this->assertSame($builder, $builderAdapter->builder());
@@ -40,10 +35,10 @@ final class DoctrineQueryBuilderTest extends TestCase
         $builderAdapter = new DoctrineQueryBuilder($builder);
 
         $builderAdapter->where(
-            new WhereCondition('test-column', $operator, 'test-value')
+            new WhereCondition('test-column', $operator, 'test-value'),
         );
 
-        $this->assertSame('SELECT * FROM users WHERE test-column ' . $operator->value . ' :test-column', (string)$builder);
+        $this->assertSame('SELECT * FROM users WHERE test-column ' . $operator->value . ' :test-column', (string) $builder);
         $this->assertEquals([':test-column' => 'test-value'], $builder->getParameters());
     }
 
@@ -54,14 +49,14 @@ final class DoctrineQueryBuilderTest extends TestCase
 
         $builderAdapter->where(new WhereCondition('test-column', Operator::Equal, null));
 
-        $this->assertSame('SELECT * FROM users WHERE test-column IS NULL', (string)$builder);
+        $this->assertSame('SELECT * FROM users WHERE test-column IS NULL', (string) $builder);
         $this->assertEquals([], $builder->getParameters());
 
         $builder = $this->getBuilder();
         $builderAdapter = new DoctrineQueryBuilder($builder);
         $builderAdapter->where(new WhereCondition('test-column', Operator::NotEqual, null));
 
-        $this->assertSame('SELECT * FROM users WHERE test-column IS NOT NULL', (string)$builder);
+        $this->assertSame('SELECT * FROM users WHERE test-column IS NOT NULL', (string) $builder);
         $this->assertEquals([], $builder->getParameters());
     }
 
@@ -72,10 +67,10 @@ final class DoctrineQueryBuilderTest extends TestCase
 
         $builderAdapter->where(
             new WhereCondition('test-column', Operator::Equal, 'test-value'),
-            new WhereCondition('test-column-two', Operator::LessThanEqual, 'test-value-two')
+            new WhereCondition('test-column-two', Operator::LessThanEqual, 'test-value-two'),
         );
 
-        $this->assertSame('SELECT * FROM users WHERE (test-column = :test-column) AND (test-column-two <= :test-column-two)', (string)$builder);
+        $this->assertSame('SELECT * FROM users WHERE (test-column = :test-column) AND (test-column-two <= :test-column-two)', (string) $builder);
         $this->assertEquals([':test-column' => 'test-value', ':test-column-two' => 'test-value-two'], $builder->getParameters());
     }
 
@@ -89,7 +84,7 @@ final class DoctrineQueryBuilderTest extends TestCase
             new OrWhereCondition('test-column-two', Operator::Equal, 'test-value-two'),
         );
 
-        $this->assertSame('SELECT * FROM users WHERE (test-column = :test-column) OR (test-column-two = :test-column-two)', (string)$builder);
+        $this->assertSame('SELECT * FROM users WHERE (test-column = :test-column) OR (test-column-two = :test-column-two)', (string) $builder);
         $this->assertEquals([':test-column' => 'test-value', ':test-column-two' => 'test-value-two'], $builder->getParameters());
     }
 
@@ -109,12 +104,12 @@ final class DoctrineQueryBuilderTest extends TestCase
         );
 
         $this->assertSame(
-            'SELECT * FROM users WHERE ((test-column-1 = :test-column-1) AND (test-column-2 = :test-column-2)) AND ((test-column-3 = :test-column-3) OR (test-column-4 = :test-column-4))',
-            (string)$builder
+            'SELECT * FROM users WHERE (test-column-1 = :test-column-1) AND (test-column-2 = :test-column-2) AND ((test-column-3 = :test-column-3) OR (test-column-4 = :test-column-4))',
+            (string) $builder,
         );
         $this->assertEquals(
             [':test-column-1' => 'test-value-1', ':test-column-2' => 'test-value-2', ':test-column-3' => 'test-value-3', ':test-column-4' => 'test-value-4'],
-            $builder->getParameters()
+            $builder->getParameters(),
         );
     }
 
@@ -127,7 +122,7 @@ final class DoctrineQueryBuilderTest extends TestCase
             new WhereInCondition('test-column', ['test-value', 'test-value-two', 'test-value-three']),
         );
 
-        $this->assertSame('SELECT * FROM users WHERE test-column IN (:test-column)', (string)$builder);
+        $this->assertSame('SELECT * FROM users WHERE test-column IN (:test-column)', (string) $builder);
         $this->assertEquals([':test-column' => ['test-value', 'test-value-two', 'test-value-three']], $builder->getParameters());
     }
 
@@ -139,7 +134,7 @@ final class DoctrineQueryBuilderTest extends TestCase
         $builderAdapter->select('name', 'DATE(brithday)');
         $builderAdapter->select('city');
 
-        $this->assertSame('SELECT name, DATE(brithday), city FROM users', (string)$builder);
+        $this->assertSame('SELECT name, DATE(brithday), city FROM users', (string) $builder);
         $this->assertEquals([], $builder->getParameters());
     }
 
@@ -150,7 +145,7 @@ final class DoctrineQueryBuilderTest extends TestCase
 
         $builderAdapter->sort('test-column', SortDirection::Ascending);
 
-        $this->assertSame('SELECT * FROM users ORDER BY test-column asc', (string)$builder);
+        $this->assertSame('SELECT * FROM users ORDER BY test-column asc', (string) $builder);
         $this->assertEquals([], $builder->getParameters());
     }
 
@@ -162,7 +157,7 @@ final class DoctrineQueryBuilderTest extends TestCase
         $builderAdapter->sort('test-column', SortDirection::Ascending);
         $builderAdapter->sort('test-column-two', SortDirection::Ascending);
 
-        $this->assertSame('SELECT * FROM users ORDER BY test-column asc, test-column-two asc', (string)$builder);
+        $this->assertSame('SELECT * FROM users ORDER BY test-column asc, test-column-two asc', (string) $builder);
         $this->assertEquals([], $builder->getParameters());
     }
 
@@ -173,7 +168,7 @@ final class DoctrineQueryBuilderTest extends TestCase
 
         $builderAdapter->sort('test-column', SortDirection::Descending);
 
-        $this->assertSame('SELECT * FROM users ORDER BY test-column desc', (string)$builder);
+        $this->assertSame('SELECT * FROM users ORDER BY test-column desc', (string) $builder);
         $this->assertEquals([], $builder->getParameters());
     }
 
@@ -185,7 +180,7 @@ final class DoctrineQueryBuilderTest extends TestCase
         $builderAdapter->sort('test-column', SortDirection::Descending);
         $builderAdapter->sort('test-column-two', SortDirection::Descending);
 
-        $this->assertSame('SELECT * FROM users ORDER BY test-column desc, test-column-two desc', (string)$builder);
+        $this->assertSame('SELECT * FROM users ORDER BY test-column desc, test-column-two desc', (string) $builder);
         $this->assertEquals([], $builder->getParameters());
     }
 
@@ -197,7 +192,7 @@ final class DoctrineQueryBuilderTest extends TestCase
         $builderAdapter->sort('test-column', SortDirection::Descending);
         $builderAdapter->sort('test-column-two', SortDirection::Ascending);
 
-        $this->assertSame('SELECT * FROM users ORDER BY test-column desc, test-column-two asc', (string)$builder);
+        $this->assertSame('SELECT * FROM users ORDER BY test-column desc, test-column-two asc', (string) $builder);
         $this->assertEquals([], $builder->getParameters());
     }
 
@@ -211,8 +206,8 @@ final class DoctrineQueryBuilderTest extends TestCase
             ->applyOn($this->getBuilder(), ['filter' => ['name' => 'nils'], 'sort' => '-street', 'fields' => 'name,email']);
 
         $this->assertSame(
-            'SELECT name, email FROM users WHERE ((created_at >= :created_at) AND (created_at <= :created_at)) AND (name LIKE :name) ORDER BY street desc',
-            (string)$builder
+            'SELECT name, email FROM users WHERE (created_at >= :created_at) AND (created_at <= :created_at) AND (name LIKE :name) ORDER BY street desc',
+            (string) $builder,
         );
     }
 
@@ -227,63 +222,15 @@ final class DoctrineQueryBuilderTest extends TestCase
 
     private function getBuilder(): QueryBuilder
     {
-        /** @var MockObject|Connection */
-        $connection = $this->getMockBuilder(Connection::class)
-            ->setConstructorArgs([[], $this->createDriverMock()])
-            ->onlyMethods(['quote'])
-            ->getMockForAbstractClass();
-        $connection->method('quote')->willReturnCallback(static fn (string $input) => sprintf("'%s'", $input));
-
-        // $expressionBuilder = new ExpressionBuilder($connection);
-
-        // $connection->expects(self::any())
-        //    ->method('getExpressionBuilder')
-        //    ->willReturn($expressionBuilder);
+        $connection = DriverManager::getConnection([
+            'driver' => 'pdo_sqlite',
+            'memory' => true,
+        ]);
 
         $builder = new QueryBuilder($connection);
+
         $builder->select('*')->from('users');
 
         return $builder;
-    }
-
-    private function createDriverMock(): Driver
-    {
-        $result = $this->createMock(Result::class);
-        $result->method('fetchAssociative')
-            ->willReturn(false);
-
-        $connection = $this->createMock(Driver\Connection::class);
-        $connection->method('query')
-            ->willReturn($result);
-
-        $driver = $this->createMock(Driver::class);
-        $driver->method('connect')
-            ->willReturn($connection);
-        $driver->method('getDatabasePlatform')
-            ->willReturn($platform = $this->createPlatformMock());
-
-        if (method_exists(Driver::class, 'getSchemaManager')) {
-            $driver->method('getSchemaManager')
-                ->willReturnCallback([$platform, 'createSchemaManager']);
-        }
-
-        return $driver;
-    }
-
-    private function createPlatformMock(): AbstractPlatform
-    {
-        $schemaManager = $this->createMock(AbstractSchemaManager::class);
-        $schemaManager->method('createSchemaConfig')
-            ->willReturn(new SchemaConfig());
-
-        $platform = $this->getMockBuilder(AbstractPlatform::class)
-            ->onlyMethods(['supportsIdentityColumns', 'createSchemaManager'])
-            ->getMockForAbstractClass();
-        $platform->method('supportsIdentityColumns')
-            ->willReturn(true);
-        $platform->method('createSchemaManager')
-            ->willReturn($schemaManager);
-
-        return $platform;
     }
 }

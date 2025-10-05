@@ -13,6 +13,8 @@ final class QueryFilter
 {
     private bool $skipForbiddenCriterias;
 
+    private bool $forceCamelCase;
+
     private CriteriaCollection $defaultCriterias;
 
     private CriteriaCollection $allowdCriterias;
@@ -23,12 +25,20 @@ final class QueryFilter
         $this->defaultCriterias = new CriteriaCollection();
         $this->allowdCriterias = new CriteriaCollection();
         $this->skipForbiddenCriterias = $settings->skipForbiddenCriterias();
+        $this->forceCamelCase = $settings->forceCamelCase();
     }
 
     public static function new(
         Settings $settings = new Settings(),
     ): self {
         return new self($settings);
+    }
+
+    public function forceCamelCase(bool $forceCamelCase = true): self
+    {
+        $this->forceCamelCase = $forceCamelCase;
+
+        return $this;
     }
 
     public function skipForbiddenCriterias(bool $skip = true): self
@@ -51,7 +61,7 @@ final class QueryFilter
     {
         foreach ($allowFields as $allowField) {
             $this->allowdCriterias->add(
-                $allowField instanceof AllowField ? $allowField : new AllowField($allowField)
+                $allowField instanceof AllowField ? $allowField : new AllowField($allowField),
             );
         }
 
@@ -64,7 +74,7 @@ final class QueryFilter
 
         foreach ($filters as $filter) {
             $this->allowdCriterias->add(
-                $filter instanceof Filter ? $filter : new $defaultFilter($filter)
+                $filter instanceof Filter ? $filter : new $defaultFilter($filter),
             );
         }
 
@@ -75,7 +85,7 @@ final class QueryFilter
     {
         foreach ($sorts as $sort) {
             $this->allowdCriterias->add(
-                $sort instanceof Sorting ? $sort : new Sorting($sort)
+                $sort instanceof Sorting ? $sort : new Sorting($sort),
             );
         }
 
@@ -96,7 +106,8 @@ final class QueryFilter
             $this->settings
             ->getQueryParser()
             ->skipForbiddenCriterias($this->skipForbiddenCriterias)
-            ->parse($queryParameters, $this->allowdCriterias)
+            ->forceCamelCase($this->forceCamelCase)
+            ->parse($queryParameters, $this->allowdCriterias),
         );
     }
 
@@ -110,7 +121,7 @@ final class QueryFilter
     public function applyOn(object $builder, QueryBag|array|null $queryParameters = null): object
     {
         $this->getCriterias($queryParameters)->applyOn(
-            $this->settings->adaptQueryBuilder($builder)
+            $this->settings->adaptQueryBuilder($builder),
         );
 
         return $builder;

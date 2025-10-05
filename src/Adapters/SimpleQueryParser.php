@@ -10,10 +10,12 @@ use Apfelfrisch\QueryFilter\Exceptions\CriteriaException;
 use Apfelfrisch\QueryFilter\Exceptions\QueryStringException;
 use Apfelfrisch\QueryFilter\QueryBag;
 use Apfelfrisch\QueryFilter\QueryParser;
+use Apfelfrisch\QueryFilter\Str;
 
 final class SimpleQueryParser implements QueryParser
 {
     private bool $skipForbiddenCriterias = false;
+    private bool $forceCamelCase = false;
 
     /** @phpstan-param non-empty-string $delimter */
     public function __construct(
@@ -31,15 +33,22 @@ final class SimpleQueryParser implements QueryParser
         return $this;
     }
 
+    public function forceCamelCase(bool $forceCamelCase = true): self
+    {
+        $this->forceCamelCase = $forceCamelCase;
+
+        return $this;
+    }
+
     public function parse(
         QueryBag $query,
         CriteriaCollection $allowdCriterias = new CriteriaCollection(),
     ): CriteriaCollection {
         return $this->parseFilters($query, $allowdCriterias)
             ->merge(
-                $this->parseSorts($query, $allowdCriterias)
+                $this->parseSorts($query, $allowdCriterias),
             )->merge(
-                $this->parseFields($query, $allowdCriterias)
+                $this->parseFields($query, $allowdCriterias),
             );
     }
 
@@ -52,6 +61,10 @@ final class SimpleQueryParser implements QueryParser
         foreach ($queryStringFilters as $filtername => $filterString) {
             if (! is_string($filtername)) {
                 throw QueryStringException::unparseableQueryString();
+            }
+
+            if ($this->forceCamelCase) {
+                $filtername = Str::camel($filtername);
             }
 
             if (! $allowdCriterias->hasFilter($filtername)) {
