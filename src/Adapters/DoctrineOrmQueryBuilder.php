@@ -26,8 +26,7 @@ final class DoctrineOrmQueryBuilder implements QueryBuilder
     public function __construct(
         private BaseQueryBuilder $builder,
         private string $alias,
-    ) {
-    }
+    ) {}
 
     public function select(string ...$selects): self
     {
@@ -86,16 +85,18 @@ final class DoctrineOrmQueryBuilder implements QueryBuilder
 
     private function buildWhereExpression(WhereCondition|OrWhereCondition $where, Composite|null $expression = null): Composite
     {
+        $operatorExpr = $this->buildOperatorExpression($where);
+
         if ($expression === null) {
             // The first Expression is always and, deptiy it might be a OrWhereCondition
-            return $this->builder->expr()->andX($this->buildOperatorExpression($where));
+            return $this->builder->expr()->andX($operatorExpr);
         }
 
         if ($where instanceof OrWhereCondition) {
-            return $this->builder->expr()->orX($this->buildOperatorExpression($where));
+            return $this->builder->expr()->orX($expression, $operatorExpr);
         }
 
-        return $this->builder->expr()->andX($this->buildOperatorExpression($where));
+        return $this->builder->expr()->andX($expression, $operatorExpr);
     }
 
     private function buildOperatorExpression(WhereCondition|OrWhereCondition $where): Comparison|string
