@@ -26,7 +26,8 @@ final class DoctrineOrmQueryBuilder implements QueryBuilder
     public function __construct(
         private BaseQueryBuilder $builder,
         private string $alias,
-    ) {}
+    ) {
+    }
 
     public function select(string ...$selects): self
     {
